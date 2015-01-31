@@ -11,7 +11,7 @@ def main():
 
     if raw_input('Is disk connected? [y/n]: ').lower()=='y':
         temp=Collector.VolumeFinder()
-        disk = temp[0]
+        disk =temp[0]
         select = temp[1]
         recovery = temp[2]
         
@@ -157,7 +157,7 @@ def main():
                                     elif transaction[i][j][2][k][l][m][0]==-1:
                                         duplicated='(duplicated)'
 
-                            f.write('{0}/{1}{2}'.format(allocatedFork,transaction[i][j][2][k]['dataFork'][0]+dtransaction[i][j][2][k]['resourceFork'][0],duplicated)+',')
+                            f.write('{0}/{1}{2}'.format(allocatedFork,transaction[i][j][2][k]['dataFork'][0]+transaction[i][j][2][k]['resourceFork'][0],duplicated)+',')
                                 
                         f.write('\n')
 
