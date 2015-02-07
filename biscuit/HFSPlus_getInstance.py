@@ -151,8 +151,3 @@ def getVolumeHeader(vh_binary):
         vec.append(getForkData(vh_sp[i]))
     return ss.VolumeHeader(*vec)
     
-f = open(r"C:\Users\user\Desktop\Untitled2", 'rb')
-s = f.read()
-t = getCatalogLeaf(s)
-print getCatalogLeaf(s)
-    
