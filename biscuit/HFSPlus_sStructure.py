@@ -27,9 +27,9 @@ VolumeHeader = namedtuple("VolumeHeader", ['signature','version','attributes','l
 
 ExtentDescriptor = namedtuple("ExtentDescriptor", ['startBlock','blockCount'])
 ForkData = namedtuple("ForkData", ['logicalSize','clumpSize','totalBlocks','extents'])
-sBTKeyedRec = namedtuple("BTKeyedRec", ['keyLength','key'])
 
-class BTKeyedRec(sBTKeyedRec):
+class BTKeyedRec(namedtuple("BTKeyedRec", ['keyLength','key'])):
+    __slot__ = ()
     def __len__(self):
         return 2 + len(self.key)
 
@@ -48,26 +48,43 @@ ExtendedFolderInfo = namedtuple("ExtendedFolderInfo", ['scrollPosition', 'reserv
 '''
 Catalog Records 
 '''
-CatalogLeafRec = namedtuple("CatalogLeafRec", ['key', 'record'])
-
-sCatalogKey = namedtuple("CatalogKey", ["parentID", "nodeName"])
-
-class CatalogKey(sCatalogKey):
+class CatalogLeafRec(namedtuple("CatalogLeafRec", ['key', 'record'])):
+    __slots__ = ()
+    def __len__(self):
+        return len(self.key) + len(self.record)
+    
+class CatalogKey(namedtuple("CatalogKey", ["parentID", "nodeName"])):
+    __slots__ = ()
     def __len__(self):
         return 4+2+2*self.nodeName[0]
 
-CatalogFolder = namedtuple('CatalogFolder', ['recordType', 'flags', 
+sCatalogFolder = namedtuple('CatalogFolder', ['recordType', 'flags', 
                                              'valence', 'folderID', 
                                              'createDate', 'contentModDate', 'attributeModDate', 'accessDate', 'backupDate', 
                                              'permissions','userInfo','finderInfo',
                                              'textEncoding', 'reserved'])
+class CatalogFolder(sCatalogFolder):
+    __slots__ = ()
+    def __len__(self):
+        return 88
 
-CatalogFile = namedtuple('CatalogFolder', ['recordType', 'flags', 
+sCatalogFile = namedtuple('CatalogFolder', ['recordType', 'flags', 
                                              'reserved1', 'fileID', 
                                              'createDate', 'contentModDate', 'attributeModDate', 'accessDate', 'backupDate', 
                                              'permissions','userInfo','finderInfo',
                                              'textEncoding', 'reserved2',
                                              'dataFork', 'resourceFork'])
+class CatalogFile(sCatalogFile):
+    __slots__ = ()
+    def __len__(self):
+        return 248
 
-CatalogThread = namedtuple("CatalogThread", ['recordType', 'reserved', 'parentID', 'nodeName'])
+class CatalogThread(namedtuple("CatalogThread", ['recordType', 'reserved', 'parentID', 'nodeName'])):
+    __slots__ = ()
+    def __len__(self):
+        return 8+2+2*self.nodeName[0]
+    
+# User data structure
+CatalogLeaf = namedtuple("CatalogLeaf", ['NodeDescriptor', 'LeafRecList'])
+CatalogHeader = namedtuple("CatalogHeader", ['NodeDescriptor', 'BTHeaderRec', 'UserDataRec', 'MapRec'])
 

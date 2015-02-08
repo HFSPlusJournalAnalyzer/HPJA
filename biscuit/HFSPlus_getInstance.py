@@ -9,7 +9,7 @@ def getJournalHeader(jh_binary):
     return ss.JournalHeader(*vec)
 
 def getBlockInfo(bi_binary):
-    vec = unpack('<QII',bi_binary)
+    vec = unpack_from('<QII',bi_binary)
     return ss.BlockInfo(*vec)
 
 def getBlockListHeader(blh_binary):
@@ -20,7 +20,7 @@ def getBlockListHeader(blh_binary):
     return ss.BlockListHeader(*vec)
 
 def getNodeDescriptor(nd_binary):
-    vec = unpack('>IIbBHH',nd_binary)
+    vec = unpack_from('>IIbBHH',nd_binary)
     return ss.NodeDescriptor(*vec)
 
 def getBTHeaderRec(hr_binary):
@@ -28,7 +28,7 @@ def getBTHeaderRec(hr_binary):
     return ss.BTHeaderRec(*vec)
 
 def getExtentDescriptor(ed_binary):
-    vec = unpack('>II',ed_binary)
+    vec = unpack_from('>II',ed_binary)
     return ss.ExtentDescriptor(*vec)
 
 def getForkData(fd_binary):
@@ -45,11 +45,11 @@ def getForkData(fd_binary):
 def getCatalogKey(ck_binary):
     parID, nameLen = unpack_from(">IH", ck_binary)
     nameStr = ck_binary[6:]
-    nodeUnicode = "".join(map(unichr, unpack(">"+nameLen*"H", nameStr)))
+    nodeUnicode = "".join(map(unichr, unpack_from(">"+nameLen*"H", nameStr)))
     return ss.CatalogKey(parID, [nameLen, nodeUnicode])
 
 def getBSDInfo(bsd_binary):
-    vec = unpack(">IIBBHI", bsd_binary)
+    vec = unpack_from(">IIBBHI", bsd_binary)
     return ss.BSDInfo(*vec)
 
 def getFolderInfo(foi_binary):
@@ -90,7 +90,7 @@ def getCatalogFolder(cfo_binary):
     BSDInfo = getBSDInfo(cfo_1)
     userInfo = getFolderInfo(cfo_2)
     finderInfo = getExtendedFolderInfo(cfo_3)
-    textEncoding, reserved = unpack(">II", cfo_4)
+    textEncoding, reserved = unpack_from(">II", cfo_4)
     vec1 = [BSDInfo, userInfo, finderInfo, textEncoding, reserved]
     
     vec0.extend(vec1)
@@ -121,11 +121,11 @@ def getCatalogThread(cth_binary):
     cth_0 = cth_binary[:10]
     cth_1 = cth_binary[10:]
     recordType, reserved, parID, nameLen = unpack_from(">hhIH",cth_binary)
-    nodeUnicode = "".join(map(unichr, unpack(">"+nameLen*"H", cth_1)))
+    nodeUnicode = "".join(map(unichr, unpack_from(">"+nameLen*"H", cth_1)))
     
     return ss.CatalogThread(recordType, reserved, parID, [nameLen, nodeUnicode])
     
-def getCatalogLeaf(clk_binary):
+def getCatalogLeafRecord(clk_binary):
     keyLen = unpack_from(">H", clk_binary)[0]
     catalKey = getCatalogKey(clk_binary[2:2+keyLen])
     Key = ss.BTKeyedRec(keyLen, catalKey) 
@@ -134,6 +134,35 @@ def getCatalogLeaf(clk_binary):
     typeList = [0, getCatalogFolder, getCatalogFile, getCatalogThread, getCatalogThread]
     Record = typeList[recordType](rec_binary)
     return ss.CatalogLeafRec(Key, Record)
+
+def getCatalogLeaf(cl_binary):
+    cl_buf = memoryview(cl_binary)
+    nd = getNodeDescriptor(cl_binary)
+    leafRecList = []
+    
+    cl_buf = cl_buf[14:]
+    for i in range(nd.numRecords):
+        lr = getCatalogLeafRecord(cl_buf)
+        leafRecList.append(lr)
+        cl_buf = cl_buf[len(lr):]
+    
+    return ss.CatalogLeaf(nd, leafRecList)
+
+def getCatalogHeader(ch_binary): # require bounded-ness
+    ch_buf = memoryview(ch_binary)
+    nd = getNodeDescriptor(ch_buf)
+    hr = getBTHeaderRec(ch_buf[14:])
+    ch_buf = ch_buf[120:]
+    udr = ch_buf[:128]
+    mr = ch_buf[128:]
+    
+    return ss.CatalogHeader(nd, hr, udr, mr)
+
+def getCatalogIndex(ci_binary):
+    return
+
+def getCatalogMap(cm_binary):
+    return
     
 def getVolumeHeader(vh_binary):
     vh_0 = vh_binary[:80]
