@@ -1,7 +1,10 @@
 from collections import namedtuple
 
+
 JournalHeader = namedtuple("JournalHeader", ['magic','endian','start','end','size','blhdr_size','checksum','jhdr_size'])
-BlockInfoHeader = namedtuple("BlockInfoHeader", ['max_blocks','num_blocks','bytes_used','checksum','pad','binfo0'])
+# endian contains '>' or '<' (instead of 0x12345678; the original value) 
+
+BlockListHeader = namedtuple("BlockListoHeader", ['max_blocks','num_blocks','bytes_used','checksum','pad','binfo0'])
 BlockInfo = namedtuple("BlockInfo", ['bnum', 'bsize', 'next'])
 NodeDescriptor = namedtuple("NodeDescriptor", ['fLink','bLink','kind','height','numRecords','reserved'])
 BTHeaderRec = namedtuple("BTHeaderRec", ['treeDepth','rootNode',

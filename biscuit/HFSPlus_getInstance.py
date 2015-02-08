@@ -4,19 +4,20 @@ import HFSPlus_sStructure as ss
 def getJournalHeader(jh_binary):
     endian = unpack_from(">I",jh_binary, 4)[0]
     eflag = [">","<"][endian == 0x78563412]
-    vec = unpack_from(eflag + 'IIQQQIII',jh_binary)
+    vec = list(unpack_from(eflag + 'IIQQQIII',jh_binary))
+    vec[1] = eflag  # replace 'endian' field as '>' or '<'. It represents endianess more clearly.
     return ss.JournalHeader(*vec)
 
 def getBlockInfo(bi_binary):
     vec = unpack('<QII',bi_binary)
     return ss.BlockInfo(*vec)
 
-def getBlockInfoHeader(bih_binary):
-    bih_0 = bih_binary[:16]
-    bih_1 = bih_binary[16:] 
-    vec = list(unpack('<HHIII',bih_0))
-    vec.append(getBlockInfo(bih_1))
-    return ss.BlockInfoHeader(*vec)
+def getBlockListHeader(blh_binary):
+    blh_0 = blh_binary[:16]
+    blh_1 = blh_binary[16:] 
+    vec = list(unpack('<HHIII',blh_0))
+    vec.append(getBlockInfo(blh_1))
+    return ss.BlockListHeader(*vec)
 
 def getNodeDescriptor(nd_binary):
     vec = unpack('>IIbBHH',nd_binary)
