@@ -32,6 +32,11 @@ class BTKeyedRec(namedtuple("BTKeyedRec", ['keyLength','key'])):
     __slot__ = ()
     def __len__(self):
         return 2 + len(self.key)
+    
+    def __eq__(self, other):
+        kL_Comp = (self.keyLength == other.keyLength)
+        key_Comp = (self.key == other.key)
+        return (kL_Comp and key_Comp)
 
 BSDInfo = namedtuple("BSDInfo", ['ownerID', 'groupID', 'adminFlags', 'ownerFlags', 'fileMode', 'special'])
 
@@ -53,11 +58,22 @@ class CatalogLeafRec(namedtuple("CatalogLeafRec", ['key', 'record'])):
     def __len__(self):
         return len(self.key) + len(self.record)
     
+    def __eq__(self, other):
+        keyComp = ( self.key == other.key )
+        recComp = ( self.record == other.record )
+        return (keyComp and recComp)
+        
 class CatalogKey(namedtuple("CatalogKey", ["parentID", "nodeName"])):
     __slots__ = ()
     def __len__(self):
         return 4+2+2*self.nodeName[0]
-
+    
+    def __eq__(self, other):
+        return (self.nodeName == other.nodeName)
+    
+    def __hash__(self):
+        return hash(self.nodeName)
+     
 sCatalogFolder = namedtuple('CatalogFolder', ['recordType', 'flags', 
                                              'valence', 'folderID', 
                                              'createDate', 'contentModDate', 'attributeModDate', 'accessDate', 'backupDate', 
@@ -67,6 +83,12 @@ class CatalogFolder(sCatalogFolder):
     __slots__ = ()
     def __len__(self):
         return 88
+    
+    def __eq__(self, other):
+        return ((self.recordType == other.recordType) and (self.folderID == other.folderID))
+    
+    def __hash__(self):
+        return hash((self.recordType, self.folderID))
 
 sCatalogFile = namedtuple('CatalogFolder', ['recordType', 'flags', 
                                              'reserved1', 'fileID', 
@@ -78,15 +100,34 @@ class CatalogFile(sCatalogFile):
     __slots__ = ()
     def __len__(self):
         return 248
+    
+    def __eq__(self, other):
+        return ((self.recordType == other.recordType) and (self.fileID == other.fileID))
+    
+    def __hash__(self):
+        return hash((self.recordType, self.fileID))
 
 class CatalogThread(namedtuple("CatalogThread", ['recordType', 'reserved', 'parentID', 'nodeName'])):
     __slots__ = ()
     def __len__(self):
         return 8+2+2*self.nodeName[0]
-
-
+    
+    def __eq__(self, other):
+        return ((self.recordType == other.recordType) and (self.nodeName == other.nodeName))
+    
+    def __hash__(self):
+        return hash((self.recordType, self.nodeName))
     
 # User data structure
 CatalogLeaf = namedtuple("CatalogLeaf", ['NodeDescriptor', 'LeafRecList'])
 CatalogHeader = namedtuple("CatalogHeader", ['NodeDescriptor', 'BTHeaderRec', 'UserDataRec', 'MapRec'])
-UniChar = namedtuple("UniChar", ['nameLen', 'nodeUnicode'])
+sUniChar = namedtuple("UniChar", ['nameLen', 'nodeUnicode'])
+
+class UniChar(sUniChar):
+    __slots__ = ()
+    
+    def __eq__(self, other):
+        lenComp = (self.nameLen == other.nameLen)
+        nameComp = (self.nodeUnicode == other.nodeUnicode)
+        return (lenComp and nameComp)
+

@@ -4,23 +4,27 @@ Created on 2015. 2. 8.
 @author: biscuit
 '''
 from HFSPlus_ParseModule import *
+    
 
 class JournalChange:
     changeType = None
-    parAtt = None
-    curAtt = None
+    parAtt = ''
+    curAtt = ''
     changeInfo = None
     
-    def __init__(self, changeType, parAtt=None, curAtt=None, changeInfo=None):
-        typeList = ["Insert", "Remove", "Modify", "Date"]
+    def __init__(self, changeType, parAtt='', curAtt='', changeInfo=None):
+        typeList = ["Insert", "Remove", "Modify", "Renewal"]
         infoDict = {'Insert':objectChangeInfo, 'Remove':objectChangeInfo,
-                    'Modify':valueChangeInfo, 'Date':dateChangeInfo}
+                    'Modify':valueChangeInfo, 'Renewal':renewalChangeInfo}
         self.changeType = changeType
         self.parAtt = parAtt
         self.curAtt = curAtt
         self.changeInfo = changeInfo
         assert changeType in typeList
-        assert type(changeInfo) == infoDict[changeType]
+        assert changeInfo.__class__ == infoDict[changeType]
+        
+    def __str__(self):
+        return self.changeType+ " " + self.parAtt + " " + self.curAtt + " " + str(self.changeInfo)
     
 class valueChangeInfo:
     before = 0
@@ -31,7 +35,10 @@ class valueChangeInfo:
         self.after = after
         self.diff = self.after - self.before
         
-class dateChangeInfo:
+    def __str__(self):
+        return "%d -> %d" % (self.before, self.after)
+        
+class renewalChangeInfo:
     before = 0
     after = 0
     renewal = False
@@ -40,6 +47,9 @@ class dateChangeInfo:
         self.after = after
         if before != after:
             self.renewal = True
+    
+    def __str__(self):
+        return "renewal"
 
 class objectChangeInfo:
     object = None
@@ -47,6 +57,9 @@ class objectChangeInfo:
     def __init__(self, object, absData):
         self.object = object
         self.absData = absData
+        
+    def __str__(self):
+        return self.object.__class__.__name__
 
 def journalTrack(j_parseList):
     transList = j_parseList[1:]
@@ -71,36 +84,98 @@ def block_check(b_info, data, cursur):
     except KeyError:
         cursur[b_info.bnum] = data
         d_chInfo = objectChangeInfo(data, None)
-        j_ch = JournalChange("Insert", None, hex(b_info.bnum), d_chInfo)
+        j_ch = JournalChange("Insert", '', hex(b_info.bnum), d_chInfo)
         return [j_ch]
     classType = data.__class__.__name__
-    return data_diff(p_data, data, None, classType)
+    cursur[b_info.bnum] = data
+    return data_diff(p_data, data, '', classType)
     
-def data_diff(original, changed, parType=None, curType=None):
-    assert type(original) == type(changed)
+def data_diff(original, changed, parType='', curType=''):
+    assert original.__class__ == changed.__class__
+    dType = original.__class__
     result = []
     
-    if type(original) in [int, long]:
-        v_chInfo = valueChangeInfo(original, changed)
-        j_ch = JournalChange("Modify", parType, curType, v_chInfo)
+    if dType in [int, long]:
+        if original == changed: return []
+        if "Date" in curType:
+            r_chInfo = renewalChangeInfo(original, changed)
+            j_ch = JournalChange("Renewal", parType, curType, r_chInfo)
+        else:
+            v_chInfo = valueChangeInfo(original, changed)
+            j_ch = JournalChange("Modify", parType, curType, v_chInfo)
+        result.append(j_ch)
+        return result
     
-    if type(original) == tuple:
+    if dType in [tuple, list]:
+        if curType == 'LeafRecList':
+            result.extend(compCatalog(original, changed, parType, curType))
+            return result
         count = 0
         for i, j in zip(original, changed):
-            result.extend(data_diff(i, j, curType + "_%d" % count))
-        return
+            result.extend(data_diff(i, j, curType, curType + "_%d" % count))
+            count += 1
+        return result
     
+    if dType == memoryview:
+        if original == changed: return []
+        r_chInfo = renewalChangeInfo(original, changed)
+        j_ch = JournalChange("Renewal", parType, curType, r_chInfo)
+        result.append(j_ch)
+        return result
     
-        
+    if dType in [unicode, str]:
+        return []
     
     attList = original._fields
     for att in attList:
-        result.extend(data_diff(getattr(original,att), getattr(changed, att), curType, att))
+        result.extend(data_diff(getattr(original,att), getattr(changed, att), parType+"\\"+curType, att))
+    return result
     
     
+def compCatalog(original, changed, parType, curType):
+    orgSet = set(original)
+    chgSet = set(changed)
+    insList = chgSet - orgSet
+    modList = orgSet & chgSet
+    remList = orgSet - chgSet
+    result = []
+            
+    for i in insList:
+        chInfo = objectChangeInfo(i, None)
+        j_ch = JournalChange("Insert", parType, curType, chInfo)
+        result.append(j_ch)
+    
+    for r in remList:
+        chInfo = objectChangeInfo(r, None)
+        j_ch = JournalChange("Remove", parType, curType, chInfo)
+        result.append(j_ch)
         
+    for m in modList:
+        m_org = [x for x in original if m == x][0]
+        m_chg = [x for x in changed if m == x][0]
+        result.extend(data_diff(m_org, m_chg, parType, curType))
+    
+    return result
+
+def main():
+    f = open(r"C:\Users\user\Desktop\Untitled2", 'rb')
+    s = f.read()
+    jParseList = journalParser(s)
+    jT = journalTrack(jParseList)
+    g = open(r"C:\result2.txt", 'w')
+    for i in jT:
+        g.write("-----------\n")
+        for j in i:
+            g.write(str(j)+"\n")
+    
+    g.close()
+    f.close()
+
         
-        
+if __name__ == '__main__':
+    main()
+    
+
 
         
     
