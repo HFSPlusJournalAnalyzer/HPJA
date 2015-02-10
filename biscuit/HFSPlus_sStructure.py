@@ -4,7 +4,7 @@ from collections import namedtuple
 JournalHeader = namedtuple("JournalHeader", ['magic','endian','start','end','size','blhdr_size','checksum','jhdr_size'])
 # endian contains '>' or '<' (instead of 0x12345678; the original value) 
 
-BlockListHeader = namedtuple("BlockListoHeader", ['max_blocks','num_blocks','bytes_used','checksum','pad','binfo0'])
+BlockListHeader = namedtuple("BlockListHeader", ['max_blocks','num_blocks','bytes_used','checksum','pad','binfo0'])
 BlockInfo = namedtuple("BlockInfo", ['bnum', 'bsize', 'next'])
 NodeDescriptor = namedtuple("NodeDescriptor", ['fLink','bLink','kind','height','numRecords','reserved'])
 BTHeaderRec = namedtuple("BTHeaderRec", ['treeDepth','rootNode',
@@ -83,8 +83,10 @@ class CatalogThread(namedtuple("CatalogThread", ['recordType', 'reserved', 'pare
     __slots__ = ()
     def __len__(self):
         return 8+2+2*self.nodeName[0]
+
+
     
 # User data structure
 CatalogLeaf = namedtuple("CatalogLeaf", ['NodeDescriptor', 'LeafRecList'])
 CatalogHeader = namedtuple("CatalogHeader", ['NodeDescriptor', 'BTHeaderRec', 'UserDataRec', 'MapRec'])
-
+UniChar = namedtuple("UniChar", ['nameLen', 'nodeUnicode'])

@@ -46,7 +46,7 @@ def getCatalogKey(ck_binary):
     parID, nameLen = unpack_from(">IH", ck_binary)
     nameStr = ck_binary[6:]
     nodeUnicode = "".join(map(unichr, unpack_from(">"+nameLen*"H", nameStr)))
-    return ss.CatalogKey(parID, [nameLen, nodeUnicode])
+    return ss.CatalogKey(parID, ss.UniChar(nameLen, nodeUnicode))
 
 def getBSDInfo(bsd_binary):
     vec = unpack_from(">IIBBHI", bsd_binary)
@@ -120,10 +120,10 @@ def getCatalogFile(cfi_binary):
 def getCatalogThread(cth_binary):
     cth_0 = cth_binary[:10]
     cth_1 = cth_binary[10:]
-    recordType, reserved, parID, nameLen = unpack_from(">hhIH",cth_binary)
+    recordType, reserved, parID, nameLen = unpack(">hhIH",cth_0)
     nodeUnicode = "".join(map(unichr, unpack_from(">"+nameLen*"H", cth_1)))
     
-    return ss.CatalogThread(recordType, reserved, parID, [nameLen, nodeUnicode])
+    return ss.CatalogThread(recordType, reserved, parID, ss.UniChar(nameLen, nodeUnicode))
     
 def getCatalogLeafRecord(clk_binary):
     keyLen = unpack_from(">H", clk_binary)[0]
