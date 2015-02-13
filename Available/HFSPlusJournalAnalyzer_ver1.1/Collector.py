@@ -73,7 +73,7 @@ def JournalExtractor(journalInfoBlock,disk,blockSize,select):
 
 
     
-def SpecialFileExtractor(fileName,fileInfo,disk,blockSize,select):
+def SpecialFileExtractor(fileName,fileFork,disk,blockSize,select):
     
     fileContent=''
 
