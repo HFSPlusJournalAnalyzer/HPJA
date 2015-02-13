@@ -28,7 +28,7 @@ VolumeHeader = namedtuple("VolumeHeader", ['signature','version','attributes','l
 ExtentDescriptor = namedtuple("ExtentDescriptor", ['startBlock','blockCount'])
 ForkData = namedtuple("ForkData", ['logicalSize','clumpSize','totalBlocks','extents'])
 
-class BTKey(namedtuple("BTKey", ['keyLength','key'])):
+class BTKeyedRec(namedtuple("BTKeyedRec", ['keyLength','key'])):
     __slot__ = ()
     def __len__(self):
         return 2 + len(self.key)
@@ -93,9 +93,10 @@ class CatalogFolder(sCatalogFolder):
 sCatalogFile = namedtuple('CatalogFolder', ['recordType', 'flags', 
                                              'reserved1', 'fileID', 
                                              'createDate', 'contentModDate', 'attributeModDate', 'accessDate', 'backupDate', 
-                                             'permissions','userInfo','finderInfo',
+                                             'permissions', 'userInfo', 'finderInfo',
                                              'textEncoding', 'reserved2',
                                              'dataFork', 'resourceFork'])
+
 class CatalogFile(sCatalogFile):
     __slots__ = ()
     def __len__(self):
@@ -106,6 +107,9 @@ class CatalogFile(sCatalogFile):
     
     def __hash__(self):
         return hash((self.recordType, self.fileID))
+    
+    def getAbs(self):
+        return (self.fileID)
 
 class CatalogThread(namedtuple("CatalogThread", ['recordType', 'reserved', 'parentID', 'nodeName'])):
     __slots__ = ()
@@ -121,7 +125,6 @@ class CatalogThread(namedtuple("CatalogThread", ['recordType', 'reserved', 'pare
 # User data structure
 CatalogLeaf = namedtuple("CatalogLeaf", ['NodeDescriptor', 'LeafRecList'])
 CatalogHeader = namedtuple("CatalogHeader", ['NodeDescriptor', 'BTHeaderRec', 'UserDataRec', 'MapRec'])
-
 class UniChar(namedtuple("UniChar", ['nameLen', 'nodeUnicode'])):
     __slots__ = ()
     
@@ -129,21 +132,4 @@ class UniChar(namedtuple("UniChar", ['nameLen', 'nodeUnicode'])):
         lenComp = (self.nameLen == other.nameLen)
         nameComp = (self.nodeUnicode == other.nodeUnicode)
         return (lenComp and nameComp)
-
-BTPointerRec = namedtuple('BTPointerRec', BTKey._fields+('nodeNumber',))
-
-ExtentKey = namedtuple('ExtentKey',BTKey._fields+('forkType','pad','fileID','startBlock'))
-
-ExtentsDataRec = namedtuple('ExtentsDataRec',ExtentKey._fields+('extents',))
-
-AttrKey = namedtuple('AttrKey',BTKey._fields+('pad','fileID','startBlock','attrNameLen','attrName','recordType','reserved'))
-
-AttrForkData = namedtuple('AttrForkData',AttrKey._fields+('theFork',))
-
-AttrExtents = namedtuple('AttrExtents',AttrKey._fields+('extents',))
-
-AttrData = namedtuple('AttrData',AttrKey._fields+('reserved2','attrSize','attrData'))
-
-
-
 
