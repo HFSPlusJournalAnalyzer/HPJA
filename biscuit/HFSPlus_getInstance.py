@@ -128,7 +128,7 @@ def getCatalogThread(cth_binary):
 def getCatalogLeafRecord(clk_binary):
     keyLen = unpack_from(">H", clk_binary)[0]
     catalKey = getCatalogKey(clk_binary[2:2+keyLen])
-    Key = ss.BTKey(keyLen, catalKey) 
+    Key = ss.BTKeyedRec(keyLen, catalKey)
     rec_binary = clk_binary[len(Key):]
     recordType = unpack_from(">H", rec_binary)[0]
     typeList = [0, getCatalogFolder, getCatalogFile, getCatalogThread, getCatalogThread]
@@ -148,14 +148,13 @@ def getCatalogLeaf(cl_binary):
     
     return ss.CatalogLeaf(nd, leafRecList)
 
-def getCatalogHeader(ch_binary): # require bounded-ness
+def getCatalogHeader(ch_binary): 
     ch_buf = memoryview(ch_binary)
     nd = getNodeDescriptor(ch_buf)
     hr = getBTHeaderRec(ch_buf[14:])
     ch_buf = ch_buf[120:]
     udr = ch_buf[:128]
-    mr = ch_buf[128:]
-    
+    mr = ch_buf[128:-8]
     return ss.CatalogHeader(nd, hr, udr, mr)
 
 def getCatalogIndex(ci_binary):

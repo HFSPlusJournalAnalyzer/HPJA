@@ -59,7 +59,7 @@ class objectChangeInfo:
         self.absData = absData
         
     def __str__(self):
-        return self.object.__class__.__name__
+        return absData
 
 def journalTrack(j_parseList):
     transList = j_parseList[1:]
@@ -83,7 +83,7 @@ def block_check(b_info, data, cursur):
         p_data = cursur[b_info.bnum]
     except KeyError:
         cursur[b_info.bnum] = data
-        d_chInfo = objectChangeInfo(data, None)
+        d_chInfo = objectChangeInfo(data, data.__class__.__name__)
         j_ch = JournalChange("Insert", '', hex(b_info.bnum), d_chInfo)
         return [j_ch]
     classType = data.__class__.__name__

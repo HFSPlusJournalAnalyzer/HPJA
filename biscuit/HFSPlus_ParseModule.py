@@ -5,76 +5,43 @@ Created on 2015. 2. 8.
 '''
 from HFSPlus_GetInstance import *
 
-def journalBufferParser(endian,journalBuffer):
-
-    blhdrPointer=base
-    bnext=0
-    tranNum=0
-    blockNum=0
-    tranBlocks=[0]
-
-    while not VerifyChecksum('blhdr',endian,journalBuffer[blhdrPointer%size:(blhdrPointer+32)%size],32):
-        blhdrPointer+=jhdr_size
-
-    while blhdrPointer<base+size:
-
-        if bnext==0:
-            tranNum+=1
-            blockNum=0
-            
-        max_blocks,num_blocks,bytes_used,checksum,pad,temp1,bnext=unpack_from(endian+'HHLLLQL',journalBuffer,blhdrPointer%size)
-
-        blPointer=blhdrPointer+blhdr_size
-        blhdrPointer+=32
-
-        for i in range(1,num_blocks):
-
-            blockNum+=1
-            tranBlocks[0]+=1
-            
-            bnum,bsize=unpack_from(endian+'LL',journalBuffer,blhdrPointer%size)
-                
-            if blPointer<size and blPointer+bsize>=size:
-                tranBlocks.append(RawBlock(blPointer,tranNum,blockNum,bnum,bsize,jhdr_size,journalBuffer[blPointer:size]+journalBuffer[0:(blPointer+bsize)%size]))
-                            
-            else:
-                tranBlocks.append(RawBlock(blPointer,tranNum,blockNum,bnum,bsize,jhdr_size,journalBuffer[blPointer%size:(blPointer+bsize)%size]))
-            
-            blPointer+=bsize
-
-            blhdrPointer+=16
-        
-        blhdrPointer+=bytes_used-(num_blocks+1)*16
-            
-    return tranBlocks
-
-
-def journalParser(journal_blob):
-
-    if unpack_from('>L',journal,4)==0x12345678:
-        endian='>'
-    else:
-        endian='<'
-
-    jnl = memoryview(journal_blob)
-
-    j_header=getJournalHeader(endian,jnl[:0x200])
-    
-    return (j_header,journalBufferParser(endian,j_header,jnl[0x200:]))
-
-"""
 def journalParser(journal_blob):
     jnl = memoryview(journal_blob)
     j_header = getJournalHeader(jnl[:0x200])
     j_buf = jnl[0x200:]
-    '''
-    Some codes for identifying 'startOffset'
-    ''' 
+    
+    startOffset = getStart(j_buf, j_header.end) # setting the startOffset
+    
     j_ParseList = journalBufferParser(j_buf, j_header, 0, [])
     j_ParseList.insert(0, j_header)
     
     return j_ParseList
-    
+
+def getStart(j_buf, end):
+    cur = end
+    lenBuf = len(j_buf)
+    curLine = j_buf[cur:cur+0x10]
+    while curLine != 'Z'*16:
+        cur = (cur+0x10) % lenBuf
+        curLine = j_buf[cur:cur+0x10]
+    while(True):
+        cur = (cur-0x10) % lenBuf
+        curLine = j_buf[cur:cur+0x10]
+        if cur == end:
+            while curLine != 'Z'*16:
+                cur = (cur+0x10) % lenBuf
+                curLine = j_buf[cur:cur+0x10]
+            while curLine == 'Z'*16:
+                cur = (cur+0x10) % lenBuf
+                curLine = j_buf[cur:cur+0x10]
+            while curLine != 'Z'*16:
+                cur = (cur+0x10) % lenBuf
+                curLine = j_buf[cur:cur+0x10]
+            cur = (cur-0x10) % lenBuf
+            curLine = j_buf[cur:cur+0x10]
+        if curLine[4:8] != '\x00\x00\x00\x00':
+            return cur
+        
 
 def journalBufferParser(j_buffer, JournalHeader, startOffset, parseList):
     if startOffset == (JournalHeader.end - 0x200): # -0x200 for Journal Header area
@@ -89,7 +56,6 @@ def journalBufferParser(j_buffer, JournalHeader, startOffset, parseList):
     parseList.append(transParser(curTrans))
     
     return journalBufferParser(j_buffer, JournalHeader, nextOffset, parseList)
-    """
 
 def transParser(trans):
     blh = getBlockListHeader(trans)  # block list header
