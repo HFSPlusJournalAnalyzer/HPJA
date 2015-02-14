@@ -39,14 +39,9 @@ def getForkData(fd_binary):
         e = getExtentDescriptor(temp)
         ext.append(e)
     vec = list(unpack_from('>QII',fd_binary))
-    vec.append(ext)
+    vec.append(ss.ExtentsDataRec(*ext))
     return ss.ForkData(*vec)
 
-def getCatalogKey(ck_binary):
-    parID, nameLen = unpack_from(">IH", ck_binary)
-    nameStr = ck_binary[6:]
-    nodeUnicode = "".join(map(unichr, unpack_from(">"+nameLen*"H", nameStr)))
-    return ss.CatalogKey(parID, ss.UniChar(nameLen, nodeUnicode))
 
 def getBSDInfo(bsd_binary):
     vec = unpack_from(">IIBBHI", bsd_binary)
@@ -125,15 +120,20 @@ def getCatalogThread(cth_binary):
     
     return ss.CatalogThread(recordType, reserved, parID, ss.UniChar(nameLen, nodeUnicode))
     
-def getCatalogLeafRecord(clk_binary):
+def getCatalogKey(ck_binary):
+    rType, parID, nameLen = unpack_from(">HIH", ck_binary)
+    nameStr = ck_binary[8:]
+    nodeUnicode = "".join(map(unichr, unpack_from(">"+nameLen*"H", nameStr)))
+    return ss.CatalogKey(rType, parID, ss.UniChar(nameLen, nodeUnicode))
+
+def getCatalogLeafRec(clk_binary):
     keyLen = unpack_from(">H", clk_binary)[0]
-    catalKey = getCatalogKey(clk_binary[2:2+keyLen])
-    Key = ss.BTKeyedRec(keyLen, catalKey)
-    rec_binary = clk_binary[len(Key):]
+    catalKey = getCatalogKey(clk_binary[:2+keyLen])
+    rec_binary = clk_binary[2+keyLen:]
     recordType = unpack_from(">H", rec_binary)[0]
     typeList = [0, getCatalogFolder, getCatalogFile, getCatalogThread, getCatalogThread]
     Record = typeList[recordType](rec_binary)
-    return ss.CatalogLeafRec(Key, Record)
+    return ss.BTRecord(catalKey, Record)
 
 def getCatalogLeaf(cl_binary):
     cl_buf = memoryview(cl_binary)
@@ -142,26 +142,181 @@ def getCatalogLeaf(cl_binary):
     
     cl_buf = cl_buf[14:]
     for i in range(nd.numRecords):
-        lr = getCatalogLeafRecord(cl_buf)
+        lr = getCatalogLeafRec(cl_buf)
         leafRecList.append(lr)
         cl_buf = cl_buf[len(lr):]
-    
-    return ss.CatalogLeaf(nd, leafRecList)
+        
+    return ss.LeafNode(nd, leafRecList)
 
-def getCatalogHeader(ch_binary): 
+def getCatalogPointerRec(cpr_binary):
+    keyLen = unpack_from(">H", cpr_binary)[0]
+    catalKey = getCatalogKey(cpr_binary[:2+keyLen])
+    nodeNum = unpack_from(">I", cpr_binary[2+keyLen:])[0]
+    return ss.BTPointerRec(catalKey, nodeNum)
+
+def getCatalogIndex(ci_binary):
+    ci_buf = memoryview(ci_binary)
+    nd = getNodeDescriptor(ci_buf)
+    offsetList = [14]
+    PointerRecList = []
+    for i in range(nd.numRecords):
+        offset = unpack(">H", ci_buf[-2*i-4:-2*i-2])[0]
+        offsetList.append(offset)
+    for i in range(len(offsetList)-1):
+        temp = ci_buf[offsetList[i]:offsetList[i+1]]
+        cpr = getCatalogPointerRec(temp)
+        PointerRecList.append(cpr)
+    return ss.IndexNode(nd,PointerRecList)
+
+'''
+Extents
+'''
+def getExtentsKey(ek_binary):
+    vec = unpack_from(">HBBII", ek_binary)
+    return ss.ExtentsKey(*vec)
+
+def getExtentsLeafRec(elf_binary):
+    extKey = getExtentsKey(elf_binary[:12])
+    rec_binary = elf_binary[12:]
+    ext = []
+    for i in range(8):
+        temp = rec_binary[16+8*i:16+8*(i+1)]
+        e = getExtentDescriptor(temp)
+        ext.append(e)
+    
+    return ss.BTRecord(extKey, ss.ExtentsDataRec(*ext))
+
+def getExtentsLeaf(el_binary):
+    el_buf = memoryview(el_binary)
+    nd = getNodeDescriptor(el_binary)
+    leafRecList = []
+    el_buf = el_buf[14:]
+    for i in range(nd.numRecords):
+        lr = getExtentsLeafRec(el_buf)
+        leafRecList.append(lr)
+        el_buf = el_buf[len(lr):]
+    return ss.LeafNode(nd, leafRecList)
+
+def getExtentsPointerRec(epr_binary):
+    extKey = getExtentsKey(epr_binary[:12])
+    nodeNum = unpack_from(">I", epr_binary[12:])[0]
+    return ss.BTPointerRec(extKey, nodeNum)
+
+def getExtentsIndex(ei_binary):
+    ei_buf = memoryview(ei_binary)
+    nd = getNodeDescriptor(ei_buf)
+    offsetList = [14]
+    PointerRecList = []
+    for i in range(nd.numRecords):
+        offset = unpack(">H", ei_buf[-2*i-4:-2*i-2])[0]
+        offsetList.append(offset)
+    for i in range(len(offsetList)-1):
+        temp = ei_buf[offsetList[i]:offsetList[i+1]]
+        epr = getExtentsPointerRec(temp)
+        PointerRecList.append(epr)
+    return ss.IndexNode(nd,PointerRecList)
+
+'''
+Attribute
+'''
+
+def getAttributesKey(ak_binary):
+    vec = list(unpack_from(">HHIIH", ak_binary))
+    nameLen = vec[-1]
+    nameUni = "".join(map(unichr, unpack_from(">"+nameLen*"H", ak_binary[14:])))
+    vec.append(nameUni)
+    return ss.AttrKey(*vec)
+
+def getAttributesData(ad_binary):
+    vec = list(unpack_from(">IQI", ad_binary))
+    attrSize = vec[-1]
+    attrData = ad_binary[16:16+attrSize+(attrSize%2)]
+    vec.append(attrData)
+    return ss.AttrData(*vec)
+
+def getAttributesForkData(af_binary):
+    recordType, res = unpack_from(">II", ad_binary)
+    fd = getForkData(af_binary[8:])
+    return ss.AttrForkData(recordType, res, fd)
+
+def getAttributesExtents(ae_binary):
+    recordType, res = unpack_from(">II", ad_binary)
+    rec_binary = ad_binary[8:]
+    ext = []
+    for i in range(8):
+        temp = rec_binary[16+8*i:16+8*(i+1)]
+        e = getExtentDescriptor(temp)
+        ext.append(e)
+    return ss.AttrExtents(recordType, res, ss.ExtentsDataRec(*ext))
+
+def getAttributesLeafRec(alr_binary):
+    keyLen = unpack_from(">H", alr_binary)[0]
+    attKey = getAttributesKey(alr_binary[:2+keyLen])
+    rec_binary = alr_binary[2+keyLen:]
+    recordType = unpack_from(">I", rec_binary)[0]
+    typeList = [0, getAttributesData, getAttributesForkData, getAttributesExtents]
+    Record = typeList[recordType/0x10](rec_binary)
+    return ss.BTRecord(attKey, Record)
+
+def getAttributesLeaf(al_binary):
+    al_buf = memoryview(al_binary)
+    nd = getNodeDescriptor(al_binary)
+    leafRecList = []
+    
+    al_buf = al_buf[14:]
+    for i in range(nd.numRecords):
+        lr = getAttributesLeafRec(al_buf)
+        leafRecList.append(lr)
+        al_buf = al_buf[len(lr):]
+    
+    return ss.LeafNode(nd, leafRecList)
+
+def getAttributesPointerRec(apr_binary):
+    keyLen = unpack_from(">H", apr_binary)[0]
+    attKey = getAttributesKey(apr_binary[:2+keyLen])
+    nodeNum = unpack_from(">I", apr_binary[2+keyLen:])[0]
+    return ss.BTPointerRec(attKey, nodeNum)
+
+def getAttributesIndex(ai_binary):
+    ai_buf = memoryview(ai_binary)
+    nd = getNodeDescriptor(ai_buf)
+    offsetList = [14]
+    PointerRecList = []
+    for i in range(nd.numRecords):
+        offset = unpack(">H", ai_buf[-2*i-4:-2*i-2])[0]
+        offsetList.append(offset)
+    for i in range(len(offsetList)-1):
+        temp = ai_buf[offsetList[i]:offsetList[i+1]]
+        apr = getAttributesPointerRec(temp)
+        PointerRecList.append(apr)
+    return ss.IndexNode(nd,PointerRecList)
+
+'''
+Header, Map
+'''
+
+def getHeaderNode(ch_binary): 
     ch_buf = memoryview(ch_binary)
     nd = getNodeDescriptor(ch_buf)
     hr = getBTHeaderRec(ch_buf[14:])
     ch_buf = ch_buf[120:]
     udr = ch_buf[:128]
     mr = ch_buf[128:-8]
-    return ss.CatalogHeader(nd, hr, udr, mr)
+    return ss.HeaderNode(nd, hr, udr, mr)
 
-def getCatalogIndex(ci_binary):
-    return
+def getMapNode(mn_binary):
+    mn_buf = memoryview(mn_binary)
+    nd = getNodeDescriptor(mn_buf)
+    offsetList = [14]
+    for i in range(nd.numRecords):
+        offset = unpack(">H", mn_buf[-2*i-4:-2*i-2])[0]
+        offsetList.append(offset)
+    mr = mn_buf[14:offsetList[1]]
+    return ss.MapNode(nd, mr)
 
-def getCatalogMap(cm_binary):
-    return
+'''
+VolumeHeader
+'''
     
 def getVolumeHeader(vh_binary):
     vh_0 = vh_binary[:80]

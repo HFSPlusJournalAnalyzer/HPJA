@@ -5,14 +5,29 @@ Created on 2015. 2. 8.
 '''
 from HFSPlus_GetInstance import *
 
+sect_size = 0x200  # variable for storing a sector size 
+blockMag = 8  # variable for storing a magnification of block from sect_size (blockSize/sect_size)
+sfLoc = {}  # dict for storing the location of special files
+
 def journalParser(journal_blob):
+    global sect_size, blockMag, sfLoc
+    vh_samInd = journal_blob.find("H+")
     jnl = memoryview(journal_blob)
-    j_header = getJournalHeader(jnl[:0x200])
-    j_buf = jnl[0x200:]
+    j_header = getJournalHeader(jnl)
+    
+    sect_size = j_header.jhdr_size
+    vh = getVolumeHeader(journal_blob[vh_samInd:vh_samInd+sect_size])
+    sfLoc['allocationFile'] = vh.allocationFile.extents
+    sfLoc['extentsFile'] = vh.extentsFile.extents
+    sfLoc['catalogFile'] = vh.catalogFile.extents
+    sfLoc['attributesFile'] = vh.attributesFile.extents
+    blockMag = vh.blockSize/sect_size
+        
+    j_buf = jnl[sect_size:]
     
     startOffset = getStart(j_buf, j_header.end) # setting the startOffset
     
-    j_ParseList = journalBufferParser(j_buf, j_header, 0, [])
+    j_ParseList = journalBufferParser(j_buf, j_header, startOffset, [])
     j_ParseList.insert(0, j_header)
     
     return j_ParseList
@@ -44,7 +59,8 @@ def getStart(j_buf, end):
         
 
 def journalBufferParser(j_buffer, JournalHeader, startOffset, parseList):
-    if startOffset == (JournalHeader.end - 0x200): # -0x200 for Journal Header area
+    global sect_size
+    if startOffset == (JournalHeader.end - sect_size): # -0x200 for Journal Header area
         return parseList
     blh = getBlockListHeader(j_buffer[startOffset:])
     
@@ -76,12 +92,48 @@ def transParser(trans):
 
 # auxiliary function ; To identify a data block.
 def getDataBlock(data_block, BlockInfo):
-    if BlockInfo.bsize == 0x200:
+    global sect_size, sfLoc, blockMag
+    
+    data_sNum = BlockInfo.bnum / blockMag
+    
+    curSType = ""
+    for s in sfLoc:
+        for e in sfLoc[s]:
+            if e.isIn(data_sNum):
+                curSType = s
+                break
+        if curSType != "":
+            break
+    
+    if BlockInfo.bsize == sect_size:
         return getVolumeHeader(data_block)
-    if BlockInfo.bsize == 0x1000:
+    if curSType == 'allocationFile':
         return data_block
-    if BlockInfo.bsize == 0x2000:
-        kindList = [getCatalogLeaf, getCatalogIndex, getCatalogHeader, getCatalogMap]
-        kind = unpack_from(">b", data_block, 8)[0] + 1
-        return kindList[kind](data_block)
+    
+    kindDict = {'catalogFile': [getCatalogLeaf, getCatalogIndex],
+                'extentsFile': [getExtentsLeaf, getExtentsIndex],
+                'attributesFile': [getAttributesLeaf, getAttributesIndex] }
+    
+    kindList = kindDict[curSType]
+    kindList.extend([getHeaderNode, getMapNode])
+    kind = unpack_from(">b", data_block, 8)[0] + 1
+    
+    return kindList[kind](data_block)
 
+
+def main():
+    f = open(r"C:\Users\user\Desktop\Journal", 'rb')
+    s = f.read()
+    jParseList = journalParser(s)
+    g = open(r"C:\result2.txt", 'w')
+    for i in jParseList:
+        g.write("-----------\n")
+        for j in i:
+            g.write(str(j)+"\n")
+    
+    g.close()
+    f.close()
+
+        
+if __name__ == '__main__':
+    main()

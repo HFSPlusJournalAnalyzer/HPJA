@@ -21,24 +21,32 @@ VolumeHeader = namedtuple("VolumeHeader", ['signature','version','attributes','l
                                           'encodingsBitmap','finderInfo',
                                           'allocationFile', 'extentsFile', 'catalogFile', 'attributesFile', 'startupFile'])
 
+
+
 '''
  Leaf Records  
 '''
 
-ExtentDescriptor = namedtuple("ExtentDescriptor", ['startBlock','blockCount'])
+class ExtentDescriptor(namedtuple("ExtentDescriptor", ['startBlock','blockCount'])):
+    __slot__ = ()
+    def isIn(self, bnum):
+        return 0 <= bnum - self.startBlock <= self.blockCount
+    
 ForkData = namedtuple("ForkData", ['logicalSize','clumpSize','totalBlocks','extents'])
 
-class BTKeyedRec(namedtuple("BTKeyedRec", ['keyLength','key'])):
-    __slot__ = ()
-    def __len__(self):
-        return 2 + len(self.key)
-    
-    def __eq__(self, other):
-        kL_Comp = (self.keyLength == other.keyLength)
-        key_Comp = (self.key == other.key)
-        return (kL_Comp and key_Comp)
+BTPointerRec = namedtuple("BTPointerRec", ['BTKey', 'nodeNumber'])
 
 BSDInfo = namedtuple("BSDInfo", ['ownerID', 'groupID', 'adminFlags', 'ownerFlags', 'fileMode', 'special'])
+
+class BTRecord(namedtuple("BTRecord", ['key', 'record'])):
+    __slots__ = ()
+    def __len__(self):
+        return len(self.key) + len(self.record)
+    
+    def __eq__(self, other):
+        keyComp = ( self.key == other.key )
+        recComp = ( self.record == other.record )
+        return (keyComp and recComp)
 
 '''
 Finder
@@ -53,26 +61,19 @@ ExtendedFolderInfo = namedtuple("ExtendedFolderInfo", ['scrollPosition', 'reserv
 '''
 Catalog Records 
 '''
-class CatalogLeafRec(namedtuple("CatalogLeafRec", ['key', 'record'])):
+class CatalogKey(namedtuple("CatalogKey", ["keyLength", "parentID", "nodeName"])):
     __slots__ = ()
+    
     def __len__(self):
-        return len(self.key) + len(self.record)
+        return 2+self.keyLength
     
     def __eq__(self, other):
-        keyComp = ( self.key == other.key )
-        recComp = ( self.record == other.record )
-        return (keyComp and recComp)
-        
-class CatalogKey(namedtuple("CatalogKey", ["parentID", "nodeName"])):
-    __slots__ = ()
-    def __len__(self):
-        return 4+2+2*self.nodeName[0]
-    
-    def __eq__(self, other):
-        return (self.nodeName == other.nodeName)
+        kL_Comp = (self.keyLength == other.keyLength)
+        nN_Comp = (self.nodeName == other.nodeName)
+        return (kL_Comp and nNComp)
     
     def __hash__(self):
-        return hash(self.nodeName)
+        return hash((self.keyLength, self.nodeName))
      
 sCatalogFolder = namedtuple('CatalogFolder', ['recordType', 'flags', 
                                              'valence', 'folderID', 
@@ -122,9 +123,54 @@ class CatalogThread(namedtuple("CatalogThread", ['recordType', 'reserved', 'pare
     def __hash__(self):
         return hash((self.recordType, self.nodeName))
     
+'''
+Extents Overflow Files
+'''
+class ExtentsKey(namedtuple('ExtentKey',["keyLength",'forkType','pad','fileID','startBlock'])):
+    __slots__ = ()
+    def __len__(self):
+        return 2 + self.keyLength
+    def __eq__(self, other):
+        return (self.forkType == other.forkType) and (self.fileID == other.fileID)
+
+class ExtentsDataRec(namedtuple('ExtentsDataRec',['extent0','extent1','extent2','extent3',
+                                                  'extent4','extent5','extent6','extent7',])):
+    __slots__ = ()
+    def __len__(self):
+        return 64
+    def __eq__(self, other):
+        return True
+    def __hash__(self):
+        return 1
+
+'''
+Attribute Files
+'''
+
+class AttrKey(namedtuple('AttrKey',["keyLength",'pad','fileID','startBlock','attrNameLen','attrName'])):
+    __slots__ = ()
+    def __len__(self):
+        return 2+self.keyLength
+    
+class AttrForkData(namedtuple('AttrForkData',['recordType','reserved','theFork'])):
+    __slots__ = ()
+    def __len__(self):
+        return 88
+
+class AttrExtents(namedtuple('AttrExtents',['recordType','reserved', 'extents'])):
+    __slots__ = ()
+    def __len__(self):
+        return 72
+
+class AttrData(namedtuple('AttrData',['recordType', 'reserved', 'attrSize', 'attrData'])):
+    def __len__(self):
+        return 16 + self.attrSize + self.attrSize%2
+
 # User data structure
-CatalogLeaf = namedtuple("CatalogLeaf", ['NodeDescriptor', 'LeafRecList'])
-CatalogHeader = namedtuple("CatalogHeader", ['NodeDescriptor', 'BTHeaderRec', 'UserDataRec', 'MapRec'])
+LeafNode = namedtuple("LeafNode", ['NodeDescriptor', 'LeafRecList'])
+HeaderNode = namedtuple("HeaderNode", ['NodeDescriptor', 'BTHeaderRec', 'UserDataRec', 'MapRec'])
+IndexNode = namedtuple("IndexNode", ['NodeDescriptor', 'PointerRecList'])
+MapNode = namedtuple('MapNode', ['NodeDescriptor', 'MapRecord'])
 class UniChar(namedtuple("UniChar", ['nameLen', 'nodeUnicode'])):
     __slots__ = ()
     
