@@ -79,7 +79,7 @@ def journalTrack(j_parseList):
 def transTrack(trans):
     blockListHeader, bi_List, data_List = trans
     changes = []
-    for i in range(blockListHeader.num_blocks-1):
+    for i in range(len(data_List)):
         changes.extend(block_check(bi_List[i], data_List[i]))
     return changes
 
@@ -188,11 +188,11 @@ def compCatalog(original, changed, parType, curType):
     return result
 
 def main():
-    f = open(r"C:\Users\user\Desktop\Journal2", 'rb')
+    f = open(r"C:\Users\user\Desktop\Local_after", 'rb')
     s = f.read()
     jParseList = journalParser(s)
     jT = journalTrack(jParseList)
-    g = open(r"C:\result2.txt", 'w')
+    g = open(r"C:\result_Localafter.txt", 'w')
     for i in jT:
         g.write("-----------\n")
         for j in i:
