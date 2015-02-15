@@ -152,7 +152,8 @@ def getCatalogPointerRec(cpr_binary):
     keyLen = unpack_from(">H", cpr_binary)[0]
     catalKey = getCatalogKey(cpr_binary[:2+keyLen])
     nodeNum = unpack_from(">I", cpr_binary[2+keyLen:])[0]
-    return ss.BTPointerRec(catalKey, nodeNum)
+    
+    return ss.BTRecord(catalKey, ss.BTPointer(nodeNum))
 
 def getCatalogIndex(ci_binary):
     ci_buf = memoryview(ci_binary)
@@ -200,7 +201,7 @@ def getExtentsLeaf(el_binary):
 def getExtentsPointerRec(epr_binary):
     extKey = getExtentsKey(epr_binary[:12])
     nodeNum = unpack_from(">I", epr_binary[12:])[0]
-    return ss.BTPointerRec(extKey, nodeNum)
+    return ss.BTRecord(extKey, ss.BTPointer(nodeNum))
 
 def getExtentsIndex(ei_binary):
     ei_buf = memoryview(ei_binary)
@@ -275,7 +276,7 @@ def getAttributesPointerRec(apr_binary):
     keyLen = unpack_from(">H", apr_binary)[0]
     attKey = getAttributesKey(apr_binary[:2+keyLen])
     nodeNum = unpack_from(">I", apr_binary[2+keyLen:])[0]
-    return ss.BTPointerRec(attKey, nodeNum)
+    return ss.BTRecord(attKey, ss.BTPointer(nodeNum))
 
 def getAttributesIndex(ai_binary):
     ai_buf = memoryview(ai_binary)

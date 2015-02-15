@@ -17,10 +17,10 @@ def journalParser(journal_blob):
     
     sect_size = j_header.jhdr_size
     vh = getVolumeHeader(journal_blob[vh_samInd:vh_samInd+sect_size])
-    sfLoc['allocationFile'] = vh.allocationFile.extents
-    sfLoc['extentsFile'] = vh.extentsFile.extents
-    sfLoc['catalogFile'] = vh.catalogFile.extents
-    sfLoc['attributesFile'] = vh.attributesFile.extents
+    sfLoc['AllocationFile'] = vh.allocationFile.extents
+    sfLoc['ExtentsFile'] = vh.extentsFile.extents
+    sfLoc['CatalogFile'] = vh.catalogFile.extents
+    sfLoc['AttributesFile'] = vh.attributesFile.extents
     blockMag = vh.blockSize/sect_size
         
     j_buf = jnl[sect_size:]
@@ -109,12 +109,12 @@ def getDataBlock(data_block, BlockInfo):
     if "H+\x00\x04" in raw_data:
         vh_off = raw_data.find("H+\x00\x04")
         return getVolumeHeader(data_block[vh_off:vh_off+0x200])
-    if curSType == 'allocationFile':
+    if curSType == 'AllocationFile':
         return data_block
      
-    kindDict = {'catalogFile': [getCatalogLeaf, getCatalogIndex],
-                'extentsFile': [getExtentsLeaf, getExtentsIndex],
-                'attributesFile': [getAttributesLeaf, getAttributesIndex] }
+    kindDict = {'CatalogFile': [getCatalogLeaf, getCatalogIndex],
+                'ExtentsFile': [getExtentsLeaf, getExtentsIndex],
+                'AttributesFile': [getAttributesLeaf, getAttributesIndex] }
     
     kindList = kindDict[curSType]
     kindList.extend([getHeaderNode, getMapNode])
