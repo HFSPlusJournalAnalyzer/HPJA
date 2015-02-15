@@ -1,56 +1,3 @@
-
-'''
-Created on 2015. 2. 8.
-
-@author: biscuit
-'''
-'''
-from HFSPlus_GetInstance import *
-
-def journalBufferParser(endian,journalBuffer):
-
-    blhdrPointer=base
-    bnext=0
-    tranNum=0
-    blockNum=0
-    tranBlocks=[0]
-
-    while not VerifyChecksum('blhdr',endian,journalBuffer[blhdrPointer%size:(blhdrPointer+32)%size],32):
-        blhdrPointer+=jhdr_size
-
-    while blhdrPointer<base+size:
-
-        if bnext==0:
-            tranNum+=1
-            blockNum=0
-            
-        max_blocks,num_blocks,bytes_used,checksum,pad,temp1,bnext=unpack_from(endian+'HHLLLQL',journalBuffer,blhdrPointer%size)
-
-        blPointer=blhdrPointer+blhdr_size
-        blhdrPointer+=32
-
-        for i in range(1,num_blocks):
-
-            blockNum+=1
-            tranBlocks[0]+=1
-            
-            bnum,bsize=unpack_from(endian+'LL',journalBuffer,blhdrPointer%size)
-                
-            if blPointer<size and blPointer+bsize>=size:
-                tranBlocks.append(RawBlock(blPointer,tranNum,blockNum,bnum,bsize,jhdr_size,journalBuffer[blPointer:size]+journalBuffer[0:(blPointer+bsize)%size]))
-                            
-            else:
-                tranBlocks.append(RawBlock(blPointer,tranNum,blockNum,bnum,bsize,jhdr_size,journalBuffer[blPointer%size:(blPointer+bsize)%size]))
-            
-            blPointer+=bsize
-
-            blhdrPointer+=16
-        
-        blhdrPointer+=bytes_used-(num_blocks+1)*16
-            
-    return tranBlocks
-'''
-
 '''
 Created on 2015. 2. 8.
 
@@ -70,10 +17,10 @@ def journalParser(journal_blob):
     
     sect_size = j_header.jhdr_size
     vh = getVolumeHeader(journal_blob[vh_samInd:vh_samInd+sect_size])
-    sfLoc['allocationFile'] = vh.allocationFile.extents
-    sfLoc['extentsFile'] = vh.extentsFile.extents
-    sfLoc['catalogFile'] = vh.catalogFile.extents
-    sfLoc['attributesFile'] = vh.attributesFile.extents
+    sfLoc['AllocationFile'] = vh.allocationFile.extents
+    sfLoc['ExtentsFile'] = vh.extentsFile.extents
+    sfLoc['CatalogFile'] = vh.catalogFile.extents
+    sfLoc['AttributesFile'] = vh.attributesFile.extents
     blockMag = vh.blockSize/sect_size
         
     j_buf = jnl[sect_size:]
@@ -162,12 +109,12 @@ def getDataBlock(data_block, BlockInfo):
     if "H+\x00\x04" in raw_data:
         vh_off = raw_data.find("H+\x00\x04")
         return getVolumeHeader(data_block[vh_off:vh_off+0x200])
-    if curSType == 'allocationFile':
+    if curSType == 'AllocationFile':
         return data_block
      
-    kindDict = {'catalogFile': [getCatalogLeaf, getCatalogIndex],
-                'extentsFile': [getExtentsLeaf, getExtentsIndex],
-                'attributesFile': [getAttributesLeaf, getAttributesIndex] }
+    kindDict = {'CatalogFile': [getCatalogLeaf, getCatalogIndex],
+                'ExtentsFile': [getExtentsLeaf, getExtentsIndex],
+                'AttributesFile': [getAttributesLeaf, getAttributesIndex] }
     
     kindList = kindDict[curSType]
     kindList.extend([getHeaderNode, getMapNode])

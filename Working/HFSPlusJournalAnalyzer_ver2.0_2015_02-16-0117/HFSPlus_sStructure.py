@@ -34,7 +34,14 @@ class ExtentDescriptor(namedtuple("ExtentDescriptor", ['startBlock','blockCount'
     
 ForkData = namedtuple("ForkData", ['logicalSize','clumpSize','totalBlocks','extents'])
 
-BTPointerRec = namedtuple("BTPointerRec", ['BTKey', 'nodeNumber'])
+class BTPointer(namedtuple("BTPointer", ['nodeNumber'])):
+    __slots__ = ()
+    def __len__(self):
+        return 4
+    
+    def getAbsT(self):
+        return ("nodeNumber=%d" %self.nodeNumber,)
+    
 
 BSDInfo = namedtuple("BSDInfo", ['ownerID', 'groupID', 'adminFlags', 'ownerFlags', 'fileMode', 'special'])
 
@@ -47,7 +54,15 @@ class BTRecord(namedtuple("BTRecord", ['key', 'record'])):
         keyComp = ( self.key == other.key )
         recComp = ( self.record == other.record )
         return (keyComp and recComp)
-
+    
+    def getType(self):
+        keyType = self.key.__class__.__name__
+        tMap = {'CatalogKey': 'Catalog', 'ExtentsKey':"Extents", 'AttrKey':"Attributes"}
+        return tMap[keyType]
+    
+    def getAbs(self):
+        return self.key.getAbsT() + self.record.getAbsT()
+    
 '''
 Finder
 '''
@@ -74,6 +89,9 @@ class CatalogKey(namedtuple("CatalogKey", ["keyLength", "parentID", "nodeName"])
     
     def __hash__(self):
         return hash((self.keyLength, self.nodeName))
+    
+    def getAbsT(self):
+        return ("nodeName=%s" %(self.nodeName.nodeUnicode),)
      
 sCatalogFolder = namedtuple('CatalogFolder', ['recordType', 'flags', 
                                              'valence', 'folderID', 
@@ -90,6 +108,9 @@ class CatalogFolder(sCatalogFolder):
     
     def __hash__(self):
         return hash((self.recordType, self.folderID))
+    
+    def getAbsT(self):
+        return ('folder', 'ID=%d' %self.folderID)
 
 sCatalogFile = namedtuple('CatalogFolder', ['recordType', 'flags', 
                                              'reserved1', 'fileID', 
@@ -109,19 +130,22 @@ class CatalogFile(sCatalogFile):
     def __hash__(self):
         return hash((self.recordType, self.fileID))
     
-    def getAbs(self):
-        return (self.fileID)
+    def getAbsT(self):
+        return ('file', "ID=%d" %self.fileID)
 
 class CatalogThread(namedtuple("CatalogThread", ['recordType', 'reserved', 'parentID', 'nodeName'])):
     __slots__ = ()
     def __len__(self):
-        return 8+2+2*self.nodeName[0]
+        return 8+2+2*self.nodeName.nameLen
     
     def __eq__(self, other):
         return ((self.recordType == other.recordType) and (self.nodeName == other.nodeName))
     
     def __hash__(self):
         return hash((self.recordType, self.nodeName))
+    
+    def getAbsT(self):
+        return ('thread', "parID=%d" %self.parentID, "nodeName=%s" %self.nodeName.nodeUnicode)
     
 '''
 Extents Overflow Files
@@ -134,6 +158,8 @@ class ExtentsKey(namedtuple('ExtentKey',["keyLength",'forkType','pad','fileID','
         return (self.forkType == other.forkType) and (self.fileID == other.fileID)
     def __hash__(self):
         return hash((self.forkType, self.fileID))
+    def getAbsT(self):
+        return ("forkType=%d" %self.forkType, "fileID=%d" %self.fileID)
 
 class ExtentsDataRec(namedtuple('ExtentsDataRec',['extent0','extent1','extent2','extent3',
                                                   'extent4','extent5','extent6','extent7',])):
@@ -144,6 +170,8 @@ class ExtentsDataRec(namedtuple('ExtentsDataRec',['extent0','extent1','extent2',
         return True
     def __hash__(self):
         return 1
+    def getAbsT(self):
+        return ()
 
 '''
 Attribute Files
@@ -162,6 +190,9 @@ class AttrKey(namedtuple('AttrKey',["keyLength",'pad','fileID','startBlock','att
     def __hash__(self):
         return hash((self.keyLength, self.fileID, self.startBlock, self.attrName))
     
+    def getAbsT(self):
+        return ("fileID=%d" %self.fileID, "attrName=%s" %self.attrName)
+    
 class AttrForkData(namedtuple('AttrForkData',['recordType','reserved','theFork'])):
     __slots__ = ()
     def __len__(self):
@@ -170,6 +201,8 @@ class AttrForkData(namedtuple('AttrForkData',['recordType','reserved','theFork']
         return (self.recordType == other.recordType)
     def __hash__(self):
         return hash(self.recordType)
+    def getAbsT(self):
+        return ("Fork",)
 
 class AttrExtents(namedtuple('AttrExtents',['recordType','reserved', 'extents'])):
     __slots__ = ()
@@ -179,6 +212,8 @@ class AttrExtents(namedtuple('AttrExtents',['recordType','reserved', 'extents'])
         return (self.recordType == other.recordType)
     def __hash__(self):
         return hash(self.recordType)
+    def getAbsT(self):
+        return ("extents",)
 
 class AttrData(namedtuple('AttrData',['recordType', 'reserved', 'attrSize', 'attrData'])):
     def __len__(self):
@@ -187,6 +222,8 @@ class AttrData(namedtuple('AttrData',['recordType', 'reserved', 'attrSize', 'att
         return (self.recordType == other.recordType) and (self.attrSize == other.attrSize) and (self.attrData == other.attrData)
     def __hash__(self):
         return hash((self.recordType, self.attrSize, self.attrData.tobytes()))
+    def getAbsT(self):
+        return ("InlineData",)
 
 # User data structure
 LeafNode = namedtuple("LeafNode", ['NodeDescriptor', 'LeafRecList'])

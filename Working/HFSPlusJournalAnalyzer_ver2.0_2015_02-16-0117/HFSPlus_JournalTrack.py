@@ -61,7 +61,7 @@ class objectChangeInfo:
     def __str__(self):
         if self.absData == None:
             return self.object.__class__.__name__
-        return self.absData
+        return str(self.absData)
 
 
 cursur = {}
@@ -158,7 +158,7 @@ def data_diff(original, changed, parType='', curType=''):
                 next = getattr(original,att).getAbs()
         except(AttributeError):
             pass        
-        result.extend(data_diff(getattr(original,att), getattr(changed, att), parType+"\\"+curType, next))
+        result.extend(data_diff(getattr(original,att), getattr(changed, att), parType+"\\"+str(curType), next))
     return result
     
     
@@ -171,19 +171,19 @@ def compCatalog(original, changed, parType, curType):
     result = []
             
     for i in insList:
-        chInfo = objectChangeInfo(i, None)
-        j_ch = JournalChange("Insert", parType, curType, chInfo)
+        chInfo = objectChangeInfo(i, i.getAbs())
+        j_ch = JournalChange("Insert", parType+"\\"+curType, "", chInfo)
         result.append(j_ch)
     
     for r in remList:
-        chInfo = objectChangeInfo(r, None)
-        j_ch = JournalChange("Remove", parType, curType, chInfo)
+        chInfo = objectChangeInfo(r, r.getAbs())
+        j_ch = JournalChange("Remove", parType+"\\"+curType, "", chInfo)
         result.append(j_ch)
         
     for m in modList:
         m_org = [x for x in original if m == x][0]
         m_chg = [x for x in changed if m == x][0]
-        result.extend(data_diff(m_org, m_chg, parType, curType))
+        result.extend(data_diff(m_org, m_chg, parType+"\\"+curType, m_org.getAbs()))
         
     return result
 
