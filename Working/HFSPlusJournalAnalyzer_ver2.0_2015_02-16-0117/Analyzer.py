@@ -336,7 +336,7 @@ def main(option):
     f.close()
 
     f=open('{0}/result2.csv'.format(path),'w')
-    for i in range(len(jParseList)):
+    for i in range(1,len(jParseList)):
         for j in range(len(jParseList[i][2])):
             if 'LeafRecList' in jParseList[i][2][j]:
                 for k in range(len(jParseList[i][2][j]['LeafRecList'])):
