@@ -56,7 +56,7 @@ Created on 2015. 2. 8.
 
 @author: biscuit
 '''
-from HFSPlus_GetInstance import *
+from HFSPlus_getInstance import *
 
 sect_size = 0x200  # variable for storing a sector size 
 blockMag = 8  # variable for storing a magnification of block from sect_size (blockSize/sect_size)

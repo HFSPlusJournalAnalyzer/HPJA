@@ -1,7 +1,11 @@
 from Utility import *
 from struct import *
 from HFSPlus_ParseModule import *
+from HFSPlus_JournalTrack import *
+from HFSPlus_sStructure import *
 from types import MethodType
+import Collector
+import sys
 import datetime
 import csv
 
@@ -281,15 +285,13 @@ def DataRecovery(disk,deduplicatedRecord,blockSize):
                             f.close()
 
                         
-def main(argv):
-
-    specialFileName-['Allocation File','Extents Overflow File','Catalog File','Attributes File']
+def main(option):
 
     if ('l' in option) or ('i' in option):
 
-        temp=Collector.main()
-        vh=temp[0]
-        journal=temp[1]
+        temp=Collector.main(option)
+        journal=temp[0]
+        vh=temp[1]
         allocationFile=temp[2]
         extentsFile=temp[3]
         catalogFile=temp[4]
@@ -318,11 +320,22 @@ def main(argv):
         attributesFile=temp[3]
 
     print 'Analyzing journal...'
-    j_ParseList=journalParser(journal)
-    jT = journalTrack(j_ParseList)
+    jParseList=journalParser(journal)
+    #jT = journalTrack(jParseList)
 
     path='result{0}'.format(option['id'])
+
+    DirectoryCleaning(path)
+
     f = open("{0}/result1.txt".format(path),'w')
+    for i in jParseList:
+        f.write("-----------\n")
+        for j in i:
+            f.write(str(j)+"\n")
+    
+    f.close()
+'''
+    f = open("{0}/result2.txt".format(path),'w')
     for i in jT:
         f.write("-----------\n")
         for j in i:
@@ -330,15 +343,7 @@ def main(argv):
 
     f.close()
 
-    f = open("{0}/result2.txt".format(path),'w')
-    for i in jParseList:
-        f.write("-----------\n")
-        for j in i:
-            f.write(str(j)+"\n")
     
-    f.close()
-
-    '''
     print 'Analyzing CatalogFile...'
     Analyzer.CatalogFileAnalyzer(CatalogFile)
 

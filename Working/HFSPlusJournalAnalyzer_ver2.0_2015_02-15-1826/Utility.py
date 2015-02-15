@@ -1,10 +1,11 @@
 import os
 import shutil
+import time
 from struct import *
 
 def translatingInput(argv):
 
-    option={'id':time.strftime('%Y-%m-%d-%H%M%S',time.localtime()),'tz':'0'}
+    option={'id':time.strftime('%Y-%m-%d-%H%M%S',time.localtime()),'n':'','tz':'0'}
 
     for i in argv:
         if i[0]=='-':
