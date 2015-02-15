@@ -4,6 +4,7 @@ from HFSPlus_ParseModule import *
 from HFSPlus_JournalTrack import *
 from HFSPlus_sStructure import *
 from types import MethodType
+import types
 import Collector
 import sys
 import datetime
@@ -338,11 +339,14 @@ def main(option):
     f=open('{0}/result2.csv'.format(path),'w')
     for i in range(1,len(jParseList)):
         for j in range(len(jParseList[i][2])):
-            if 'LeafRecList' in jParseList[i][2][j]:
-                for k in range(len(jParseList[i][2][j]['LeafRecList'])):
+            try:
+                for k in range(len(jParseList[i][2][j].LeafRecList)):
                     f.write('\n')
-                    for l in jParseList[i][2][j]['LeafRecList'][k].itervalues():
-                        f.write('{0},'.format(l))
+                    for l in jParseList[i][2][j].LeafRecList[k].__dict__:
+                        f.write('{0},'.format(jParseList[i][2][j].LeafRecList[k].__dict__[l]))
+
+            except AttributeError:
+                pass
 
 '''
     f = open("{0}/result2.txt".format(path),'w')
