@@ -28,8 +28,9 @@ def specialFileExtractor(disk,vh,select,ID):
         DirectoryCleaning(specialFileName[i])
 
         fileContent=[]
-        for i in range(8):
-            fileContent.append(DiskDump(disk,'{0}/{1}{2}'.format(ID,specialFileName[i],j),vh.blockSize,vh.__dict__[specialFileName[i]].extents[j].startBlock,vh.__dict__[specialFileName[i]].extents[j].blockCount,select))
+        for j in range(8):
+            if vh.__dict__[specialFileName[i]].extents[j].startBlock!=0 or vh.__dict__[specialFileName[i]].extents[j].blockCount!=0:
+                fileContent.append(DiskDump(disk,'dump{0}/{1}{2}'.format(ID,specialFileName[i],j),vh.blockSize,vh.__dict__[specialFileName[i]].extents[j].startBlock,vh.__dict__[specialFileName[i]].extents[j].blockCount,select))
         
         specialFile.append(''.join(fileContent))
 
@@ -43,7 +44,7 @@ def main(option):
     ID='_{0}_{1}'.format(option['n'],time.strftime('%Y-%m-%d-%H%M%S',time.localtime()))
 
     if select:
-        DirectoryCleaning('dump{0}'.format(ID)):
+        DirectoryCleaning('dump{0}'.format(ID))
 
 
     print 'Collecting files...'
