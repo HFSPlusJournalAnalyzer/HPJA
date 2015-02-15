@@ -4,6 +4,7 @@ from HFSPlus_ParseModule import *
 from HFSPlus_JournalTrack import *
 from HFSPlus_sStructure import *
 from types import MethodType
+from collections import *
 import types
 import Collector
 import sys
@@ -337,11 +338,11 @@ def main(option):
     f.close()
 
     BTType=['Catalog', "Extents", "Attributes"]
-    BTAttr=[list(OrderedDict.fromkeys(CatalogKey+CatalogFile+CatalogFolder+CatalogThread)),list(OrderedDict.fromkeys(ExtentsKey+ExtentsDataRec)),list(OrderedDict.fromkeys(AttrKey+AttrForkData+AttrExtents+AttrData))]
+    BTAttr=[list(OrderedDict.fromkeys(CatalogKey._fields+CatalogFile._fields+CatalogFolder._fields+CatalogThread._fields)),list(OrderedDict.fromkeys(ExtentsKey._fields+ExtentsDataRec._fields)),list(OrderedDict.fromkeys(AttrKey._fields+AttrForkData._fields+AttrExtents._fields+AttrData._fields))]
 
     f=[]
     for i in BTType:
-        f.append(open('{0}/{1}.csv'.format(path,BTType),'w'))
+        f.append(open('{0}/{1}.csv'.format(path,i),'w'))
 
     for i in range(0,3):
         for j in BTAttr[i]:
@@ -356,14 +357,19 @@ def main(option):
                 for k in range(len(jParseList[i][2][j].LeafRecList)):
 
                     fi=BTType.find(jParseList[i][2][j].LeafRecList[k].getType())
+                    print fi
 
                     for l in BTAttr[fi]:
 
-                        try:
+                        if l in jParseList[i][2][j].LeafRecList[k].key.__dict__:
 
                             f[fi].write('{0},'.format(jParseList[i][2][j].LeafRecList[k].key.__dict__[l]).replace(',',':'))
 
-                        except KeyError:
+                        elif l in jParseList[i][2][j].LeafRecList[k].record.__dict__:
+
+                            f[fi].write('{0},'.format(jParseList[i][2][j].LeafRecList[k].record.__dict__[l]).replace(',',':'))
+
+                        else:
 
                             f[fi].write(',')
 
