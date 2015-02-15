@@ -334,6 +334,15 @@ def main(option):
             f.write(str(j)+"\n")
     
     f.close()
+
+    f=open('{0}/result2.csv'.format(path),'w')
+    for i in len(jParseList[1]):
+        if 'LeafRecList' in jParseList[1][i]:
+            for j in len(jParseList[1][i]['LeafRecList']):
+                f.write('\n')
+                for k in jParseList[1][i]['LeafRecList'][j].keys():
+                    f.write('{0},'.format(k))
+
 '''
     f = open("{0}/result2.txt".format(path),'w')
     for i in jT:
