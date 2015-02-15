@@ -336,12 +336,17 @@ def main(option):
     f.close()
 
     f=open('{0}/result2.csv'.format(path),'w')
-    for i in len(jParseList[1]):
-        if 'LeafRecList' in jParseList[1][i]:
-            for j in len(jParseList[1][i]['LeafRecList']):
-                f.write('\n')
-                for k in jParseList[1][i]['LeafRecList'][j].keys():
-                    f.write('{0},'.format(k))
+    for i in range(1,len(jParseList)):
+        for j in range(len(jParseList[i][2])):
+            print jParseList[i][2][j].keys()
+            break
+            if 'LeafRecList' in jParseList[i][2][j]:
+                for k in range(len(jParseList[i][2][j]['LeafRecList'])):
+                    f.write('\n')
+                    for l in jParseList[i][2][j]['LeafRecList'][k].itervalues():
+                        f.write('{0},'.format(k))
+
+    f.close()
 
 '''
     f = open("{0}/result2.txt".format(path),'w')

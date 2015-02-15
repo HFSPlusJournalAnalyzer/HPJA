@@ -14,7 +14,7 @@ def journalExtractor(disk,vh,select,path):
     offset=unpack_from('>Q',buffer(JournalInfoBlock,0x24))[0]
     size=unpack_from('>Q',buffer(JournalInfoBlock,0x2C))[0]
     
-    Journal=DiskDump(disk,'dump{0}/Journal'.format(path),1,offset,size,select)
+    Journal=DiskDump(disk,'{0}/Journal'.format(path),1,offset,size,select)
 
     return Journal
 
