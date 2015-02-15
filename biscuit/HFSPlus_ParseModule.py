@@ -104,12 +104,14 @@ def getDataBlock(data_block, BlockInfo):
                 break
         if curSType != "":
             break
-    
-    if BlockInfo.bsize == sect_size:
-        return getVolumeHeader(data_block)
+        
+    raw_data = data_block.tobytes()
+    if "H+\x00\x04" in raw_data:
+        vh_off = raw_data.find("H+\x00\x04")
+        return getVolumeHeader(data_block[vh_off:vh_off+0x200])
     if curSType == 'allocationFile':
         return data_block
-    
+     
     kindDict = {'catalogFile': [getCatalogLeaf, getCatalogIndex],
                 'extentsFile': [getExtentsLeaf, getExtentsIndex],
                 'attributesFile': [getAttributesLeaf, getAttributesIndex] }

@@ -59,39 +59,64 @@ class objectChangeInfo:
         self.absData = absData
         
     def __str__(self):
-        return absData
+        if self.absData == None:
+            return self.object.__class__.__name__
+        return self.absData
+
+
+cursur = {}
 
 def journalTrack(j_parseList):
     transList = j_parseList[1:]
     changeLog = []
-    cursur = {}
+    
     for trans in transList:
-        ch_bukket = transTrack(trans, cursur)
-        changeLog.append(ch_bukket)
+        ch_bucket = transTrack(trans)
+        changeLog.append(ch_bucket)
         
     return changeLog
 
-def transTrack(trans, cursur):
+def transTrack(trans):
     blockListHeader, bi_List, data_List = trans
     changes = []
     for i in range(blockListHeader.num_blocks-1):
-        changes.extend(block_check(bi_List[i], data_List[i], cursur))
+        changes.extend(block_check(bi_List[i], data_List[i]))
     return changes
 
-def block_check(b_info, data, cursur):
+def block_check(b_info, data):
+    global sfLoc, blockMag
+    global cursur
     try:
         p_data = cursur[b_info.bnum]
     except KeyError:
         cursur[b_info.bnum] = data
-        d_chInfo = objectChangeInfo(data, data.__class__.__name__)
+        curSType = None
+        data_sNum = b_info.bnum / blockMag
+        for s in sfLoc:
+            for e in sfLoc[s]:
+                if e.isIn(data_sNum):
+                    curSType = s
+                    break
+            if curSType != None:
+                break
+            
+        d_chInfo = objectChangeInfo(data, curSType)
         j_ch = JournalChange("Insert", '', hex(b_info.bnum), d_chInfo)
         return [j_ch]
     classType = data.__class__.__name__
     cursur[b_info.bnum] = data
-    return data_diff(p_data, data, '', classType)
+    return data_diff(p_data, data, hex(b_info.bnum), classType)
     
 def data_diff(original, changed, parType='', curType=''):
-    assert original.__class__ == changed.__class__
+    
+    try:
+        assert original.__class__ == changed.__class__
+    except(AssertionError):
+        o_chInfo = objectChangeInfo(original, original.__class__.__name__)
+        o_j_ch = JournalChange("Remove", parType, curType, o_chInfo)
+        c_chInfo = objectChangeInfo(changed, changed.__class__.__name__)
+        c_j_ch = JournalChange("Insert", parType, curType, c_chInfo)
+        return [o_j_ch, c_j_ch]
     dType = original.__class__
     result = []
     
@@ -103,32 +128,37 @@ def data_diff(original, changed, parType='', curType=''):
         else:
             v_chInfo = valueChangeInfo(original, changed)
             j_ch = JournalChange("Modify", parType, curType, v_chInfo)
-        result.append(j_ch)
-        return result
+        return [j_ch]
     
-    if dType in [tuple, list]:
-        if curType == 'LeafRecList':
-            result.extend(compCatalog(original, changed, parType, curType))
-            return result
+    if dType == tuple:
         count = 0
         for i, j in zip(original, changed):
             result.extend(data_diff(i, j, curType, curType + "_%d" % count))
             count += 1
         return result
     
+    if dType == list:
+        result.extend(compCatalog(original, changed, parType, curType))
+        return result
+    
     if dType == memoryview:
         if original == changed: return []
         r_chInfo = renewalChangeInfo(original, changed)
         j_ch = JournalChange("Renewal", parType, curType, r_chInfo)
-        result.append(j_ch)
-        return result
+        return [j_ch]
     
     if dType in [unicode, str]:
         return []
     
     attList = original._fields
     for att in attList:
-        result.extend(data_diff(getattr(original,att), getattr(changed, att), parType+"\\"+curType, att))
+        next = att
+        try:
+            if getattr(getattr(original,att), 'getAbs'):
+                next = getattr(original,att).getAbs()
+        except(AttributeError):
+            pass        
+        result.extend(data_diff(getattr(original,att), getattr(changed, att), parType+"\\"+curType, next))
     return result
     
     
@@ -154,11 +184,11 @@ def compCatalog(original, changed, parType, curType):
         m_org = [x for x in original if m == x][0]
         m_chg = [x for x in changed if m == x][0]
         result.extend(data_diff(m_org, m_chg, parType, curType))
-    
+        
     return result
 
 def main():
-    f = open(r"C:\Users\user\Desktop\Untitled2", 'rb')
+    f = open(r"C:\Users\user\Desktop\Journal2", 'rb')
     s = f.read()
     jParseList = journalParser(s)
     jT = journalTrack(jParseList)
@@ -170,17 +200,9 @@ def main():
     
     g.close()
     f.close()
+    
 
         
 if __name__ == '__main__':
     main()
-    
-
-
-        
-    
-    
-    
-    
-    
     

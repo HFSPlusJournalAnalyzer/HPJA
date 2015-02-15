@@ -30,7 +30,7 @@ VolumeHeader = namedtuple("VolumeHeader", ['signature','version','attributes','l
 class ExtentDescriptor(namedtuple("ExtentDescriptor", ['startBlock','blockCount'])):
     __slot__ = ()
     def isIn(self, bnum):
-        return 0 <= bnum - self.startBlock <= self.blockCount
+        return 0 <= bnum - self.startBlock <= self.blockCount - 1
     
 ForkData = namedtuple("ForkData", ['logicalSize','clumpSize','totalBlocks','extents'])
 
@@ -70,7 +70,7 @@ class CatalogKey(namedtuple("CatalogKey", ["keyLength", "parentID", "nodeName"])
     def __eq__(self, other):
         kL_Comp = (self.keyLength == other.keyLength)
         nN_Comp = (self.nodeName == other.nodeName)
-        return (kL_Comp and nNComp)
+        return (kL_Comp and nN_Comp)
     
     def __hash__(self):
         return hash((self.keyLength, self.nodeName))
@@ -132,6 +132,8 @@ class ExtentsKey(namedtuple('ExtentKey',["keyLength",'forkType','pad','fileID','
         return 2 + self.keyLength
     def __eq__(self, other):
         return (self.forkType == other.forkType) and (self.fileID == other.fileID)
+    def __hash__(self):
+        return hash((self.forkType, self.fileID))
 
 class ExtentsDataRec(namedtuple('ExtentsDataRec',['extent0','extent1','extent2','extent3',
                                                   'extent4','extent5','extent6','extent7',])):
@@ -151,20 +153,40 @@ class AttrKey(namedtuple('AttrKey',["keyLength",'pad','fileID','startBlock','att
     __slots__ = ()
     def __len__(self):
         return 2+self.keyLength
+    def __eq__(self, other):
+        kL = (self.keyLength == other.keyLength)
+        fI = (self.fileID == other.fileID)
+        sB = (self.startBlock == other.startBlock)
+        aN = (self.attrName == other.attrName)
+        return kL and fI and sB and aN
+    def __hash__(self):
+        return hash((self.keyLength, self.fileID, self.startBlock, self.attrName))
     
 class AttrForkData(namedtuple('AttrForkData',['recordType','reserved','theFork'])):
     __slots__ = ()
     def __len__(self):
         return 88
+    def __eq__(self, other):
+        return (self.recordType == other.recordType)
+    def __hash__(self):
+        return hash(self.recordType)
 
 class AttrExtents(namedtuple('AttrExtents',['recordType','reserved', 'extents'])):
     __slots__ = ()
     def __len__(self):
         return 72
+    def __eq__(self, other):
+        return (self.recordType == other.recordType)
+    def __hash__(self):
+        return hash(self.recordType)
 
 class AttrData(namedtuple('AttrData',['recordType', 'reserved', 'attrSize', 'attrData'])):
     def __len__(self):
         return 16 + self.attrSize + self.attrSize%2
+    def __eq__(self, other):
+        return (self.recordType == other.recordType) and (self.attrSize == other.attrSize) and (self.attrData == other.attrData)
+    def __hash__(self):
+        return hash((self.recordType, self.attrSize, self.attrData.tobytes()))
 
 # User data structure
 LeafNode = namedtuple("LeafNode", ['NodeDescriptor', 'LeafRecList'])
