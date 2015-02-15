@@ -336,14 +336,38 @@ def main(option):
     
     f.close()
 
-    f=open('{0}/result2.csv'.format(path),'w')
+    BTType=['Catalog', "Extents", "Attributes"]
+    BTAttr=[list(OrderedDict.fromkeys(CatalogKey+CatalogFile+CatalogFolder+CatalogThread)),list(OrderedDict.fromkeys(ExtentsKey+ExtentsDataRec)),list(OrderedDict.fromkeys(AttrKey+AttrForkData+AttrExtents+AttrData))]
+
+    f=[]
+    for i in BTType:
+        f.append(open('{0}/{1}.csv'.format(path,BTType),'w'))
+
+    for i in range(0,3):
+        for j in BTAttr[i]:
+            f[i].write('{0},'.format(j))
+        f[i].write('\n')
+
     for i in range(1,len(jParseList)):
         for j in range(len(jParseList[i][2])):
+
             try:
+
                 for k in range(len(jParseList[i][2][j].LeafRecList)):
+
+                    fi=BTType.find(jParseList[i][2][j].LeafRecList[k].getType())
+
+                    for l in BTAttr[fi]:
+
+                        try:
+
+                            f[fi].write('{0},'.format(jParseList[i][2][j].LeafRecList[k].key.__dict__[l]).replace(',',':'))
+
+                        except KeyError:
+
+                            f[fi].write(',')
+
                     f.write('\n')
-                    for l in jParseList[i][2][j].LeafRecList[k].__dict__:
-                        f.write('{0},'.format(jParseList[i][2][j].LeafRecList[k].__dict__[l]))
 
             except AttributeError:
                 pass

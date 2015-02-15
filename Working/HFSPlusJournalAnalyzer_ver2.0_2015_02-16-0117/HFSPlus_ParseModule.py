@@ -3,11 +3,13 @@ Created on 2015. 2. 8.
 
 @author: biscuit
 '''
-from HFSPlus_getInstance import *
+from HFSPlus_GetInstance import *
 
 sect_size = 0x200  # variable for storing a sector size 
 blockMag = 8  # variable for storing a magnification of block from sect_size (blockSize/sect_size)
 sfLoc = {}  # dict for storing the location of special files
+
+etcData = []
 
 def journalParser(journal_blob):
     global sect_size, blockMag, sfLoc
@@ -85,7 +87,9 @@ def transParser(trans):
     data_List = []
     data_area = trans[-data_offset:]
     for b in bi_List:
-        data_List.append(getDataBlock(data_area[:b.bsize], b))
+        dBlock = getDataBlock(data_area[:b.bsize], b)
+        if dBlock != None:
+            data_List.append(dBlock)
         data_area = data_area[b.bsize:]
     
     return [blh, bi_List, data_List]
@@ -93,7 +97,7 @@ def transParser(trans):
 # auxiliary function ; To identify a data block.
 def getDataBlock(data_block, BlockInfo):
     global sect_size, sfLoc, blockMag
-    
+    global etcData
     data_sNum = BlockInfo.bnum / blockMag
     
     curSType = ""
@@ -115,6 +119,10 @@ def getDataBlock(data_block, BlockInfo):
     kindDict = {'CatalogFile': [getCatalogLeaf, getCatalogIndex],
                 'ExtentsFile': [getExtentsLeaf, getExtentsIndex],
                 'AttributesFile': [getAttributesLeaf, getAttributesIndex] }
+    
+    if curSType == "":
+        etcData.append([data_block, BlockInfo])
+        return None
     
     kindList = kindDict[curSType]
     kindList.extend([getHeaderNode, getMapNode])
