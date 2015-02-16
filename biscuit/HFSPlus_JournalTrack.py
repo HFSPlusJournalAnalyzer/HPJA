@@ -5,6 +5,10 @@ Created on 2015. 2. 8.
 '''
 from HFSPlus_ParseModule import *
     
+    
+'''
+Classes
+'''
 class JournalChange:
     changeType = None
     parAtt = ''
@@ -63,6 +67,9 @@ class objectChangeInfo:
         return str(self.absData)
 
 
+'''
+Main Tracking function
+'''
 cursur = {}
 
 def journalTrack(j_parseList, pInfo):
@@ -75,6 +82,9 @@ def journalTrack(j_parseList, pInfo):
         
     return changeLog
 
+'''
+auxiliary functions
+'''
 def transTrack(trans, pInfo):
     blockListHeader, bi_List, data_List = trans
     changes = []
@@ -185,10 +195,14 @@ def compCatalog(original, changed, parType, curType):
         
     return result
 
+'''
+main
+'''
+
 def main():
     f = open(r"C:\Users\user\Desktop\Journal=t", 'rb')
     s = f.read()
-    jPList, pInfo = journalParser(s)
+    jPList, pInfo = journalParser(s)[:2]
     jT = journalTrack(jPList, pInfo)
     g = open(r"C:\TEMP\result_2.txt", 'w')
     for i in jT:
