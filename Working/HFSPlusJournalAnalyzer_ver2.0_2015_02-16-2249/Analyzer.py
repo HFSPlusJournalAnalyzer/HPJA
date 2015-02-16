@@ -322,7 +322,7 @@ def main(option):
         attributesFile=temp[3]
 
     print 'Analyzing journal...'
-    jParseList=journalParser(journal)
+    jParseList=journalParser(journal)[0]
     #jT = journalTrack(jParseList)
 
     path='result{0}'.format(option['id'])
@@ -334,6 +334,13 @@ def main(option):
         f.write("-----------\n")
         for j in i:
             f.write(str(j)+"\n")
+    
+    f.close()
+
+    if vh!=0:
+        f = open("{0}/VolumeInfo.txt".format(path),'w')
+        for i in vh.__dict__:
+            f.write('{0} : {1}\n'.format(i,vh.__dict__[j]))
     
     f.close()
 
