@@ -4,7 +4,11 @@ import os
 import re
 from Utility import *
 from HFSPlus_sStructure import *
+<<<<<<< HEAD
 from HFSPlus_GetInstance import *
+=======
+from HFSPlus_getInstance import *
+>>>>>>> FETCH_HEAD
 
 def journalExtractor(disk,vh,select,path):
     

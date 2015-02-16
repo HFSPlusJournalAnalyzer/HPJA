@@ -340,7 +340,11 @@ def main(option):
     if vh!=0:
         f = open("{0}/VolumeInfo.txt".format(path),'w')
         for i in vh.__dict__:
+<<<<<<< HEAD
             f.write('{0} : {1}\n'.format(i,vh.__dict__[i]))
+=======
+            f.write('{0} : {1}\n'.format(i,vh.__dict__[j]))
+>>>>>>> FETCH_HEAD
     
     f.close()
 
@@ -360,21 +364,36 @@ def main(option):
         for j in range(len(jParseList[i][2])):
 
             try:
+<<<<<<< HEAD
     
                 for k in range(len(jParseList[i][2][j].LeafRecList)):
 
                     fi=BTType.index(jParseList[i][2][j].LeafRecList[k].getType())
 
+=======
+
+                for k in range(len(jParseList[i][2][j].LeafRecList)):
+
+                    fi=BTType.find(jParseList[i][2][j].LeafRecList[k].getType())
+>>>>>>> FETCH_HEAD
 
                     for l in BTAttr[fi]:
 
                         if l in jParseList[i][2][j].LeafRecList[k].key.__dict__:
 
+<<<<<<< HEAD
                             f[fi].write('{0},'.format(jParseList[i][2][j].LeafRecList[k].key.__dict__[l]))
 
                         elif l in jParseList[i][2][j].LeafRecList[k].record.__dict__:
 
                             f[fi].write('{0},'.format(jParseList[i][2][j].LeafRecList[k].record.__dict__[l]))
+=======
+                            f[fi].write('{0},'.format(jParseList[i][2][j].LeafRecList[k].key.__dict__[l]).replace(',',':'))
+
+                        elif l in jParseList[i][2][j].LeafRecList[k].record.__dict__:
+
+                            f[fi].write('{0},'.format(jParseList[i][2][j].LeafRecList[k].record.__dict__[l]).replace(',',':'))
+>>>>>>> FETCH_HEAD
 
                         else:
 
