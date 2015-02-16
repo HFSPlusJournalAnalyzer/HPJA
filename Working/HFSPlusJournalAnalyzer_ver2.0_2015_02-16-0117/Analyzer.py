@@ -357,7 +357,6 @@ def main(option):
                 for k in range(len(jParseList[i][2][j].LeafRecList)):
 
                     fi=BTType.find(jParseList[i][2][j].LeafRecList[k].getType())
-                    print fi
 
                     for l in BTAttr[fi]:
 
