@@ -5,34 +5,19 @@ Created on 2015. 2. 8.
 '''
 from HFSPlus_GetInstance import *
 
-sect_size = 0x200  # variable for storing a sector size 
-blockMag = 8  # variable for storing a magnification of block from sect_size (blockSize/sect_size)
-sfLoc = {}  # dict for storing the location of special files
-
 etcData = []
 
 def journalParser(journal_blob):
-    global sect_size, blockMag, sfLoc
-    vh_samInd = journal_blob.find("H+")
+    pInfo = getparseInfo(journal_blob)
     jnl = memoryview(journal_blob)
     j_header = getJournalHeader(jnl)
-    
-    sect_size = j_header.jhdr_size
-    vh = getVolumeHeader(journal_blob[vh_samInd:vh_samInd+sect_size])
-    sfLoc['AllocationFile'] = vh.allocationFile.extents
-    sfLoc['ExtentsFile'] = vh.extentsFile.extents
-    sfLoc['CatalogFile'] = vh.catalogFile.extents
-    sfLoc['AttributesFile'] = vh.attributesFile.extents
-    blockMag = vh.blockSize/sect_size
-        
-    j_buf = jnl[sect_size:]
-    
+    j_buf = jnl[pInfo.sect_size:]
     startOffset = getStart(j_buf, j_header.end) # setting the startOffset
     
-    j_ParseList = journalBufferParser(j_buf, j_header, startOffset, [])
+    j_ParseList = journalBufferParser(j_buf, j_header, startOffset, [], pInfo)
     j_ParseList.insert(0, j_header)
     
-    return j_ParseList
+    return j_ParseList, pInfo
 
 def getStart(j_buf, end):
     cur = end
@@ -44,7 +29,7 @@ def getStart(j_buf, end):
     while(True):
         cur = (cur-0x10) % lenBuf
         curLine = j_buf[cur:cur+0x10]
-        if cur == end:
+        if cur == (end - 0x10) % lenBuf:
             while curLine != 'Z'*16:
                 cur = (cur+0x10) % lenBuf
                 curLine = j_buf[cur:cur+0x10]
@@ -60,9 +45,8 @@ def getStart(j_buf, end):
             return cur
         
 
-def journalBufferParser(j_buffer, JournalHeader, startOffset, parseList):
-    global sect_size
-    if startOffset == (JournalHeader.end - sect_size): # -0x200 for Journal Header area
+def journalBufferParser(j_buffer, JournalHeader, startOffset, parseList, pInfo):
+    if startOffset == (JournalHeader.end - pInfo.sect_size): # -0x200 for Journal Header area
         return parseList
     blh = getBlockListHeader(j_buffer[startOffset:])
     
@@ -71,11 +55,11 @@ def journalBufferParser(j_buffer, JournalHeader, startOffset, parseList):
         curTrans = memoryview( j_buffer[startOffset:].tobytes() + j_buffer[:nextOffset].tobytes() )
     else: curTrans = j_buffer[startOffset:nextOffset]
     
-    parseList.append(transParser(curTrans))
+    parseList.append(transParser(curTrans, pInfo))
     
-    return journalBufferParser(j_buffer, JournalHeader, nextOffset, parseList)
+    return journalBufferParser(j_buffer, JournalHeader, nextOffset, parseList, pInfo)
 
-def transParser(trans):
+def transParser(trans, pInfo):
     blh = getBlockListHeader(trans)  # block list header
     bi_List = []  # list of block info's 
     data_offset = 0  # for computing the offset from the bottom of the transaction block, of the data-area.
@@ -87,7 +71,7 @@ def transParser(trans):
     data_List = []
     data_area = trans[-data_offset:]
     for b in bi_List:
-        dBlock = getDataBlock(data_area[:b.bsize], b)
+        dBlock = getDataBlock(data_area[:b.bsize], b, pInfo)
         if dBlock != None:
             data_List.append(dBlock)
         data_area = data_area[b.bsize:]
@@ -95,14 +79,13 @@ def transParser(trans):
     return [blh, bi_List, data_List]
 
 # auxiliary function ; To identify a data block.
-def getDataBlock(data_block, BlockInfo):
-    global sect_size, sfLoc, blockMag
+def getDataBlock(data_block, BlockInfo, pInfo):
     global etcData
-    data_sNum = BlockInfo.bnum / blockMag
+    data_sNum = BlockInfo.bnum / pInfo.blockMag
     
     curSType = ""
-    for s in sfLoc:
-        for e in sfLoc[s]:
+    for s in pInfo.sfLoc:
+        for e in pInfo.sfLoc[s]:
             if e.isIn(data_sNum):
                 curSType = s
                 break
@@ -130,7 +113,6 @@ def getDataBlock(data_block, BlockInfo):
     
     return kindList[kind](data_block)
 
-
 def main():
     f = open(r"C:\Users\user\Desktop\Journal", 'rb')
     s = f.read()
@@ -143,7 +125,6 @@ def main():
     
     g.close()
     f.close()
-
         
 if __name__ == '__main__':
     main()

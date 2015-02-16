@@ -1,5 +1,11 @@
 from struct import *
 import HFSPlus_sStructure as ss
+from collections import namedtuple
+
+parseInfo = namedtuple("parseInfo", ['sect_size', 'blockMag', 'sfLoc'])
+# variable for storing a sector size 
+# variable for storing a magnification of block from sect_size (blockSize/sect_size)
+# dict for storing the location of special files
 
 def getJournalHeader(jh_binary):
     endian = unpack_from(">I",jh_binary, 4)[0]
@@ -335,4 +341,21 @@ def getVolumeHeader(vh_binary):
     for i in range(5):
         vec.append(getForkData(vh_sp[i]))
     return ss.VolumeHeader(*vec)
+
+
+# User class
+
+def getparseInfo(journal_blob):
+    sfLoc = {}
+    vh_samInd = journal_blob.find("H+")
+    jnl = memoryview(journal_blob)
+    j_header = getJournalHeader(jnl)
+    sect_size = j_header.jhdr_size
+    vh = getVolumeHeader(journal_blob[vh_samInd:vh_samInd+sect_size])
+    sfLoc['AllocationFile'] = vh.allocationFile.extents
+    sfLoc['ExtentsFile'] = vh.extentsFile.extents
+    sfLoc['CatalogFile'] = vh.catalogFile.extents
+    sfLoc['AttributesFile'] = vh.attributesFile.extents
+    blockMag = vh.blockSize/sect_size
+    return parseInfo(sect_size, blockMag, sfLoc)
     

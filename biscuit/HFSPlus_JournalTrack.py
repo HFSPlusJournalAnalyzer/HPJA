@@ -5,7 +5,6 @@ Created on 2015. 2. 8.
 '''
 from HFSPlus_ParseModule import *
     
-
 class JournalChange:
     changeType = None
     parAtt = ''
@@ -66,34 +65,33 @@ class objectChangeInfo:
 
 cursur = {}
 
-def journalTrack(j_parseList):
+def journalTrack(j_parseList, pInfo):
     transList = j_parseList[1:]
     changeLog = []
     
     for trans in transList:
-        ch_bucket = transTrack(trans)
+        ch_bucket = transTrack(trans, pInfo)
         changeLog.append(ch_bucket)
         
     return changeLog
 
-def transTrack(trans):
+def transTrack(trans, pInfo):
     blockListHeader, bi_List, data_List = trans
     changes = []
     for i in range(len(data_List)):
-        changes.extend(block_check(bi_List[i], data_List[i]))
+        changes.extend(block_check(bi_List[i], data_List[i], pInfo))
     return changes
 
-def block_check(b_info, data):
-    global sfLoc, blockMag
+def block_check(b_info, data, pInfo):
     global cursur
     try:
         p_data = cursur[b_info.bnum]
     except KeyError:
         cursur[b_info.bnum] = data
         curSType = None
-        data_sNum = b_info.bnum / blockMag
-        for s in sfLoc:
-            for e in sfLoc[s]:
+        data_sNum = b_info.bnum / pInfo.blockMag
+        for s in pInfo.sfLoc:
+            for e in pInfo.sfLoc[s]:
                 if e.isIn(data_sNum):
                     curSType = s
                     break
@@ -188,11 +186,11 @@ def compCatalog(original, changed, parType, curType):
     return result
 
 def main():
-    f = open(r"C:\Users\user\Desktop\Local_after", 'rb')
+    f = open(r"C:\Users\user\Desktop\Journal=t", 'rb')
     s = f.read()
-    jParseList = journalParser(s)
-    jT = journalTrack(jParseList)
-    g = open(r"C:\result_Localafter.txt", 'w')
+    jPList, pInfo = journalParser(s)
+    jT = journalTrack(jPList, pInfo)
+    g = open(r"C:\TEMP\result_2.txt", 'w')
     for i in jT:
         g.write("-----------\n")
         for j in i:
@@ -201,8 +199,6 @@ def main():
     g.close()
     f.close()
     
-
-        
 if __name__ == '__main__':
     main()
     
