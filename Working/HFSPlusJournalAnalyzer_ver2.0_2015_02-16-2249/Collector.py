@@ -4,11 +4,18 @@ import os
 import re
 from Utility import *
 from HFSPlus_sStructure import *
-<<<<<<< HEAD
 from HFSPlus_GetInstance import *
-=======
 from HFSPlus_getInstance import *
->>>>>>> FETCH_HEAD
+
+def journalCarving(disk,vh,path):
+
+    f=open(disk,'rb')
+    image=f.read()
+    for i in range(vh.blockSize*vh.totalBlocks/8):
+        if buffer(image,8*i,8)=='\x78\x4c\x4e\x4a\x78\x56\x34\x12':
+            jh=JournalHeader(buffer(image,8*i))
+            DiskDump(disk,'{0}/Journal_{1}'.format(path,8*i),1,8*i,jh.size,1)
+
 
 def journalExtractor(disk,vh,select,path):
     
@@ -61,6 +68,9 @@ def main(option):
     vh=getVolumeHeader(DiskDump(disk,'{0}/HFSPlusVolumeHeader'.format(path),512,2,1,select))
 
     journal=journalExtractor(disk,vh,select,path)
+
+    if 'carv' in option:
+        journalCarving(disk,vh,path)
 
     if select:
         temp=specialFileExtractor(disk,vh,select,path)

@@ -1,16 +1,23 @@
 from sqlalchemy import *
-
+'''
 engine=create_engine('raw.db')
 
 CatalogBase=declarative_base()
 ExtentsBase=declarative_base()
 AttrBase=declarative_base()
-
+'''
 class CatalogLeaf(CatalogKey,CatalogFile,CatalogFolder,CatalogThread):
 
     __slots__=()
 
+    for i in CatalogLeaf._fields:
+        CatalogLeaf
+
+
     def __init__(self,cdr):
+
+        for i in CatalogLeaf._fields:
+            self.__dict__[i]=''
 
         if cdr.record.recordType<3:
 
@@ -18,7 +25,6 @@ class CatalogLeaf(CatalogKey,CatalogFile,CatalogFolder,CatalogThread):
                 self.__dict__[i]=cdr.key.__dict__[i]
 
         else:
-
             self.CNID=cdr.key.parentID
 
         for i in cdr.record.__dict__:
@@ -37,7 +43,8 @@ class ExtentsLeaf(ExtentsKey,ExtentsDataRec):
         for i in edr.record.__dict__:
             self.__dict__[i]=edr.record.__dict__[i]
 
-class AttrLeaf(AttrKey,AttrForkData,AttrExtents,AttrData):
+
+class AttrLeaf(AttrBase,AttrKey,AttrForkData,AttrExtents,AttrData):
 
     __slots__=()
 
@@ -60,6 +67,7 @@ def temp(path,jParseList):
         
         f.close()
 
+
 def volumeInfo(path,vh):
 
     if vh!=0:
@@ -68,6 +76,27 @@ def volumeInfo(path,vh):
             f.write('{0} : {1}\n'.format(i,vh.__dict__[i]))
     
     f.close()
+
+
+def outputNode(f,node):
+
+    for i in range(len(node)):
+
+            try:
+    
+                for j in range(len(node[i].LeafRecList)):
+
+                    index=node[i].LeafRecList[j].getType()
+                    lf=BTLeafType[index](node[i].LeafRecList[j])
+
+                    for k in lf.__dict__:
+                        f[index].write(str(lf.__dict__[k]).replace(',',' ')+',')
+
+                    f[index].write('\n')
+
+            except AttributeError:
+                pass
+
 
 def rawcsv(path,jParseList):
 
@@ -83,27 +112,14 @@ def rawcsv(path,jParseList):
         f[i].write('\n')
 
     for i in range(1,len(jParseList)):
-        for j in range(len(jParseList[i][2])):
-
-            try:
-    
-                for k in range(len(jParseList[i][2][j].LeafRecList)):
-
-                    index=jParseList[i][2][j].LeafRecList[k].getType()
-                    lf=BTLeafType[index](jParseList[i][2][j].LeafRecList[k])
-
-                    for l in lf.__dict__:
-                        f[index].write(str(lf.__dict__[l]).replace(',',' ')+',')
-
-                    f.write('\n')
-
-            except AttributeError:
-                pass
+        outputNode(jParseList[i][2])
 
     for i in ['Catalog','Extents','Attributes']:
         f.close(f[i])
 
 
-def rawSQLite3(path,jParseList):
+#def rawSQLite3(path,jParseList):
+
+
 
     
