@@ -29,6 +29,9 @@ VolumeHeader = namedtuple("VolumeHeader", ['signature','version','attributes','l
 
 class ExtentDescriptor(namedtuple("ExtentDescriptor", ['startBlock','blockCount'])):
     __slot__ = ()
+    def __str__(self):
+        return '{0}~{1}'.format(self.startBlock,self.startBlock+self.blockCount-1)
+
     def isIn(self, bnum):
         return 0 <= bnum - self.startBlock <= self.blockCount - 1
     
@@ -164,6 +167,8 @@ class ExtentsKey(namedtuple('ExtentKey',["keyLength",'forkType','pad','fileID','
 class ExtentsDataRec(namedtuple('ExtentsDataRec',['extent0','extent1','extent2','extent3',
                                                   'extent4','extent5','extent6','extent7',])):
     __slots__ = ()
+    def __str__(self):
+        return '{0} {1} {2} {3} {4} {5} {6} {7}'.format(extent0,extent1,extent2,extent3,extent4,extent5,extent6,extent7)
     def __len__(self):
         return 64
     def __eq__(self, other):
@@ -232,6 +237,8 @@ IndexNode = namedtuple("IndexNode", ['NodeDescriptor', 'PointerRecList'])
 MapNode = namedtuple('MapNode', ['NodeDescriptor', 'MapRecord'])
 class UniChar(namedtuple("UniChar", ['nameLen', 'nodeUnicode'])):
     __slots__ = ()
+    def __str__(self):
+        return self.nodeUnicode
     
     def __eq__(self, other):
         lenComp = (self.nameLen == other.nameLen)

@@ -3,6 +3,7 @@ import HFSPlus_sStructure as ss
 from collections import namedtuple
 
 parseInfo = namedtuple("parseInfo", ['sect_size', 'blockMag', 'sfLoc'])
+bOffsetInfo = namedtuple("bOffsetInfo", ['start', 'end', 'contain', 'data', 'name', 'offset'])
 # variable for storing a sector size 
 # variable for storing a magnification of block from sect_size (blockSize/sect_size)
 # dict for storing the location of special files
