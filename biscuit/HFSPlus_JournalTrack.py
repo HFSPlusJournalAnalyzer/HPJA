@@ -5,7 +5,6 @@ Created on 2015. 2. 8.
 '''
 from HFSPlus_ParseModule import *
     
-    
 '''
 Classes
 '''
@@ -98,16 +97,8 @@ def block_check(b_info, data, pInfo):
         p_data = cursur[b_info.bnum]
     except KeyError:
         cursur[b_info.bnum] = data
-        curSType = None
         data_sNum = b_info.bnum / pInfo.blockMag
-        for s in pInfo.sfLoc:
-            for e in pInfo.sfLoc[s]:
-                if e.isIn(data_sNum):
-                    curSType = s
-                    break
-            if curSType != None:
-                break
-            
+        curSType = detBlockType(data_sNum, pInfo.sfLoc)
         d_chInfo = objectChangeInfo(data, curSType)
         j_ch = JournalChange("Insert", '', hex(b_info.bnum), d_chInfo)
         return [j_ch]
@@ -116,7 +107,6 @@ def block_check(b_info, data, pInfo):
     return data_diff(p_data, data, hex(b_info.bnum), classType)
     
 def data_diff(original, changed, parType='', curType=''):
-    
     try:
         assert original.__class__ == changed.__class__
     except(AssertionError):

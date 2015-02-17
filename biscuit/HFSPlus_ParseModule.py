@@ -53,6 +53,13 @@ def getBufContent(buf, start, end):
     if end < start:
         return memoryview( buf[start:].tobytes() + buf[:end].tobytes() )
     else: return buf[start:end]
+    
+def detBlockType(secNumber, sfLocDict ):
+    for s in sfLocDict:
+        for e in sfLocDict[s]:
+            if e.isIn(secNumber):
+                return s
+    return None
 
 def journalBufferParser(j_buffer, JournalHeader, startOffset, parseList, bOffList, pInfo):
     if startOffset == (JournalHeader.end - pInfo.sect_size): # -0x200 for Journal Header area
@@ -105,14 +112,7 @@ def getDataBlock(data_block, BlockInfo, pInfo, offset):
     global etcData
     data_sNum = BlockInfo.bnum / pInfo.blockMag
     
-    curSType = ""
-    for s in pInfo.sfLoc:
-        for e in pInfo.sfLoc[s]:
-            if e.isIn(data_sNum):
-                curSType = s
-                break
-        if curSType != "":
-            break
+    curSType = detBlockType(data_sNum, pInfo.sfLoc)
         
     raw_data = data_block.tobytes()
     if "H+\x00\x04" in raw_data:
@@ -130,7 +130,7 @@ def getDataBlock(data_block, BlockInfo, pInfo, offset):
     
     strList = ["Leaf", "Index", "Header", "Map"]
     
-    if curSType == "":
+    if curSType == None:
         etcData.append([data_block, BlockInfo])
         return None, None
     
