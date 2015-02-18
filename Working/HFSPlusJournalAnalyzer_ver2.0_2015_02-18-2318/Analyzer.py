@@ -5,6 +5,7 @@ from HFSPlus_JournalTrack import *
 from HFSPlus_sStructure import *
 from types import MethodType
 from collections import *
+from Output import *
 import types
 import Collector
 import sys
@@ -329,6 +330,8 @@ def main(option):
 
     DirectoryCleaning(path)
 
+    rawCSV(path,jParseList)
+    rawSQLite(path,jParseList)
     
 
 '''

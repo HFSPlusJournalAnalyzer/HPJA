@@ -6,31 +6,33 @@ from Utility import *
 from HFSPlus_sStructure import *
 from HFSPlus_GetInstance import *
 
-def journalCarving(disk,vh,path):
+def journalCarving(disk,offset,path):
 
-    f=open(disk,'rb')
+    fi=open(disk,'rb')
+    maxSize=len(fi.read())
+    fi.seek(offset)
 
-    
     i=-1
     while True:
-        
-        while i==-1:
-            image=f.read()
-            i=image.find('\x78\x4c\x4e\x4a\x78\x56\x34\x12',i+1)
-            print f.tell()
-        print f.tell()
-        f.seek(i-786432,os.SEEK_CUR)
-        image=f.read()
-        jh=getJournalHeader(image)
-        fo=open('{0}/Journal_{1}'.format(path,f.tell()),'wb')
-        for j in range(jh.size/786432):
-            fo.write(image)
-        fo.write(image[:jh.size%786432])
-        fo.close()
-        i=image.find('\x78\x4c\x4e\x4a\x78\x56\x34\x12',i+1)
+        try:
+            while i==-1:
+                image=fi.read()
+                i=image.find('\x78\x4c\x4e\x4a\x78\x56\x34\x12')
+                print fi.tell()
+            fi.seek(i-maxSize,os.SEEK_CUR)
+            jh=getJournalHeader(buffer(image,i))
+            fo=open('{0}/Journal_{1}'.format(path,fi.tell()),'wb')
+            for j in range(jh.size/maxSize):
+                fo.write(fi.read())
+            image=fi.read()
+            fo.write(image[:jh.size%maxSize])
+            fo.close()
+            i=image.find('\x78\x4c\x4e\x4a\x78\x56\x34\x12',jh.size%maxSize)
 
+        except Exception:
+            break
     
- 
+    fi.close()
 
 
 def journalExtractor(disk,vh,select,path):
@@ -76,8 +78,8 @@ def main(option):
 
     path='dump_{0}'.format(option['id'])
 
-    #if select:
-    DirectoryCleaning(path)
+    if select or 'carv' in option:
+        DirectoryCleaning(path)
 
 
     print 'Collecting files...'
@@ -86,7 +88,7 @@ def main(option):
     journal=journalExtractor(disk,vh,select,path)
 
     if 'carv' in option:
-        journalCarving(disk,vh,path)
+        journalCarving(disk,option['carv'],path)
 
     if select:
         temp=specialFileExtractor(disk,vh,select,path)
