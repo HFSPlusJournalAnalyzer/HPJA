@@ -5,16 +5,32 @@ import re
 from Utility import *
 from HFSPlus_sStructure import *
 from HFSPlus_GetInstance import *
-from HFSPlus_getInstance import *
 
 def journalCarving(disk,vh,path):
 
     f=open(disk,'rb')
-    image=f.read()
-    for i in range(vh.blockSize*vh.totalBlocks/8):
-        if buffer(image,8*i,8)=='\x78\x4c\x4e\x4a\x78\x56\x34\x12':
-            jh=JournalHeader(buffer(image,8*i))
-            DiskDump(disk,'{0}/Journal_{1}'.format(path,8*i),1,8*i,jh.size,1)
+
+    
+    i=-1
+    while True:
+        
+        while i==-1:
+            image=f.read()
+            i=image.find('\x78\x4c\x4e\x4a\x78\x56\x34\x12',i+1)
+            print f.tell()
+        print f.tell()
+        f.seek(i-786432,os.SEEK_CUR)
+        image=f.read()
+        jh=getJournalHeader(image)
+        fo=open('{0}/Journal_{1}'.format(path,f.tell()),'wb')
+        for j in range(jh.size/786432):
+            fo.write(image)
+        fo.write(image[:jh.size%786432])
+        fo.close()
+        i=image.find('\x78\x4c\x4e\x4a\x78\x56\x34\x12',i+1)
+
+    
+ 
 
 
 def journalExtractor(disk,vh,select,path):
@@ -60,8 +76,8 @@ def main(option):
 
     path='dump_{0}'.format(option['id'])
 
-    if select:
-        DirectoryCleaning(path)
+    #if select:
+    DirectoryCleaning(path)
 
 
     print 'Collecting files...'
