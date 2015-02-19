@@ -1,51 +1,57 @@
 import sqlite3
 from HFSPlus_sStructure import *
 
-class CatalogLeaf(CatalogKey,CatalogFile,CatalogFolder,CatalogThread):
+def listDedupl(seq):
+    seen = set()
+    seen_add = seen.add
+    return [ x for x in seq if not (x in seen or seen_add(x))]
 
-    __slots__=()
+CatalogLeaf=namedtuple('CatalogLeaf',listDedupl(CatalogKey._fields,CatalogFile._fields,CatalogFolder._fields,CatalogThread._fields))
+ExtentsLeaf=namedtuple('ExtentsLeaf',listDedupl(ExtentsKey._fields,ExtentsDataRec._fields))
+AttrLeaf=namedtuple('AttrLeaf',listDedupl(AttrKey._fields,AttrForkData._fields,AttrExtents._fields,AttrData._fields))
 
-    def __new__(__cls,cdr):
+def getCatalogLeaf(cdr):
 
-        for i in CatalogLeaf._fields:
-            _cls._fields[i]=''
+    vec=dict([(i,'') for i in CatalogLeaf._fields])
 
-        if cdr.record.recordType<3:
+    if cdr.record.recordType<3:
 
-            for i in cdr.key._fields:
-                _cls._fields[i]=cdr.key._fields[i]
+        for i in cdr.key.__dict__:
+            vec[i]=cdr.key.__dict__[i]
 
-        else:
-            _cls.CNID=cdr.key.parentID
+    else:
+        vec['CNID']=cdr.key.parentID
 
-        for i in cdr.record.__dict__:
-            _cls.__dict__[i]=cdr.record.__dict__[i]
+    for i in cdr.record.__dict__:
+        vec[i]=cdr.record.__dict__[i]
 
-
-class ExtentsLeaf(ExtentsKey,ExtentsDataRec):
-
-    __slots__=()
-
-    def __new__(_cls,edr):
-
-        for i in edr.key.__dict__:
-            _cls.__dict__[i]=edr.key.__dict__[i]
-
-        for i in edr.record.__dict__:
-            _cls.__dict__[i]=edr.record.__dict__[i]
+    return CatalogLeaf(*vec.values())
 
 
-class AttrLeaf(AttrKey,AttrForkData,AttrExtents,AttrData):
+def getExtentsLeaf(edr):
 
-    __slots__=()
+    vec={}
 
-    def __new__(_cls,adr):
+    for i in edr.key.__dict__:
+        vec[i]=edr.key.__dict__[i]
 
-        for i in adr.key.__dict__:
-            _cls.__dict__[i]=adr.key.__dict__[i]
+    for i in edr.record.__dict__:
+        vec[i]=edr.record.__dict__[i]
 
-        for i in adr.record.__dict__:
-            _cls.__dict__[i]=adr.record.__dict__[i]
+    return ExtentsLeaf(*vec.values())
+
+
+def getAttrLeaf(adr):
+
+    vec=dict([(i,'') for i in AttrLeaf._fields])
+
+    for i in adr.key.__dict__:
+        vec[i]=adr.key.__dict__[i]
+
+    for i in adr.record.__dict__:
+        vec[i]=adr.record.__dict__[i]
+
+    return AttrLeaf(*vec.values())
 
 
 def temp(path,jParseList):
@@ -68,7 +74,7 @@ def volumeInfo(path,vh):
     
     f.close()
 
-BTLeafType={'Catalog':CatalogLeaf,"Extents":ExtentsLeaf,"Attributes":AttrLeaf}
+getLeafNode={'Catalog':getCatalogLeaf,"Extents":getExtentsLeaf,"Attributes":getAttrLeaf}
 
 def outputNode(f,node):
 
@@ -79,7 +85,7 @@ def outputNode(f,node):
                 for j in range(len(node[i].LeafRecList)):
 
                     index=node[i].LeafRecList[j].getType()
-                    lf=BTLeafType[index](node[i].LeafRecList[j])
+                    lf=getLeafNode[index](node[i].LeafRecList[j])
 
                     for k in lf.__dict__:
                         f[index].write(str(lf.__dict__[k]).replace(',',' ')+',')
@@ -124,7 +130,7 @@ def rawSQLite3(path,jParseList):
                 for j in range(len(node[i].LeafRecList)):
 
                     index=node[i].LeafRecList[j].getType()
-                    lf=BTLeafType[index](node[i].LeafRecList[j])
+                    lf=getLeafNode[index](node[i].LeafRecList[j])
                     
                     cur.excute('insert into {0} values {1}'.format(index,[lf.__dict__[k] for k in lf.__dict__]).replace('[','(').replace(']',')'))
 
