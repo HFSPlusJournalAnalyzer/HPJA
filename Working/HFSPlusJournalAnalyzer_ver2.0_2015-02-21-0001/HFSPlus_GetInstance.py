@@ -238,7 +238,7 @@ def getAttributesKey(ak_binary):
 def getAttributesData(ad_binary):
     vec = list(unpack_from(">IQI", ad_binary))
     attrSize = vec[-1]
-    attrData = ad_binary[16:16+attrSize+(attrSize%2)]
+    attrData = ''.join(ad_binary[16:16+attrSize+(attrSize%2)])
     vec.append(attrData)
     return ss.AttrData(*vec)
 

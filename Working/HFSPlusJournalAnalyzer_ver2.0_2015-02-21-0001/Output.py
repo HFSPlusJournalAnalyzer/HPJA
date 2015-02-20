@@ -95,7 +95,7 @@ def outputNode(f,node):
                 lf=getLeafNode[index](record[j])
 
                 for k in lf.__dict__:
-                    f[index].write((unicode(lf.__dict__[k]).replace(',',' ')+',').encode('utf-8'))
+                    f[index].write((unicode(lf.__dict__[k]).replace(',','","')+',').encode('utf-8'))
                 f[index].write('\n')
 
         except AttributeError:
