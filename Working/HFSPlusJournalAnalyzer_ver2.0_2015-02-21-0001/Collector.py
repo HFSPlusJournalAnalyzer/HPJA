@@ -64,8 +64,6 @@ def specialFileExtractor(disk,vh,select,path):
     specialFile=[]
     for i in range(4):
 
-        DirectoryCleaning(specialFileName[i])
-
         fileContent=[]
         for j in range(8):
             if vh.__dict__[specialFileName[i]].extents[j].startBlock!=0 or vh.__dict__[specialFileName[i]].extents[j].blockCount!=0:

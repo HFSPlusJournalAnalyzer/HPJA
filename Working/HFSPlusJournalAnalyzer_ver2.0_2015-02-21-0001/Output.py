@@ -81,18 +81,21 @@ def volumeInfo(path,vh):
 leafNode={'Catalog':CatalogLeaf,"Extents":ExtentsLeaf,"Attributes":AttrLeaf}
 getLeafNode={'Catalog':getCatalogLeaf,"Extents":getExtentsLeaf,"Attributes":getAttrLeaf}
 
-def outputNode(f,node):
+def outputNode(f,blocks):
 
-    for i in range(len(node)):
+    for i in range(len(blocks)):
+
+        print type(blocks[i])
 
         try:
 
-            record=node[i].LeafRecList
+            records=blocks[i].LeafRecList
 
-            for j in range(len(record)):
+            for j in range(len(records)):
 
-                index=record[j].getType()
-                lf=getLeafNode[index](record[j])
+                index=records[j].getType()
+                print index
+                lf=getLeafNode[index](records[j])
 
                 for k in lf.__dict__:
                     f[index].write((unicode(lf.__dict__[k]).replace(',','","')+',').encode('utf-8'))
@@ -129,19 +132,20 @@ def rawSQLite3(path,jParseList):
 
     for i in range(1,len(jParseList)):
 
-        node=jParseList[i][2]
-        for j in range(len(node)):
+        blocks=jParseList[i][2]
+        for j in range(len(blocks)):
             
             try:
 
-                record=node[j].LeafRecList
+                records=blocks[j].LeafRecList
 
-                for k in range(len(record)):
+                for k in range(len(records)):
 
-                    index=record[k].getType()
-                    lf=getLeafNode[index](record[k])
+                    index=records[k].getType()
+                    lf=getLeafNode[index](records[k])
                     
-                    cur.execute(u'insert into {0} values {1}'.format(index,lf.__dict__.values).replace('[','(').replace(']',')'))
+                    print lf.__dict__.values()
+                    cur.execute(u'insert into {0} values {1}'.format(index,lf.__dict__.values()).replace('[','(').replace(']',')'))
 
             except AttributeError:
                 pass
