@@ -2,6 +2,7 @@ import sys
 import time
 import os
 import re
+import gc
 from Utility import *
 from HFSPlus_sStructure import *
 from HFSPlus_GetInstance import *
@@ -17,20 +18,29 @@ def journalCarving(disk,offset,path):
         try:
             while i==-1:
                 image=fi.read()
+                gc.collect()
                 i=image.find('\x78\x4c\x4e\x4a\x78\x56\x34\x12')
+                gc.collect()
                 print fi.tell()
             fi.seek(i-maxSize,os.SEEK_CUR)
+            gc.collect()
             jh=getJournalHeader(buffer(image,i))
             fo=open('{0}/Journal_{1}'.format(path,fi.tell()),'wb')
             for j in range(jh.size/maxSize):
                 fo.write(fi.read())
+                gc.collect()
             image=fi.read()
+            gc.collect()
             fo.write(image[:jh.size%maxSize])
+            gc.collect()
             fo.close()
+            gc.collect()
             i=image.find('\x78\x4c\x4e\x4a\x78\x56\x34\x12',jh.size%maxSize)
+            gc.collect()
 
         except Exception:
-            break
+            fi.seek(1048576,0)
+            
     
     fi.close()
 
@@ -88,7 +98,7 @@ def main(option):
     journal=journalExtractor(disk,vh,select,path)
 
     if 'carv' in option:
-        journalCarving(disk,option['carv'],path)
+        journalCarving(disk,int(option['carv']),path)
 
     if select:
         temp=specialFileExtractor(disk,vh,select,path)

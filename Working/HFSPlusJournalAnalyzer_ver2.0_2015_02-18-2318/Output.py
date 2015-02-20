@@ -1,26 +1,30 @@
 import sqlite3
 from HFSPlus_sStructure import *
+from collections import *
 
 def listDedupl(seq):
     seen = set()
     seen_add = seen.add
     return [ x for x in seq if not (x in seen or seen_add(x))]
 
-CatalogLeaf=namedtuple('CatalogLeaf',listDedupl(CatalogKey._fields,CatalogFile._fields,CatalogFolder._fields,CatalogThread._fields))
-ExtentsLeaf=namedtuple('ExtentsLeaf',listDedupl(ExtentsKey._fields,ExtentsDataRec._fields))
-AttrLeaf=namedtuple('AttrLeaf',listDedupl(AttrKey._fields,AttrForkData._fields,AttrExtents._fields,AttrData._fields))
+CatalogLeaf=namedtuple('CatalogLeaf',listDedupl(CatalogKey._fields+CatalogFile._fields+CatalogFolder._fields+CatalogThread._fields))
+ExtentsLeaf=namedtuple('ExtentsLeaf',listDedupl(ExtentsKey._fields+ExtentsDataRec._fields))
+AttrLeaf=namedtuple('AttrLeaf',listDedupl(AttrKey._fields+AttrForkData._fields+AttrExtents._fields+AttrData._fields))
 
 def getCatalogLeaf(cdr):
 
-    vec=dict([(i,'') for i in CatalogLeaf._fields])
+    vec=OrderedDict([(i,'') for i in CatalogLeaf._fields])
 
     if cdr.record.recordType<3:
 
         for i in cdr.key.__dict__:
             vec[i]=cdr.key.__dict__[i]
 
+    elif cdr.record.recordType==3:
+        vec['folderID']=cdr.key.parentID
+
     else:
-        vec['CNID']=cdr.key.parentID
+        vec['fileID']=cdr.key.parentID
 
     for i in cdr.record.__dict__:
         vec[i]=cdr.record.__dict__[i]
@@ -30,7 +34,7 @@ def getCatalogLeaf(cdr):
 
 def getExtentsLeaf(edr):
 
-    vec={}
+    vec=OrderedDict()
 
     for i in edr.key.__dict__:
         vec[i]=edr.key.__dict__[i]
@@ -43,7 +47,7 @@ def getExtentsLeaf(edr):
 
 def getAttrLeaf(adr):
 
-    vec=dict([(i,'') for i in AttrLeaf._fields])
+    vec=OrderedDict([(i,'') for i in AttrLeaf._fields])
 
     for i in adr.key.__dict__:
         vec[i]=adr.key.__dict__[i]
@@ -74,26 +78,28 @@ def volumeInfo(path,vh):
     
     f.close()
 
+leafNode={'Catalog':CatalogLeaf,"Extents":ExtentsLeaf,"Attributes":AttrLeaf}
 getLeafNode={'Catalog':getCatalogLeaf,"Extents":getExtentsLeaf,"Attributes":getAttrLeaf}
 
 def outputNode(f,node):
 
     for i in range(len(node)):
 
-            try:
-    
-                for j in range(len(node[i].LeafRecList)):
+        try:
 
-                    index=node[i].LeafRecList[j].getType()
-                    lf=getLeafNode[index](node[i].LeafRecList[j])
+            record=node[i].LeafRecList
 
-                    for k in lf.__dict__:
-                        f[index].write(str(lf.__dict__[k]).replace(',',' ')+',')
+            for j in range(len(record)):
 
-                    f[index].write('\n')
+                index=record[j].getType()
+                lf=getLeafNode[index](record[j])
 
-            except AttributeError:
-                pass
+                for k in lf.__dict__:
+                    f[index].write((unicode(lf.__dict__[k]).replace(',',' ')+',').encode('utf-8'))
+                f[index].write('\n')
+
+        except AttributeError:
+            pass
 
 
 def rawCSV(path,jParseList):
@@ -101,7 +107,7 @@ def rawCSV(path,jParseList):
     f={}
     for i in ['Catalog','Extents','Attributes']:
         f[i]=open('{0}/{1}.csv'.format(path,i),'w')
-        for j in BTLeafType[i]._fields:
+        for j in leafNode[i]._fields:
             f[i].write('{0},'.format(j))
         f[i].write('\n')
 
@@ -109,39 +115,36 @@ def rawCSV(path,jParseList):
         outputNode(f,jParseList[i][2])
 
     for i in ['Catalog','Extents','Attributes']:
-        f.close(f[i])
+        f[i].close()
 
 
 def rawSQLite3(path,jParseList):
-
 
     con=sqlite3.connect('{0}/sqlite3.db'.format(path))
     con.isolation_level=None
     cur=con.cursor()
 
     for i in ['Catalog','Extents','Attributes']:
-        cur.excute('CREATE TABLE {0} {1}'.format(i,BTLeafType[i]._fields).replace("'",''))
+        cur.execute('CREATE TABLE {0} {1}'.format(i,leafNode[i]._fields).replace("'",''))
 
     for i in range(1,len(jParseList)):
-        for i in range(len(node)):
 
+        node=jParseList[i][2]
+        for j in range(len(node)):
+            
             try:
-    
-                for j in range(len(node[i].LeafRecList)):
 
-                    index=node[i].LeafRecList[j].getType()
-                    lf=getLeafNode[index](node[i].LeafRecList[j])
+                record=node[j].LeafRecList
+
+                for k in range(len(record)):
+
+                    index=record[k].getType()
+                    lf=getLeafNode[index](record[k])
                     
-                    cur.excute('insert into {0} values {1}'.format(index,[lf.__dict__[k] for k in lf.__dict__]).replace('[','(').replace(']',')'))
+                    cur.execute(u'insert into {0} values {1}'.format(index,[lf.__dict__[k] for k in lf.__dict__]).replace('[','(').replace(']',')'))
 
             except AttributeError:
                 pass
 
     cur.close()
     con.close()
-
-        
-
-
-
-    

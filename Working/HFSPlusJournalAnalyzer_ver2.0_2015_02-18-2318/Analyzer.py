@@ -331,7 +331,7 @@ def main(option):
     DirectoryCleaning(path)
 
     rawCSV(path,jParseList)
-    rawSQLite(path,jParseList)
+    rawSQLite3(path,jParseList)
     
 
 '''
