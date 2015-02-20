@@ -16,7 +16,7 @@ def journalCarving(disk,offset,path):
     i=-1
     while fi.tell()<maxSize:
         try:
-            while i==-1 && fi.tell()<maxSize:
+            while i==-1 and fi.tell()<maxSize:
                 image=fi.read()
                 gc.collect()
                 i=image.find('\x78\x4c\x4e\x4a\x78\x56\x34\x12')

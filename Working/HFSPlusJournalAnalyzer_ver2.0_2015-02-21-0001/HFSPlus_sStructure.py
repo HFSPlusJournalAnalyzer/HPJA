@@ -221,6 +221,7 @@ class AttrExtents(namedtuple('AttrExtents',['recordType','reserved', 'extents'])
         return ("extents",)
 
 class AttrData(namedtuple('AttrData',['recordType', 'reserved', 'attrSize', 'attrData'])):
+    __slots__=()
     def __len__(self):
         return 16 + self.attrSize + self.attrSize%2
     def __eq__(self, other):
