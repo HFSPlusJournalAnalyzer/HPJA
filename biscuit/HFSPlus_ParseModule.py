@@ -4,6 +4,7 @@ Created on 2015. 2. 8.
 @author: biscuit
 '''
 from HFSPlus_GetInstance import *
+from datetime import datetime, timedelta 
 
 etcData = []
 
@@ -54,12 +55,15 @@ def getBufContent(buf, start, end):
         return memoryview( buf[start:].tobytes() + buf[:end].tobytes() )
     else: return buf[start:end]
     
-def detBlockType(secNumber, sfLocDict ):
+def detBlockType(secNumber, sfLocDict):
     for s in sfLocDict:
         for e in sfLocDict[s]:
             if e.isIn(secNumber):
                 return s
-    return None
+    return ''
+
+def getHFSTime(localTimeSec):
+    return (datetime(1904,1,1) + timedelta(seconds=localTimeSec)).isoformat(" ")
 
 def journalBufferParser(j_buffer, JournalHeader, startOffset, parseList, bOffList, pInfo):
     if startOffset == (JournalHeader.end - pInfo.sect_size): # -0x200 for Journal Header area
@@ -122,7 +126,7 @@ def getDataBlock(data_block, BlockInfo, pInfo, offset):
         return VolHead, d_bOff
     if curSType == 'AllocationFile':
         d_bOff = bOffsetInfo(0, BlockInfo.bsize, None, None, "Allocation", offset)  # memoryview
-        return data_block, d_bOff
+        return Binary(data_block,"Allocation"), d_bOff
      
     kindDict = {'CatalogFile': [getCatalogLeaf, getCatalogIndex],
                 'ExtentsFile': [getExtentsLeaf, getExtentsIndex],
@@ -130,7 +134,7 @@ def getDataBlock(data_block, BlockInfo, pInfo, offset):
     
     strList = ["Leaf", "Index", "Header", "Map"]
     
-    if curSType == None:
+    if curSType == "":
         etcData.append([data_block, BlockInfo])
         return None, None
     

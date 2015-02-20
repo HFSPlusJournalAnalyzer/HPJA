@@ -4,6 +4,25 @@ from collections import namedtuple
 
 parseInfo = namedtuple("parseInfo", ['sect_size', 'blockMag', 'sfLoc'])
 bOffsetInfo = namedtuple("bOffsetInfo", ['start', 'end', 'contain', 'data', 'name', 'offset'])
+
+class Binary:
+    data = None
+    def __init__(self, data, name):
+        self.data = data
+        self.__name__ = name
+    
+    def __len__(self):
+        return len(data)
+    
+    def tobytes(self):
+        try:
+            assert type(self.data) == memoryview
+            return self.data.tobytes()
+        except(AssertionError):
+            return str(self.data)
+    
+    
+    
 # variable for storing a sector size 
 # variable for storing a magnification of block from sect_size (blockSize/sect_size)
 # dict for storing the location of special files
@@ -239,7 +258,7 @@ def getAttributesData(ad_binary):
     vec = list(unpack_from(">IQI", ad_binary))
     attrSize = vec[-1]
     attrData = ad_binary[16:16+attrSize+(attrSize%2)]
-    vec.append(attrData)
+    vec.append(Binary(attrData, "attrData"))
     return ss.AttrData(*vec)
 
 def getAttributesForkData(af_binary):
@@ -308,8 +327,8 @@ def getHeaderNode(ch_binary):
     nd = getNodeDescriptor(ch_buf)
     hr = getBTHeaderRec(ch_buf[14:])
     ch_buf = ch_buf[120:]
-    udr = ch_buf[:128]
-    mr = ch_buf[128:-8]
+    udr = Binary(ch_buf[:128],"userDataRecord")
+    mr = Binary(ch_buf[128:-8],"mapRecord")
     return ss.HeaderNode(nd, hr, udr, mr)
 
 def getMapNode(mn_binary):
@@ -319,7 +338,7 @@ def getMapNode(mn_binary):
     for i in range(nd.numRecords):
         offset = unpack(">H", mn_buf[-2*i-4:-2*i-2])[0]
         offsetList.append(offset)
-    mr = mn_buf[14:offsetList[1]]
+    mr = Binary(mn_buf[14:offsetList[1]],"mapRecord")
     return ss.MapNode(nd, mr)
 
 '''
