@@ -124,13 +124,13 @@ def getDataBlock(data_block, BlockInfo, pInfo, offset):
         VolHead = getVolumeHeader(data_block[vh_off:vh_off+0x200])
         d_bOff = bOffsetInfo(vh_off, vh_off+0x200, None, VolHead, "VolumeHeader", offset)
         return VolHead, d_bOff
-    if curSType == 'AllocationFile':
+    if curSType == 'Allocation':
         d_bOff = bOffsetInfo(0, BlockInfo.bsize, None, None, "Allocation", offset)  # memoryview
         return Binary(data_block,"Allocation"), d_bOff
      
-    kindDict = {'CatalogFile': [getCatalogLeaf, getCatalogIndex],
-                'ExtentsFile': [getExtentsLeaf, getExtentsIndex],
-                'AttributesFile': [getAttributesLeaf, getAttributesIndex] }
+    kindDict = {'Catalog': [getCatalogLeaf, getCatalogIndex],
+                'Extents': [getExtentsLeaf, getExtentsIndex],
+                'Attributes': [getAttributesLeaf, getAttributesIndex] }
     
     strList = ["Leaf", "Index", "Header", "Map"]
     
@@ -147,11 +147,11 @@ def getDataBlock(data_block, BlockInfo, pInfo, offset):
     return nodeData, d_bOff
 
 def main():
-    f = open(r"C:\Users\user\Desktop\Journal_4", 'rb')
+    f = open(r"C:\Users\user\Desktop\Journal_1111", 'rb')
     s = f.read()
     jParseList, pInfo, bOffList = journalParser(s)
-    g = open(r"C:\TEMP\Result2-1.txt", 'w')
-    h = open(r"C:\TEMP\Result2-2.txt", 'w')
+    g = open(r"C:\TEMP\Result1111-1.txt", 'w')
+    h = open(r"C:\TEMP\Result1111-2.txt", 'w')
     for i in jParseList:
         g.write("-----------\n")
         for j in i:

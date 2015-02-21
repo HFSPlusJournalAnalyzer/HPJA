@@ -18,13 +18,16 @@ class newObjectInfo:
     def __str__(self):
         return "[NEW] %s %s\n" %(hex(self.bNum), self.__name__)
     
+    def getStr(self, tabCount):
+        return " "*tabCount + "[NEW] %s %s\n" %(hex(self.bNum), self.__name__)
+    
 class dataChangeHead:
     def __init__(self, bNum, type, chList):
         self.bnum, self.type = bNum, type
         self.chList = chList
         
     def __str__(self):
-        str_ch = "===%s %s===\n" %(hex(self.bnum), self.type)
+        str_ch = "@%s %s-----------------------------\n" %(hex(self.bnum), self.type)
         for i in self.chList:
             str_ch += "%s" %str(i)
         return str_ch
@@ -34,11 +37,13 @@ class dataChange:
         self.nData, self.chList, self.parent = nData, chList, parent
     
     def __str__(self):
-        str_ch = "%s\n" %str(self.nData)
+        return self.getStr(1)
+        
+    def getStr(self, tabCount):
+        str_ch = " "*tabCount + "%s\n" %str(self.nData)
         for i in self.chList:
-            str_ch += "%s" %str(i)
+            str_ch += "%s" %i.getStr(tabCount+1)
         return str_ch
-    
     
 class valueChangeInfo:
     def __init__(self, attName, before, after):
@@ -46,9 +51,12 @@ class valueChangeInfo:
         self.before = before
         self.after = after
         self.diff = self.after - self.before
-        
+    
     def __str__(self):
-        return "[Modify] "+ self.__name__+" %d -> %d\n" % (self.before, self.after)
+        return "[Modify] %s\t%d -> %d\n" % (self.__name__, self.before, self.after)
+        
+    def getStr(self, tabCount):
+        return " "*tabCount + "[Modify] %s\t%d -> %d\n" % (self.__name__, self.before, self.after)
         
 class renewalChangeInfo:
     renewal = False
@@ -61,8 +69,13 @@ class renewalChangeInfo:
     
     def __str__(self):
         if "Date" in self.__name__:
-            return "[Renewal] "+self.__name__+" %s -> %s\n"  %(getHFSTime(self.before), getHFSTime(self.after)) 
-        return "[Renewal] "+self.__name__+"\n"
+            return "[Renewal] %s\t%s -> %s\n" %(self.__name__ , getHFSTime(self.before), getHFSTime(self.after)) 
+        return "[Renewal] %s\n" %self.__name__
+    
+    def getStr(self, tabCount):
+        if "Date" in self.__name__:
+            return " "*tabCount + "[Renewal] %s\t%s -> %s\n" %(self.__name__ , getHFSTime(self.before), getHFSTime(self.after)) 
+        return " "*tabCount + "[Renewal] %s\n" %self.__name__
 
 class objectChangeInfo:
     def __init__(self, chType, object, absData=None):
@@ -73,8 +86,13 @@ class objectChangeInfo:
         
     def __str__(self):
         if self.absData == None:
-            return "[%s] %s \n" %(self.chType, self.object.__class__.__name__)
-        return "[%s] %s\n" %(self.chType, str(self.absData))
+            return "[%s] %s\n" %(self.chType, self.object.__class__.__name__)
+        return "[%s] %s\n" %(self.chType, str(self.absData)) 
+    
+    def getStr(self, tabCount):
+        if self.absData == None:
+            return " "*tabCount + "[%s] %s\n" %(self.chType, self.object.__class__.__name__)
+        return " "*tabCount + "[%s] %s\n" %(self.chType, str(self.absData))
     
 '''
 Main Tracking function
@@ -185,7 +203,6 @@ def getDataDiff(orgBlock, chgBlock, attName, parent):
     if len(result) == 0: return None
     return dataChange(attName, result, parent)
 
-    
 def compCatalog(original, changed, parent):
     orgSet = set(original)
     chgSet = set(changed)
@@ -211,6 +228,14 @@ def compCatalog(original, changed, parent):
             
     return result
 
+def journalTrackPrint(journalTrack, fd):
+    count = 1
+    for i in journalTrack:
+        fd.write("trans_%d=================================\n" %count)
+        for j in i:
+            fd.write(str(j))
+        count += 1
+    
 '''
 main
 '''
@@ -221,10 +246,7 @@ def main():
     jPList, pInfo = journalParser(s)[:2]
     jT = journalTrack(jPList, pInfo)
     g = open(r"C:\TEMP\result_2.txt", 'w')
-    for i in jT:
-        g.write("-----------\n")
-        for j in i:
-            g.write(str(j))
+    journalTrackPrint(jT, g)
     
     g.close()
     f.close()

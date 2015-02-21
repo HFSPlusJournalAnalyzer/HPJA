@@ -367,15 +367,15 @@ def getVolumeHeader(vh_binary):
 
 def getparseInfo(journal_blob):
     sfLoc = {}
-    vh_samInd = journal_blob.find("H+")
+    vh_samInd = journal_blob.find("H+\x00\x04")
     jnl = memoryview(journal_blob)
     j_header = getJournalHeader(jnl)
     sect_size = j_header.jhdr_size
     vh = getVolumeHeader(journal_blob[vh_samInd:vh_samInd+sect_size])
-    sfLoc['AllocationFile'] = vh.allocationFile.extents
-    sfLoc['ExtentsFile'] = vh.extentsFile.extents
-    sfLoc['CatalogFile'] = vh.catalogFile.extents
-    sfLoc['AttributesFile'] = vh.attributesFile.extents
+    sfLoc['Allocation'] = vh.allocationFile.extents
+    sfLoc['Extents'] = vh.extentsFile.extents
+    sfLoc['Catalog'] = vh.catalogFile.extents
+    sfLoc['Attributes'] = vh.attributesFile.extents
     blockMag = vh.blockSize/sect_size
     return parseInfo(sect_size, blockMag, sfLoc)
     

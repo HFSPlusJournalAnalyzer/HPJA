@@ -27,7 +27,7 @@ VolumeHeader = namedtuple("VolumeHeader", ['signature','version','attributes','l
 '''
 
 class ExtentDescriptor(namedtuple("ExtentDescriptor", ['startBlock','blockCount'])):
-    __slot__ = ()
+    __slots__ = ()
     def isIn(self, bnum):
         return 0 <= bnum - self.startBlock <= self.blockCount - 1
     

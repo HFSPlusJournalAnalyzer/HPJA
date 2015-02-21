@@ -25,16 +25,17 @@ class JournalPattern:
     def hasPattern(self, dataChange):
         return self.pattern == getCatalPattern(dataChange)
 
-PatternSet = [JournalPattern('Insert', [0,0,0,0,0,0,1,0]),
-              JournalPattern('Remove', [0,0,0,0,0,1,0,0]),
-              JournalPattern('Read/Modify', [1,1,1,0,0,0,0,0]),
+PatternSet = [JournalPattern('Insert', (0,0,0,0,0,0,1,0)),
+              JournalPattern('Remove', (0,0,0,0,0,1,0,0)),
+              JournalPattern('Read/Modify', (1,1,1,0,0,0,0,0)),
               JournalPattern('Read/Modify', [1,1,1,0,1,0,0,0]),
               JournalPattern('Read/Modify', [1,1,1,0,-1,0,0,0]),
               JournalPattern('Modify(no size change)', [1,1,0,0,0,0,0,0]),
               JournalPattern('Modify(size extended)', [1,1,0,1,1,0,0,0]),
               JournalPattern('Modify(size extended)', [1,1,0,1,0,0,0,0]),
               JournalPattern('Read', [0,0,1,0,0,0,0,0]),
-              JournalPattern('Read/Modify', [0,0,1,-2,-2,0,0,0])
+              JournalPattern('Read/Modify', [0,0,1,-2,-2,0,0,0]),
+              
               ]    
 
 def getCatalPattern(CataldataChange):
@@ -80,7 +81,7 @@ def refineTrack(journalTrack):
     
     refPass2 = []
     for i in refPass1:
-        temp = [j for j in i if j.type == "CatalogFile"]
+        temp = [j for j in i if j.type == "Catalog"]
         if temp != []:
             refPass2.append(temp)
             
