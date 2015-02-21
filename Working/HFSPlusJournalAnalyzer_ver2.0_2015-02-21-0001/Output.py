@@ -1,26 +1,33 @@
 import sqlite3
 from HFSPlus_sStructure import *
 from collections import *
+from HFSPlus_GetInstance import *
+from types import *
 
-def genTypes(seq,seen):
+def genTypes(seen,prefix,*standard):
     seen_add = seen.add
     types=[]
-    for i in seq:
-        try:
-            types+=genTypes(i._fields,seen)
+    for i in standard:
+        for j,k in i.__dict__.iteritems():
+            j=prefix+j
+            try:
+                k.__dict__
+                types+=genTypes(seen,j+'/',k)
 
-        except AttributeError:
-            if not i in seen:
-                types.append(i)
-                seen_add(i)
+            except AttributeError:
+                if not j in seen:
+                    types.append(j)
+                    seen_add(j)
 
     return types
 
-def getTypesNFields(data):
+def getTypesNFields(data,prefix):
     typesNFields=[]
-    for i,j in data.iteritems():
+    for i,j in data.__dict__.iteritems():
+        i=prefix+i
         try:
-            typesNFields+=getTypesNFields(j.__dict__)
+            j.__dict__
+            typesNFields+=getTypesNFields(j,i+'/')
 
         except AttributeError:
             typesNFields.append((i,j))
@@ -29,14 +36,26 @@ def getTypesNFields(data):
 
 def getRow(data,types):
     fields=OrderedDict([(i,'') for i in types])
-    for i,j in getTypesNFields(data):
+    for i,j in getTypesNFields(data.record,''):
         fields[i]=j
+    if 'recordType' in fields and (fields['recordType']==3 or fields['recordType']==4):
+        for i,j in getTypesNFields(data.key,''):
+            if i!='nodeName/nameLen' and i!='nodeName/nodeUnicode':
+                if i=='parentID':
+                    fields['CNID']=j
+                else:
+                    fields[i]=j
+    else :
+        for i,j in getTypesNFields(data.key,''):
+            fields[i]=j
+        
+                    
     return fields.values()
 
-
-CatalogLeafTypes=genTypes(CatalogKey._fields+CatalogFile._fields+CatalogFolder._fields+CatalogThread._fields,set())
-ExtentsLeafTypes=genTypes(ExtentsKey._fields+ExtentsDataRec._fields,set())
-AttrLeafTypes=genTypes(AttrKey._fields+AttrForkData._fields+AttrExtents._fields+AttrData._fields,set())
+emptyString=300*'\x00'
+CatalogLeafTypes=genTypes(set(),'',getCatalogKey(emptyString),getCatalogFile(emptyString),getCatalogFolder(emptyString),getCatalogThread(emptyString))
+ExtentsLeafTypes=genTypes(set(),'',getExtentsKey(emptyString),ExtentsDataRec(getExtentDescriptor(emptyString),getExtentDescriptor(emptyString),getExtentDescriptor(emptyString),getExtentDescriptor(emptyString),getExtentDescriptor(emptyString),getExtentDescriptor(emptyString),getExtentDescriptor(emptyString),getExtentDescriptor(emptyString)))
+AttrLeafTypes=genTypes(set(),'',getAttributesKey(emptyString),getAttributesForkData(emptyString),getAttributesExtents(emptyString),getAttributesData(emptyString))
 
 def temp(path,jParseList):
 
@@ -64,8 +83,6 @@ def outputNode(f,blocks):
 
     for i in range(len(blocks)):
 
-        print type(blocks[i])
-
         try:
 
             records=blocks[i].LeafRecList
@@ -73,11 +90,10 @@ def outputNode(f,blocks):
             for j in range(len(records)):
 
                 index=records[j].getType()
-                print index
                 lf=getRow(records[j],leafNodeTypes[index])
 
                 for k in lf:
-                    f[index].write((unicode(lf).replace(',','","')+',').encode('utf-8'))
+                    f[index].write((unicode(k).replace(',','","')+',').encode('utf-8'))
                 f[index].write('\n')
 
         except AttributeError:
@@ -89,7 +105,7 @@ def rawCSV(path,jParseList):
     f={}
     for i in ['Catalog','Extents','Attributes']:
         f[i]=open('{0}/{1}.csv'.format(path,i),'w')
-        for j in leafNodeTypes:
+        for j in leafNodeTypes[i]:
             f[i].write('{0},'.format(j))
         f[i].write('\n')
 
@@ -107,7 +123,7 @@ def rawSQLite3(path,jParseList):
     cur=con.cursor()
 
     for i in ['Catalog','Extents','Attributes']:
-        cur.execute('CREATE TABLE {0} {1}'.format(i,tuple(leafNodeTypes)).replace("'",''))
+        cur.execute('CREATE TABLE {0} {1}'.format(i,tuple(leafNodeTypes[i])))
 
     for i in range(1,len(jParseList)):
 
@@ -120,11 +136,19 @@ def rawSQLite3(path,jParseList):
 
                 for k in range(len(records)):
 
-                    index=records[j].getType()
-                    lf=getRow(records[j],leafNodeTypes[index])
+                    index=records[k].getType()
+                    lf=getRow(records[k],leafNodeTypes[index])
                     
                     print lf
-                    cur.execute(u'insert into {0} values {1}'.format(index,tuple(lf)).replace('[','(').replace(']',')'))
+
+                    for i in range(len(lf)):
+                        if type(lf)==StringType or type(lf)==UnicodeType:
+                            lf=lf.replace("'","''")
+                        elif type(lf)==TupleType:
+                            lf=unicode(lf)
+                        lf[i]=lf[i].replace("'","''")
+
+                    cur.execute(u'insert into {0} values {1}'.format(index,tuple(lf)).replace('"',"'"))
 
             except AttributeError:
                 pass

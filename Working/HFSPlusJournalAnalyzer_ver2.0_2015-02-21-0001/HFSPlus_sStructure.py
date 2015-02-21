@@ -1,6 +1,5 @@
 from collections import namedtuple
 
-
 JournalHeader = namedtuple("JournalHeader", ['magic','endian','start','end','size','blhdr_size','checksum','jhdr_size'])
 # endian contains '>' or '<' (instead of 0x12345678; the original value) 
 
@@ -28,8 +27,7 @@ VolumeHeader = namedtuple("VolumeHeader", ['signature','version','attributes','l
 '''
 
 class ExtentDescriptor(namedtuple("ExtentDescriptor", ['startBlock','blockCount'])):
-    __slot__ = ()
-
+    __slots__ = ()
     def isIn(self, bnum):
         return 0 <= bnum - self.startBlock <= self.blockCount - 1
     
@@ -41,7 +39,7 @@ class BTPointer(namedtuple("BTPointer", ['nodeNumber'])):
         return 4
     
     def getAbsT(self):
-        return ("nodeNumber=%d" %self.nodeNumber,)
+        return {"nodeNumber":self.nodeNumber}
     
 
 BSDInfo = namedtuple("BSDInfo", ['ownerID', 'groupID', 'adminFlags', 'ownerFlags', 'fileMode', 'special'])
@@ -62,7 +60,7 @@ class BTRecord(namedtuple("BTRecord", ['key', 'record'])):
         return tMap[keyType]
     
     def getAbs(self):
-        return self.key.getAbsT() + self.record.getAbsT()
+        return dict(self.key.getAbsT().items() + self.record.getAbsT().items())
     
 '''
 Finder
@@ -92,10 +90,10 @@ class CatalogKey(namedtuple("CatalogKey", ["keyLength", "parentID", "nodeName"])
         return hash((self.keyLength, self.nodeName))
     
     def getAbsT(self):
-        return ("nodeName=%s" %(self.nodeName.nodeUnicode),)
+        return {"nodeName":self.nodeName.nodeUnicode, 'thID': self.parentID}
      
 sCatalogFolder = namedtuple('CatalogFolder', ['recordType', 'flags', 
-                                             'valence', 'folderID', 
+                                             'valence', 'CNID', 
                                              'createDate', 'contentModDate', 'attributeModDate', 'accessDate', 'backupDate', 
                                              'permissions','userInfo','finderInfo',
                                              'textEncoding', 'reserved'])
@@ -105,16 +103,16 @@ class CatalogFolder(sCatalogFolder):
         return 88
     
     def __eq__(self, other):
-        return ((self.recordType == other.recordType) and (self.folderID == other.folderID))
+        return ((self.recordType == other.recordType) and (self.CNID == other.CNID))
     
     def __hash__(self):
-        return hash((self.recordType, self.folderID))
+        return hash((self.recordType, self.CNID))
     
     def getAbsT(self):
-        return ('folder', 'ID=%d' %self.folderID)
+        return {"type":'folder', 'ID': self.CNID}
 
 sCatalogFile = namedtuple('CatalogFolder', ['recordType', 'flags', 
-                                             'reserved1', 'fileID', 
+                                             'reserved1', 'CNID', 
                                              'createDate', 'contentModDate', 'attributeModDate', 'accessDate', 'backupDate', 
                                              'permissions', 'userInfo', 'finderInfo',
                                              'textEncoding', 'reserved2',
@@ -126,14 +124,14 @@ class CatalogFile(sCatalogFile):
         return 248
     
     def __eq__(self, other):
-        return ((self.recordType == other.recordType) and (self.fileID == other.fileID))
+        return ((self.recordType == other.recordType) and (self.CNID == other.CNID))
     
     def __hash__(self):
-        return hash((self.recordType, self.fileID))
+        return hash((self.recordType, self.CNID))
     
     def getAbsT(self):
-        return ('file', "ID=%d" %self.fileID)
-
+        return {'type':'file',"ID" : self.CNID}
+    
 class CatalogThread(namedtuple("CatalogThread", ['recordType', 'reserved', 'parentID', 'nodeName'])):
     __slots__ = ()
     def __len__(self):
@@ -146,7 +144,7 @@ class CatalogThread(namedtuple("CatalogThread", ['recordType', 'reserved', 'pare
         return hash((self.recordType, self.nodeName))
     
     def getAbsT(self):
-        return ('thread', "parID=%d" %self.parentID, "nodeName=%s" %self.nodeName.nodeUnicode)
+        return {'type': 'thread', "parID" : self.parentID, "nodeName" : self.nodeName.nodeUnicode}
     
 '''
 Extents Overflow Files
@@ -160,7 +158,7 @@ class ExtentsKey(namedtuple('ExtentKey',["keyLength",'forkType','pad','fileID','
     def __hash__(self):
         return hash((self.forkType, self.fileID))
     def getAbsT(self):
-        return ("forkType=%d" %self.forkType, "fileID=%d" %self.fileID)
+        return {"forkType":self.forkType, "fileID" : self.fileID}
 
 class ExtentsDataRec(namedtuple('ExtentsDataRec',['extent0','extent1','extent2','extent3',
                                                   'extent4','extent5','extent6','extent7',])):
@@ -172,7 +170,7 @@ class ExtentsDataRec(namedtuple('ExtentsDataRec',['extent0','extent1','extent2',
     def __hash__(self):
         return 1
     def getAbsT(self):
-        return ()
+        return {}
 
 '''
 Attribute Files
@@ -192,7 +190,7 @@ class AttrKey(namedtuple('AttrKey',["keyLength",'pad','fileID','startBlock','att
         return hash((self.keyLength, self.fileID, self.startBlock, self.attrName))
     
     def getAbsT(self):
-        return ("fileID=%d" %self.fileID, "attrName=%s" %self.attrName)
+        return {"fileID": self.fileID, "attrName": self.attrName}
     
 class AttrForkData(namedtuple('AttrForkData',['recordType','reserved','theFork'])):
     __slots__ = ()
@@ -203,7 +201,7 @@ class AttrForkData(namedtuple('AttrForkData',['recordType','reserved','theFork']
     def __hash__(self):
         return hash(self.recordType)
     def getAbsT(self):
-        return ("Fork",)
+        return {'type': 'Fork'}
 
 class AttrExtents(namedtuple('AttrExtents',['recordType','reserved', 'extents'])):
     __slots__ = ()
@@ -214,10 +212,10 @@ class AttrExtents(namedtuple('AttrExtents',['recordType','reserved', 'extents'])
     def __hash__(self):
         return hash(self.recordType)
     def getAbsT(self):
-        return ("extents",)
+        return {'type': "extents"}
 
 class AttrData(namedtuple('AttrData',['recordType', 'reserved', 'attrSize', 'attrData'])):
-    __slots__=()
+    __slots__ = ()
     def __len__(self):
         return 16 + self.attrSize + self.attrSize%2
     def __eq__(self, other):
@@ -225,9 +223,10 @@ class AttrData(namedtuple('AttrData',['recordType', 'reserved', 'attrSize', 'att
     def __hash__(self):
         return hash((self.recordType, self.attrSize, self.attrData.tobytes()))
     def getAbsT(self):
-        return ("InlineData",)
+        return {'type' :"InlineData"}
 
 # User data structure
+    
 LeafNode = namedtuple("LeafNode", ['NodeDescriptor', 'LeafRecList'])
 HeaderNode = namedtuple("HeaderNode", ['NodeDescriptor', 'BTHeaderRec', 'UserDataRec', 'MapRec'])
 IndexNode = namedtuple("IndexNode", ['NodeDescriptor', 'PointerRecList'])

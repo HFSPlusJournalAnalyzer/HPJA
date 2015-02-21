@@ -5,68 +5,95 @@ Created on 2015. 2. 8.
 '''
 from HFSPlus_ParseModule import *
     
-    
 '''
 Classes
 '''
-class JournalChange:
-    changeType = None
-    parAtt = ''
-    curAtt = ''
-    changeInfo = None
+
+class newObjectInfo:
+    def __init__(self, object, bNum, name):
+        self.object = object
+        self.bNum = bNum
+        self.__name__ = name
     
-    def __init__(self, changeType, parAtt='', curAtt='', changeInfo=None):
-        typeList = ["Insert", "Remove", "Modify", "Renewal"]
-        infoDict = {'Insert':objectChangeInfo, 'Remove':objectChangeInfo,
-                    'Modify':valueChangeInfo, 'Renewal':renewalChangeInfo}
-        self.changeType = changeType
-        self.parAtt = parAtt
-        self.curAtt = curAtt
-        self.changeInfo = changeInfo
-        assert changeType in typeList
-        assert changeInfo.__class__ == infoDict[changeType]
+    def __str__(self):
+        return "[NEW] %s %s\n" %(hex(self.bNum), self.__name__)
+    
+    def getStr(self, tabCount):
+        return " "*tabCount + "[NEW] %s %s\n" %(hex(self.bNum), self.__name__)
+    
+class dataChangeHead:
+    def __init__(self, bNum, type, chList):
+        self.bnum, self.type = bNum, type
+        self.chList = chList
         
     def __str__(self):
-        return self.changeType+ " " + self.parAtt + " " + self.curAtt + " " + str(self.changeInfo)
+        str_ch = "@%s %s-----------------------------\n" %(hex(self.bnum), self.type)
+        for i in self.chList:
+            str_ch += "%s" %str(i)
+        return str_ch
+        
+class dataChange:
+    def __init__(self, nData, chList, parent):
+        self.nData, self.chList, self.parent = nData, chList, parent
+    
+    def __str__(self):
+        return self.getStr(1)
+        
+    def getStr(self, tabCount):
+        str_ch = " "*tabCount + "%s\n" %str(self.nData)
+        for i in self.chList:
+            str_ch += "%s" %i.getStr(tabCount+1)
+        return str_ch
     
 class valueChangeInfo:
-    before = 0
-    after = 0
-    diff = 0
-    def __init__(self, before, after):
+    def __init__(self, attName, before, after):
+        self.__name__ = attName
         self.before = before
         self.after = after
         self.diff = self.after - self.before
-        
+    
     def __str__(self):
-        return "%d -> %d" % (self.before, self.after)
+        return "[Modify] %s\t%d -> %d\n" % (self.__name__, self.before, self.after)
+        
+    def getStr(self, tabCount):
+        return " "*tabCount + "[Modify] %s\t%d -> %d\n" % (self.__name__, self.before, self.after)
         
 class renewalChangeInfo:
-    before = 0
-    after = 0
     renewal = False
-    def __init__(self, before, after):
+    def __init__(self, attName, before, after):
+        self.__name__ = attName
         self.before = before
         self.after = after
         if before != after:
             self.renewal = True
     
     def __str__(self):
-        return "renewal"
+        if "Date" in self.__name__:
+            return "[Renewal] %s\t%s -> %s\n" %(self.__name__ , getHFSTime(self.before), getHFSTime(self.after)) 
+        return "[Renewal] %s\n" %self.__name__
+    
+    def getStr(self, tabCount):
+        if "Date" in self.__name__:
+            return " "*tabCount + "[Renewal] %s\t%s -> %s\n" %(self.__name__ , getHFSTime(self.before), getHFSTime(self.after)) 
+        return " "*tabCount + "[Renewal] %s\n" %self.__name__
 
 class objectChangeInfo:
-    object = None
-    absData = None
-    def __init__(self, object, absData):
+    def __init__(self, chType, object, absData=None):
+        assert chType in ['Insert', 'Remove']
+        self.chType = chType
         self.object = object
         self.absData = absData
         
     def __str__(self):
         if self.absData == None:
-            return self.object.__class__.__name__
-        return str(self.absData)
-
-
+            return "[%s] %s\n" %(self.chType, self.object.__class__.__name__)
+        return "[%s] %s\n" %(self.chType, str(self.absData)) 
+    
+    def getStr(self, tabCount):
+        if self.absData == None:
+            return " "*tabCount + "[%s] %s\n" %(self.chType, self.object.__class__.__name__)
+        return " "*tabCount + "[%s] %s\n" %(self.chType, str(self.absData))
+    
 '''
 Main Tracking function
 '''
@@ -79,7 +106,7 @@ def journalTrack(j_parseList, pInfo):
     for trans in transList:
         ch_bucket = transTrack(trans, pInfo)
         changeLog.append(ch_bucket)
-        
+            
     return changeLog
 
 '''
@@ -89,88 +116,94 @@ def transTrack(trans, pInfo):
     blockListHeader, bi_List, data_List = trans
     changes = []
     for i in range(len(data_List)):
-        changes.extend(block_check(bi_List[i], data_List[i], pInfo))
+        temp = block_check(bi_List[i], data_List[i], pInfo)
+        if temp != None: changes.append(temp)
     return changes
 
 def block_check(b_info, data, pInfo):
     global cursur
+    data_sNum = b_info.bnum / pInfo.blockMag
+    curSType = detBlockType(data_sNum, pInfo.sfLoc)
+    if curSType == "":
+        curSType = "VolumeHeader"
     try:
         p_data = cursur[b_info.bnum]
     except KeyError:
         cursur[b_info.bnum] = data
-        curSType = None
-        data_sNum = b_info.bnum / pInfo.blockMag
-        for s in pInfo.sfLoc:
-            for e in pInfo.sfLoc[s]:
-                if e.isIn(data_sNum):
-                    curSType = s
-                    break
-            if curSType != None:
-                break
-            
-        d_chInfo = objectChangeInfo(data, curSType)
-        j_ch = JournalChange("Insert", '', hex(b_info.bnum), d_chInfo)
-        return [j_ch]
-    classType = data.__class__.__name__
-    cursur[b_info.bnum] = data
-    return data_diff(p_data, data, hex(b_info.bnum), classType)
+        
+        d_chInfo = newObjectInfo(data, b_info.bnum, curSType)
+        return d_chInfo
     
-def data_diff(original, changed, parType='', curType=''):
+    cursur[b_info.bnum] = data
+    
+    if (data.__class__ == Binary) and (p_data != data):
+        return renewalChangeInfo(data.__name__, p_data, data)
     
     try:
-        assert original.__class__ == changed.__class__
-    except(AssertionError):
-        o_chInfo = objectChangeInfo(original, original.__class__.__name__)
-        o_j_ch = JournalChange("Remove", parType, curType, o_chInfo)
-        c_chInfo = objectChangeInfo(changed, changed.__class__.__name__)
-        c_j_ch = JournalChange("Insert", parType, curType, c_chInfo)
-        return [o_j_ch, c_j_ch]
-    dType = original.__class__
+        assert p_data.__class__.__name__ == data.__class__.__name__
+    except(AssertionError): 
+        return newObjectInfo(data, b_info.bnum, data.__class__.__name__ )
+    
+    attList = data._fields
+    curCh = []
+    chHead = dataChangeHead(b_info.bnum, curSType, curCh)
+    for att in attList:
+        temp = getDataDiff(getattr(p_data, att), getattr(data, att), att, chHead)
+        if temp != None: curCh.append(temp)
+    if len(curCh) == 0: return None
+    return chHead
+
+def getDataDiff(orgBlock, chgBlock, attName, parent):
+    bType= orgBlock.__class__
     result = []
     
-    if dType in [int, long]:
-        if original == changed: return []
-        if "Date" in curType:
-            r_chInfo = renewalChangeInfo(original, changed)
-            j_ch = JournalChange("Renewal", parType, curType, r_chInfo)
+    if bType in [str, unicode]: return None
+    
+    if bType in [int, long]:
+        if orgBlock == chgBlock: return None 
+        if "Date" in attName:
+            chInfo = renewalChangeInfo(attName, orgBlock, chgBlock)
         else:
-            v_chInfo = valueChangeInfo(original, changed)
-            j_ch = JournalChange("Modify", parType, curType, v_chInfo)
-        return [j_ch]
+            chInfo = valueChangeInfo(attName, orgBlock, chgBlock)
+        return chInfo
     
-    if dType == tuple:
+    if bType == Binary:
+        if orgBlock == chgBlock: return None
+        chInfo = renewalChangeInfo(chgBlock.__name__, orgBlock, chgBlock)
+        return chInfo
+    
+    if bType == tuple:
         count = 0
-        for i, j in zip(original, changed):
-            result.extend(data_diff(i, j, curType, curType + "_%d" % count))
+        cList = []
+        for i, j in zip(orgBlock, chgBlock):
+            temp = getDataDiff(i, j, attName+"_%d" %count, parent)
+            if temp != None:
+                cList.append(temp)
             count += 1
-        return result
+        if len(cList) == 0:
+            return None
+        return dataChange(attName, cList, parent)
     
-    if dType == list:
-        result.extend(compCatalog(original, changed, parType, curType))
-        return result
+    if bType == list:
+        temp = compCatalog(orgBlock, chgBlock, parent)
+        if len(temp) == 0:
+            return None
+        return dataChange(attName, temp, parent)
     
-    if dType == memoryview:
-        if original == changed: return []
-        r_chInfo = renewalChangeInfo(original, changed)
-        j_ch = JournalChange("Renewal", parType, curType, r_chInfo)
-        return [j_ch]
-    
-    if dType in [unicode, str]:
-        return []
-    
-    attList = original._fields
+    attList = orgBlock._fields
     for att in attList:
         next = att
         try:
-            if getattr(getattr(original,att), 'getAbs'):
-                next = getattr(original,att).getAbs()
+            if getattr(getattr(orgBlock,att), 'getAbs'):
+                next = getattr(orgBlock,att).getAbs()
         except(AttributeError):
-            pass        
-        result.extend(data_diff(getattr(original,att), getattr(changed, att), parType+"\\"+str(curType), next))
-    return result
-    
-    
-def compCatalog(original, changed, parType, curType):
+            pass
+        temp = getDataDiff(getattr(orgBlock,att), getattr(chgBlock, att), next, parent)
+        if temp != None: result.append(temp)
+    if len(result) == 0: return None
+    return dataChange(attName, result, parent)
+
+def compCatalog(original, changed, parent):
     orgSet = set(original)
     chgSet = set(changed)
     insList = chgSet - orgSet
@@ -179,36 +212,41 @@ def compCatalog(original, changed, parType, curType):
     result = []
             
     for i in insList:
-        chInfo = objectChangeInfo(i, i.getAbs())
-        j_ch = JournalChange("Insert", parType+"\\"+curType, "", chInfo)
-        result.append(j_ch)
+        chInfo = objectChangeInfo("Insert", i, i.getAbs())
+        result.append(chInfo)
     
     for r in remList:
-        chInfo = objectChangeInfo(r, r.getAbs())
-        j_ch = JournalChange("Remove", parType+"\\"+curType, "", chInfo)
-        result.append(j_ch)
+        chInfo = objectChangeInfo("Remove", r, r.getAbs())
+        result.append(chInfo)
         
     for m in modList:
         m_org = [x for x in original if m == x][0]
         m_chg = [x for x in changed if m == x][0]
-        result.extend(data_diff(m_org, m_chg, parType+"\\"+curType, m_org.getAbs()))
-        
+        temp = getDataDiff(m_org, m_chg, m_chg.getAbs(), parent)
+        if temp != None:
+            result.append(temp)
+            
     return result
 
+def journalTrackPrint(journalTrack, fd):
+    count = 1
+    for i in journalTrack:
+        fd.write("trans_%d=================================\n" %count)
+        for j in i:
+            fd.write(str(j))
+        count += 1
+    
 '''
 main
 '''
 
 def main():
-    f = open(r"C:\Users\user\Desktop\Journal=t", 'rb')
+    f = open(r"C:\Users\user\Desktop\Journal_2", 'rb')
     s = f.read()
     jPList, pInfo = journalParser(s)[:2]
     jT = journalTrack(jPList, pInfo)
     g = open(r"C:\TEMP\result_2.txt", 'w')
-    for i in jT:
-        g.write("-----------\n")
-        for j in i:
-            g.write(str(j)+"\n")
+    journalTrackPrint(jT, g)
     
     g.close()
     f.close()

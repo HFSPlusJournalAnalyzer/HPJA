@@ -4,6 +4,7 @@ Created on 2015. 2. 8.
 @author: biscuit
 '''
 from HFSPlus_GetInstance import *
+from datetime import datetime, timedelta 
 
 etcData = []
 
@@ -53,6 +54,16 @@ def getBufContent(buf, start, end):
     if end < start:
         return memoryview( buf[start:].tobytes() + buf[:end].tobytes() )
     else: return buf[start:end]
+    
+def detBlockType(secNumber, sfLocDict):
+    for s in sfLocDict:
+        for e in sfLocDict[s]:
+            if e.isIn(secNumber):
+                return s
+    return ''
+
+def getHFSTime(localTimeSec):
+    return (datetime(1904,1,1) + timedelta(seconds=localTimeSec)).isoformat(" ")
 
 def journalBufferParser(j_buffer, JournalHeader, startOffset, parseList, bOffList, pInfo):
     if startOffset == (JournalHeader.end - pInfo.sect_size): # -0x200 for Journal Header area
@@ -105,14 +116,7 @@ def getDataBlock(data_block, BlockInfo, pInfo, offset):
     global etcData
     data_sNum = BlockInfo.bnum / pInfo.blockMag
     
-    curSType = ""
-    for s in pInfo.sfLoc:
-        for e in pInfo.sfLoc[s]:
-            if e.isIn(data_sNum):
-                curSType = s
-                break
-        if curSType != "":
-            break
+    curSType = detBlockType(data_sNum, pInfo.sfLoc)
         
     raw_data = data_block.tobytes()
     if "H+\x00\x04" in raw_data:
@@ -120,13 +124,13 @@ def getDataBlock(data_block, BlockInfo, pInfo, offset):
         VolHead = getVolumeHeader(data_block[vh_off:vh_off+0x200])
         d_bOff = bOffsetInfo(vh_off, vh_off+0x200, None, VolHead, "VolumeHeader", offset)
         return VolHead, d_bOff
-    if curSType == 'AllocationFile':
+    if curSType == 'Allocation':
         d_bOff = bOffsetInfo(0, BlockInfo.bsize, None, None, "Allocation", offset)  # memoryview
-        return data_block, d_bOff
+        return Binary(data_block,"Allocation"), d_bOff
      
-    kindDict = {'CatalogFile': [getCatalogLeaf, getCatalogIndex],
-                'ExtentsFile': [getExtentsLeaf, getExtentsIndex],
-                'AttributesFile': [getAttributesLeaf, getAttributesIndex] }
+    kindDict = {'Catalog': [getCatalogLeaf, getCatalogIndex],
+                'Extents': [getExtentsLeaf, getExtentsIndex],
+                'Attributes': [getAttributesLeaf, getAttributesIndex] }
     
     strList = ["Leaf", "Index", "Header", "Map"]
     
@@ -143,11 +147,11 @@ def getDataBlock(data_block, BlockInfo, pInfo, offset):
     return nodeData, d_bOff
 
 def main():
-    f = open(r"C:\Users\user\Desktop\Journal_4", 'rb')
+    f = open(r"C:\Users\user\Desktop\Journal_1111", 'rb')
     s = f.read()
     jParseList, pInfo, bOffList = journalParser(s)
-    g = open(r"C:\TEMP\Result2-1.txt", 'w')
-    h = open(r"C:\TEMP\Result2-2.txt", 'w')
+    g = open(r"C:\TEMP\Result1111-1.txt", 'w')
+    h = open(r"C:\TEMP\Result1111-2.txt", 'w')
     for i in jParseList:
         g.write("-----------\n")
         for j in i:

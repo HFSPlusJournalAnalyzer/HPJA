@@ -1,10 +1,28 @@
 from struct import *
 import HFSPlus_sStructure as ss
 from collections import namedtuple
-from Utility import *
 
 parseInfo = namedtuple("parseInfo", ['sect_size', 'blockMag', 'sfLoc'])
 bOffsetInfo = namedtuple("bOffsetInfo", ['start', 'end', 'contain', 'data', 'name', 'offset'])
+
+class Binary:
+    data = None
+    def __init__(self, data, name):
+        self.data = data
+        self.__name__ = name
+    
+    def __len__(self):
+        return len(data)
+    
+    def tobytes(self):
+        try:
+            assert type(self.data) == memoryview
+            return self.data.tobytes()
+        except(AssertionError):
+            return str(self.data)
+    
+    
+    
 # variable for storing a sector size 
 # variable for storing a magnification of block from sect_size (blockSize/sect_size)
 # dict for storing the location of special files
@@ -239,18 +257,21 @@ def getAttributesKey(ak_binary):
 def getAttributesData(ad_binary):
     vec = list(unpack_from(">IQI", ad_binary))
     attrSize = vec[-1]
-    attrData =unpackLarge_from(ad_binary,16,attrSize)
-    vec.append(attrData)
+    temp=[]
+    for i in ad_binary[16:16+attrSize]:
+        temp.append(ord(i))
+    attrData =tuple(temp)
+    vec.append(Binary(attrData, "attrData"))
     return ss.AttrData(*vec)
 
 def getAttributesForkData(af_binary):
-    recordType, res = unpack_from(">II", ad_binary)
+    recordType, res = unpack_from(">II", af_binary)
     fd = getForkData(af_binary[8:])
     return ss.AttrForkData(recordType, res, fd)
 
 def getAttributesExtents(ae_binary):
-    recordType, res = unpack_from(">II", ad_binary)
-    rec_binary = ad_binary[8:]
+    recordType, res = unpack_from(">II", ae_binary)
+    rec_binary = ae_binary[8:]
     ext = []
     for i in range(8):
         temp = rec_binary[16+8*i:16+8*(i+1)]
@@ -309,8 +330,8 @@ def getHeaderNode(ch_binary):
     nd = getNodeDescriptor(ch_buf)
     hr = getBTHeaderRec(ch_buf[14:])
     ch_buf = ch_buf[120:]
-    udr = ch_buf[:128]
-    mr = ch_buf[128:-8]
+    udr = Binary(ch_buf[:128],"userDataRecord")
+    mr = Binary(ch_buf[128:-8],"mapRecord")
     return ss.HeaderNode(nd, hr, udr, mr)
 
 def getMapNode(mn_binary):
@@ -320,7 +341,7 @@ def getMapNode(mn_binary):
     for i in range(nd.numRecords):
         offset = unpack(">H", mn_buf[-2*i-4:-2*i-2])[0]
         offsetList.append(offset)
-    mr = mn_buf[14:offsetList[1]]
+    mr = Binary(mn_buf[14:offsetList[1]],"mapRecord")
     return ss.MapNode(nd, mr)
 
 '''
@@ -349,15 +370,15 @@ def getVolumeHeader(vh_binary):
 
 def getparseInfo(journal_blob):
     sfLoc = {}
-    vh_samInd = journal_blob.find("H+")
+    vh_samInd = journal_blob.find("H+\x00\x04")
     jnl = memoryview(journal_blob)
     j_header = getJournalHeader(jnl)
     sect_size = j_header.jhdr_size
     vh = getVolumeHeader(journal_blob[vh_samInd:vh_samInd+sect_size])
-    sfLoc['AllocationFile'] = vh.allocationFile.extents
-    sfLoc['ExtentsFile'] = vh.extentsFile.extents
-    sfLoc['CatalogFile'] = vh.catalogFile.extents
-    sfLoc['AttributesFile'] = vh.attributesFile.extents
+    sfLoc['Allocation'] = vh.allocationFile.extents
+    sfLoc['Extents'] = vh.extentsFile.extents
+    sfLoc['Catalog'] = vh.catalogFile.extents
+    sfLoc['Attributes'] = vh.attributesFile.extents
     blockMag = vh.blockSize/sect_size
     return parseInfo(sect_size, blockMag, sfLoc)
     
