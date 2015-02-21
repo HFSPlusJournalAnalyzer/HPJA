@@ -2,61 +2,41 @@ import sqlite3
 from HFSPlus_sStructure import *
 from collections import *
 
-def listDedupl(seq):
-    seen = set()
+def genTypes(seq,seen):
     seen_add = seen.add
-    return [ x for x in seq if not (x in seen or seen_add(x))]
+    types=[]
+    for i in seq:
+        try:
+            types+=genTypes(i._fields,seen)
 
-CatalogLeaf=namedtuple('CatalogLeaf',listDedupl(CatalogKey._fields+CatalogFile._fields+CatalogFolder._fields+CatalogThread._fields))
-ExtentsLeaf=namedtuple('ExtentsLeaf',listDedupl(ExtentsKey._fields+ExtentsDataRec._fields))
-AttrLeaf=namedtuple('AttrLeaf',listDedupl(AttrKey._fields+AttrForkData._fields+AttrExtents._fields+AttrData._fields))
+        except AttributeError:
+            if not i in seen:
+                types.append(i)
+                seen_add(i)
 
-def getCatalogLeaf(cdr):
+    return types
 
-    vec=OrderedDict([(i,'') for i in CatalogLeaf._fields])
+def getTypesNFields(data):
+    typesNFields=[]
+    for i,j in data.iteritems():
+        try:
+            typesNFields+=getTypesNFields(j.__dict__)
 
-    if cdr.record.recordType<3:
+        except AttributeError:
+            typesNFields.append((i,j))
 
-        for i in cdr.key._fields:
-            vec[i]=cdr.key.__dict__[i]
+    return typesNFields
 
-    elif cdr.record.recordType==3:
-        vec['folderID']=cdr.key.parentID
-
-    else:
-        vec['fileID']=cdr.key.parentID
-
-    for i in cdr.record._fields:
-        vec[i]=cdr.record.__dict__[i]
-
-    return CatalogLeaf(*vec.values())
-
-
-def getExtentsLeaf(edr):
-
-    vec=OrderedDict()
-
-    for i in edr.key._fields:
-        vec[i]=edr.key.__dict__[i]
-
-    for i in edr.record._fields:
-        vec[i]=edr.record.__dict__[i]
-
-    return ExtentsLeaf(*vec.values())
+def getRow(data,types):
+    fields=OrderedDict([(i,'') for i in types])
+    for i,j in getTypesNFields(data):
+        fields[i]=j
+    return fields.values()
 
 
-def getAttrLeaf(adr):
-
-    vec=OrderedDict([(i,'') for i in AttrLeaf._fields])
-
-    for i in adr.key._fields:
-        vec[i]=adr.key.__dict__[i]
-
-    for i in adr.record._fields:
-        vec[i]=adr.record.__dict__[i]
-
-    return AttrLeaf(*vec.values())
-
+CatalogLeafTypes=genTypes(CatalogKey._fields+CatalogFile._fields+CatalogFolder._fields+CatalogThread._fields,set())
+ExtentsLeafTypes=genTypes(ExtentsKey._fields+ExtentsDataRec._fields,set())
+AttrLeafTypes=genTypes(AttrKey._fields+AttrForkData._fields+AttrExtents._fields+AttrData._fields,set())
 
 def temp(path,jParseList):
 
@@ -78,8 +58,7 @@ def volumeInfo(path,vh):
     
     f.close()
 
-leafNode={'Catalog':CatalogLeaf,"Extents":ExtentsLeaf,"Attributes":AttrLeaf}
-getLeafNode={'Catalog':getCatalogLeaf,"Extents":getExtentsLeaf,"Attributes":getAttrLeaf}
+leafNodeTypes={'Catalog':CatalogLeafTypes,"Extents":ExtentsLeafTypes,"Attributes":AttrLeafTypes}
 
 def outputNode(f,blocks):
 
@@ -95,10 +74,10 @@ def outputNode(f,blocks):
 
                 index=records[j].getType()
                 print index
-                lf=getLeafNode[index](records[j])
+                lf=getRow(records[j],leafNodeTypes[index])
 
-                for k in lf.__dict__:
-                    f[index].write((unicode(lf.__dict__[k]).replace(',','","')+',').encode('utf-8'))
+                for k in lf:
+                    f[index].write((unicode(lf).replace(',','","')+',').encode('utf-8'))
                 f[index].write('\n')
 
         except AttributeError:
@@ -110,7 +89,7 @@ def rawCSV(path,jParseList):
     f={}
     for i in ['Catalog','Extents','Attributes']:
         f[i]=open('{0}/{1}.csv'.format(path,i),'w')
-        for j in leafNode[i]._fields:
+        for j in leafNodeTypes:
             f[i].write('{0},'.format(j))
         f[i].write('\n')
 
@@ -128,7 +107,7 @@ def rawSQLite3(path,jParseList):
     cur=con.cursor()
 
     for i in ['Catalog','Extents','Attributes']:
-        cur.execute('CREATE TABLE {0} {1}'.format(i,leafNode[i]._fields).replace("'",''))
+        cur.execute('CREATE TABLE {0} {1}'.format(i,tuple(leafNodeTypes)).replace("'",''))
 
     for i in range(1,len(jParseList)):
 
@@ -141,11 +120,11 @@ def rawSQLite3(path,jParseList):
 
                 for k in range(len(records)):
 
-                    index=records[k].getType()
-                    lf=getLeafNode[index](records[k])
+                    index=records[j].getType()
+                    lf=getRow(records[j],leafNodeTypes[index])
                     
-                    print lf.__dict__.values()
-                    cur.execute(u'insert into {0} values {1}'.format(index,lf.__dict__.values()).replace('[','(').replace(']',')'))
+                    print lf
+                    cur.execute(u'insert into {0} values {1}'.format(index,tuple(lf)).replace('[','(').replace(']',')'))
 
             except AttributeError:
                 pass

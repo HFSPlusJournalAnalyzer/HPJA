@@ -1,6 +1,7 @@
 from struct import *
 import HFSPlus_sStructure as ss
 from collections import namedtuple
+from Utility import *
 
 parseInfo = namedtuple("parseInfo", ['sect_size', 'blockMag', 'sfLoc'])
 bOffsetInfo = namedtuple("bOffsetInfo", ['start', 'end', 'contain', 'data', 'name', 'offset'])
@@ -238,7 +239,7 @@ def getAttributesKey(ak_binary):
 def getAttributesData(ad_binary):
     vec = list(unpack_from(">IQI", ad_binary))
     attrSize = vec[-1]
-    attrData =list(ad_binary[16:16+attrSize])
+    attrData =unpackLarge_from(ad_binary,16,attrSize)
     vec.append(attrData)
     return ss.AttrData(*vec)
 

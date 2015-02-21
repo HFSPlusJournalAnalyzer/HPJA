@@ -234,8 +234,6 @@ IndexNode = namedtuple("IndexNode", ['NodeDescriptor', 'PointerRecList'])
 MapNode = namedtuple('MapNode', ['NodeDescriptor', 'MapRecord'])
 class UniChar(namedtuple("UniChar", ['nameLen', 'nodeUnicode'])):
     __slots__ = ()
-    def __str__(self):
-        return self.nodeUnicode
     
     def __eq__(self, other):
         lenComp = (self.nameLen == other.nameLen)
