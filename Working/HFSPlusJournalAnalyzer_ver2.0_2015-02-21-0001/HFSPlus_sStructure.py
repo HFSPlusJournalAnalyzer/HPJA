@@ -72,7 +72,7 @@ ExtendedFileInfo = namedtuple("ExtendedFileInfo", ['reserved1', 'extendedFinderF
 FolderInfo = namedtuple('FolderInfo', ['windowBounds', 'finderFlags', 'location', 'reservedField'])
 ExtendedFolderInfo = namedtuple("ExtendedFolderInfo", ['scrollPosition', 'reserved1', 'extendedFinderFlags', 'reserved2', 'putAwayFolderID'])
 
-'''
+''' 
 Catalog Records 
 '''
 class CatalogKey(namedtuple("CatalogKey", ["keyLength", "parentID", "nodeName"])):

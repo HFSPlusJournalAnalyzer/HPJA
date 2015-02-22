@@ -227,70 +227,9 @@ def completeFullPathOfRecords(self):
     self.records.completeFullPath()
 
 
-def tranAnalyzer(tranBlocks,specialFileFork,allocBlockSize):
-
-    TranBlock.parsingBlock=MethodType(parsingBlock,None,TranBlock)
-    TranBlock.allocDataAnalyzer=MethodType(allocDataAnalyzer,None,TranBlock)
-    ExtentDescriptor.__init__=MethodType(modifiedInit,None,ExtentDescriptor)
-    CatalogDataRec.initFullPath=MethodType(initFullPath,None,CatalogDataRec)
-    CatalogDataRec.completeFullPath=MethodType(completeFullPath,None,CatalogDataRec)
-    CatalogLeafNode.initFullPathOfRecords=MethodType(initFullPathOfRecords,None,CatalogLeafNode)
-    CatalogLeafNode.completeFullPathOfRecords=MethodType(completeFullPathOfRecords,None,CatalogLeafNode)
-
-    for i in range(1,tranBlocks[0]+1):
-
-        tranBlocks.parsingBlock(specialFileFork,allocBlockSize)
-
-        if tranBlocks.blockType==[2,255]:
-            tranBlocks.content.initFullPathOfRecords()
-
-    catalogFileAnalyzer(catalogFile,tranBlocks)
-
-    for i in range(1,tranBlocks[0]+1):
-        if tranBlocks.blockType==[2,255]:
-            tranBlocks.content.completeFullPathOfRecords()
-                    
-
-def DataRecovery(disk,deduplicatedRecord,blockSize):
-
-    keyForFork=['dataFork','resourceFork']
-
-    DirectoryCleaning('recovery')
-    
-    for i in range(1,deduplicatedRecord[0]+1):
-        for j in range(1,deduplicatedRecord[i][0]+1):
-            for k in range(1,deduplicatedRecord[i][j][0]+1):
-
-                check=False
-                for l in range(2):
-                    for m in range(1,deduplicatedRecord[i][j][k][keyForFork[l]][0]+1):
-                        if deduplicatedRecord[i][j][k][keyForFork[l]][m][0]==0:
-                            check=True
-                            break
-
-                if check:
-                    
-                    fork=['','']
-                    
-                    for l in range(2):
-                        
-                        check=True
-                        
-                        for m in range(1,deduplicatedRecord[i][j][k][keyForFork[l]][0]+1):
-                            if deduplicatedRecord[i][j][k][keyForFork[l]][m][0]==-1:
-                                check=False
-                            else:
-                                fork[l]+=DiskDump(disk,'./recovery/{0}{1}{2}{3}{4}{5}{6}_'.format(i,j,k,deduplicatedRecord[i][j][k]['CNID'],deduplicatedRecord[i][j][k]['createDate'],keyForFork[l],m)+deduplicatedRecord[i][j][k]['nodeName'],blockSize,deduplicatedRecord[i][j][k][keyForFork[l]][m][1],deduplicatedRecord[i][j][k][keyForFork[l]][m][2])
-
-                        if check:
-                            f=open('./recovery/{0}{1}{2}{3}{4}{5}_'.format(i,j,k,deduplicatedRecord[i][j][k]['CNID'],deduplicatedRecord[i][j][k]['createDate'],keyForFork[l])+deduplicatedRecord[i][j][k]['nodeName'],'wb')
-                            f.write(fork[l])
-                            f.close()
-
-                        
 def main(option):
 
-    if ('l' in option) or ('i' in option):
+    if 'i' in option:
 
         temp=Collector.main(option)
         journal=temp[0]
@@ -306,21 +245,22 @@ def main(option):
         journal=f.read()
         f.close()
 
-        specialFile=[]
-        for i in ['al','e','c','at']:
+        files=[]
+        for i in ['v','al','e','c','at']:
             if i in option:
 
                 f=open(option[i],'rb')
-                specialFile.append(f.read())
+                files.append(f.read())
                 f.close()
 
             else:
-                specialFile.append(0)
+                files.append(0)
 
-        allocationFile=temp[0]
-        extentsFile=temp[1]
-        catalogFile=temp[2]
-        attributesFile=temp[3]
+        vh=files[0]
+        allocationFile=files[1]
+        extentsFile=files[2]
+        catalogFile=files[3]
+        attributesFile=files[4]
 
     print 'Analyzing journal...'
     jParseList=journalParser(journal)[0]
@@ -332,46 +272,9 @@ def main(option):
 
     rawCSV(path,jParseList)
     rawSQLite3(path,jParseList)
-    
 
-'''
-    f = open("{0}/result2.txt".format(path),'w')
-    for i in jT:
-        f.write("-----------\n")
-        for j in i:
-            f.write(str(j)+"\n")
-
-    f.close()
-
-    
-    print 'Analyzing CatalogFile...'
-    Analyzer.CatalogFileAnalyzer(CatalogFile)
-
-    print 'Analyzing transactions...'
-    Analyzer.TransactionAnalyzer(tranBlocks,volumeHeader.specialFileFork,volumeHeader.blockSize)
-
-    print 'Printing record list...'
-    fName='./result/recordList.csv'
-    f=open(fName,'w')
-    for i in range(1,tranBlocks[0]+1):
-
-        if 0<tranBlocks.blockType[0]<4:
-
-            for j in range(tranBlocks.content.numRecords):
-
-                f.write(str(tranBlocks[i]))
-                f.write(str(tranBlocks.content.records[j]))
-
-        else:
-
-            f.write(str(tranBlocks[i]))
-
-    f.close()
-    
-    if recovery:
-        print 'Recoverying deleted files...'
-        Analyzer.DataRecovery(disk,,volumeHeader.blockSize)
-    '''
+    if 'r' in option:
+        recovery(option['l'],path,option['r'],jParseList,vh)
 
 if __name__=='__main__':
     main(translatingInput(sys.argv))

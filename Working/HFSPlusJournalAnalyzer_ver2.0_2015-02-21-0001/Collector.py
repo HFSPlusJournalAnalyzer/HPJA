@@ -78,9 +78,6 @@ def main(option):
 
     select='d' in option
 
-    if 'l' in option:
-        disk=option['l']
-
     if 'i' in option:
         disk=option['i']
 

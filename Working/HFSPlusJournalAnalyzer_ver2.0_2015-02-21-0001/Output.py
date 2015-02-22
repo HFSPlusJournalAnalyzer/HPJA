@@ -2,7 +2,7 @@ import sqlite3
 from HFSPlus_sStructure import *
 from collections import *
 from HFSPlus_GetInstance import *
-from types import *
+from Utility import *
 
 def genTypes(seen,prefix,*standard):
     seen_add = seen.add
@@ -137,14 +137,12 @@ def rawSQLite3(path,jParseList):
                 for k in range(len(records)):
 
                     index=records[k].getType()
-                    lf=getRow(records[k],leafNodeTypes[index])
-                    
-                    print lf
+                    lf=getRow(records[k],leafNodeTypes[index])                    
 
                     for i in range(len(lf)):
-                        if type(lf)==StringType or type(lf)==UnicodeType:
+                        if type(lf)==str or type(lf)==unicode:
                             lf=lf.replace("'","''")
-                        elif type(lf)==TupleType:
+                        elif type(lf)==tuple:
                             lf=unicode(lf)
                         lf[i]=lf[i].replace("'","''")
 
@@ -155,3 +153,51 @@ def rawSQLite3(path,jParseList):
 
     cur.close()
     con.close()
+
+
+def recovery(disk,path,target,jParseList,vh):
+    d=target.find(',')
+    CNID=int(target[1:d])
+    nodeName=target[d+1:-1]
+    for i in range(len(jParseList)-1,0,-1):
+
+        blocks=jParseList[i][2]
+        for j in range(len(blocks)-1,-1,0):
+            
+            try:
+
+                records=blocks[j].LeafRecList
+
+                if 'Catalog'==records[0].getType():
+
+                    for k in range(len(records)):
+
+                        if records.key.nodeName.nodeUnicode==unicode(nodeName) and records.record.CNID==CNID:
+
+                            dataFork=[]
+                            extents=records.record.dataFork.extents
+                            for l in extents.__dict__.itervalues():
+                                dataFork.append(DiskDump(disk,'',vh.blockSize,l.startBlock,l.blockCount))
+                            dataFork=''.join(dataFork)
+                            f=open('{0}/{1}_DataFork'.format(path,nodeName),'wb')
+                            f.write(dataFork)
+                            f.close()
+
+                            resourceFork=[]
+                            extents=records.record.resourceFork.extents
+                            for l in extents.__dict__.itervalues():
+                                resourceFork.append(DiskDump(disk,'{0}/{1}'.format(path,nodeName),vh.blockSize,l.startBlock,l.blockCount))
+                            resourceFork=''.join(resourceFork)
+                            f=open('{0}/{1}_ResourceFork'.format(path,nodeName),'wb')
+                            f.write(resourceFork)
+                            f.close()
+
+                            return
+
+
+            except AttributeError:
+                pass
+
+
+
+
