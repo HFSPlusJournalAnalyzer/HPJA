@@ -144,7 +144,10 @@ def block_check(b_info, data, pInfo):
     except(AssertionError): 
         return newObjectInfo(data, b_info.bnum, data.__class__.__name__ )
     
-    attList = data._fields
+    try:
+        attList = data._fields
+    except(AttributeError):
+        print 'sibal'
     curCh = []
     chHead = dataChangeHead(b_info.bnum, curSType, curCh)
     for att in attList:
@@ -233,7 +236,7 @@ def journalTrackPrint(journalTrack, fd):
     for i in journalTrack:
         fd.write("trans_%d=================================\n" %count)
         for j in i:
-            fd.write(str(j))
+            fd.write(str(j).encode('utf8'))
         count += 1
     
 '''
