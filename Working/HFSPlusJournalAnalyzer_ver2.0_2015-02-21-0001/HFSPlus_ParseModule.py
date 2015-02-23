@@ -111,6 +111,20 @@ def transParser(trans, pInfo, offset):
     t_bOff.append(bOffsetInfo(len(trans)-data_offset, len(trans), data_bOff, data_List, "DataBlocks", offset))
     return [blh, bi_List, data_List], t_bOff
 
+def getBlock(recBlock, curSType):
+    assert curSType in ["Catalog", "Extents", "Attributes"]
+    kindDict = {'Catalog': [getCatalogLeaf, getCatalogIndex],
+                'Extents': [getExtentsLeaf, getExtentsIndex],
+                'Attributes': [getAttributesLeaf, getAttributesIndex] }
+    
+    strList = ["Leaf", "Index", "Header", "Map"]
+    
+    kindList = kindDict[curSType]
+    kindList.extend([getHeaderNode, getMapNode])
+    kind = unpack_from(">b", recBlock, 8)[0] + 1
+    
+    return kindList[kind](recBlock)
+
 # auxiliary function ; To identify a data block.
 def getDataBlock(data_block, BlockInfo, pInfo, offset):
     global etcData
@@ -127,21 +141,15 @@ def getDataBlock(data_block, BlockInfo, pInfo, offset):
     if curSType == 'Allocation':
         d_bOff = bOffsetInfo(0, BlockInfo.bsize, None, None, "Allocation", offset)  # memoryview
         return Binary(data_block,"Allocation"), d_bOff
-     
-    kindDict = {'Catalog': [getCatalogLeaf, getCatalogIndex],
-                'Extents': [getExtentsLeaf, getExtentsIndex],
-                'Attributes': [getAttributesLeaf, getAttributesIndex] }
-    
-    strList = ["Leaf", "Index", "Header", "Map"]
     
     if curSType == "":
         etcData.append([data_block, BlockInfo])
         return None, None
     
-    kindList = kindDict[curSType]
-    kindList.extend([getHeaderNode, getMapNode])
+    strList = ["Leaf", "Index", "Header", "Map"]
     kind = unpack_from(">b", data_block, 8)[0] + 1
-    nodeData = kindList[kind](data_block)
+    
+    nodeData = getBlock(data_block, curSType)
     
     d_bOff = bOffsetInfo(0, BlockInfo.bsize, None, nodeData, curSType+"_%s" %strList[kind], offset)
     return nodeData, d_bOff

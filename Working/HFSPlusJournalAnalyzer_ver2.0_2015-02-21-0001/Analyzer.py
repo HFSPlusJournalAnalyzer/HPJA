@@ -14,7 +14,7 @@ import csv
 
 def specialFileAnalyzer(path,specialFile):
 
-    fileType=['Extents','Catalog','Attr']
+    fileType=['Extents','Catalog','Attributes']
 
     f=[]
     fstruct={}

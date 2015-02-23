@@ -13,6 +13,9 @@ class Binary:
     
     def __len__(self):
         return len(data)
+
+    def __getitem__(self,y):
+        return self.data[y]
     
     def tobytes(self):
         try:
@@ -21,8 +24,6 @@ class Binary:
         except(AssertionError):
             return str(self.data)
     
-    
-    
 # variable for storing a sector size 
 # variable for storing a magnification of block from sect_size (blockSize/sect_size)
 # dict for storing the location of special files
@@ -30,7 +31,7 @@ class Binary:
 def getJournalHeader(jh_binary):
     endian = unpack_from(">I",jh_binary, 4)[0]
     eflag = [">","<"][endian == 0x78563412]
-    vec = list(unpack_from(eflag + 'IIQQQIII',jh_binary))
+    vec = list(unpack_from(eflag + 'IIQQQIIII',jh_binary))
     vec[1] = eflag  # replace 'endian' field as '>' or '<'. It represents endianess more clearly.
     return ss.JournalHeader(*vec)
 
@@ -68,6 +69,9 @@ def getForkData(fd_binary):
     vec.append(ss.ExtentsDataRec(*ext))
     return ss.ForkData(*vec)
 
+def getOpaqueInfo(oi_binary):
+    vec = unpack_from(">"+"b"*16, oi_binary)
+    return ss.OpaqueInfo(vec)
 
 def getBSDInfo(bsd_binary):
     vec = unpack_from(">IIBBHI", bsd_binary)
@@ -77,27 +81,23 @@ def getFolderInfo(foi_binary):
     RectVec = unpack_from(">hhhh", foi_binary)
     Flag = unpack_from(">H", foi_binary, 8)[0]
     Location = unpack_from(">hh", foi_binary, 10)
-    reserved = unpack_from(">H", foi_binary, 14)[0]
-    vec = [ss.Rect(*RectVec), Flag, ss.Point(*Location), reserved]
+    opaque = unpack_from(">H", foi_binary, 14)[0]
+    vec = [ss.Rect(*RectVec), Flag, ss.Point(*Location), opaque]
     return ss.FolderInfo(*vec)
 
 def getExtendedFolderInfo(efi_binary):
-    scrPosVec = unpack_from(">hh", efi_binary)
-    vec = list(unpack_from(">iHhi", efi_binary, 4))
-    vec.insert(0, ss.Point(*scrPosVec))
+    vec = unpack_from(">IIHhi", efi_binary)
     return ss.ExtendedFolderInfo(*vec)
 
 def getFileInfo(fii_binary):
     vec = list(unpack_from(">IIH",fii_binary))
     Location = unpack_from(">hh", fii_binary, 10)
-    res = unpack_from(">H", fii_binary, 14)[0]
-    vec.extend([ss.Point(*Location), res])
+    opaque = unpack_from(">H", fii_binary, 14)[0]
+    vec.extend([ss.Point(*Location), opaque])
     return ss.FileInfo(*vec)
 
 def getExtendedFileInfo(efi_binary):
-    res1 = unpack_from(">hhhh", efi_binary)
-    vec = list(unpack_from(">Hhi", efi_binary, 8))
-    vec.insert(0, res1)
+    vec = unpack_from(">IIHhi", efi_binary)
     return ss.ExtendedFileInfo(*vec)
 
 def getCatalogFolder(cfo_binary):
@@ -111,8 +111,8 @@ def getCatalogFolder(cfo_binary):
     BSDInfo = getBSDInfo(cfo_1)
     userInfo = getFolderInfo(cfo_2)
     finderInfo = getExtendedFolderInfo(cfo_3)
-    textEncoding, reserved = unpack_from(">II", cfo_4)
-    vec1 = [BSDInfo, userInfo, finderInfo, textEncoding, reserved]
+    textEncoding, folderCount = unpack_from(">II", cfo_4)
+    vec1 = [BSDInfo, userInfo, finderInfo, textEncoding, folderCount]
     
     vec0.extend(vec1)
     return ss.CatalogFolder(*vec0)
@@ -257,10 +257,12 @@ def getAttributesKey(ak_binary):
 def getAttributesData(ad_binary):
     vec = list(unpack_from(">IQI", ad_binary))
     attrSize = vec[-1]
+
     temp=[]
     for i in ad_binary[16:16+attrSize]:
-        temp.append(ord(i))
-    attrData =tuple(temp)
+        temp.append(i)
+
+    attrData = tuple(temp)
     vec.append(Binary(attrData, "attrData"))
     return ss.AttrData(*vec)
 
@@ -325,7 +327,7 @@ def getAttributesIndex(ai_binary):
 Header, Map
 '''
 
-def getHeaderNode(ch_binary):
+def getHeaderNode(ch_binary): 
     ch_buf = memoryview(ch_binary)
     nd = getNodeDescriptor(ch_buf)
     hr = getBTHeaderRec(ch_buf[14:])

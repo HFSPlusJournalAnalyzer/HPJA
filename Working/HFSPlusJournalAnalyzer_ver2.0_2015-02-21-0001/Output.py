@@ -82,7 +82,7 @@ HeaderTypes=genTypes(set(),'',getHeaderNode(emptyString))
 
 nodeTypes={'Catalog':{'LeafRecList':CatalogLeafTypes,'BTHeaderRec':HeaderTypes,'PointerRecList':CatalogIndexTypes}}
 nodeTypes['Extents']={'LeafRecList':ExtentsLeafTypes,'BTHeaderRec':HeaderTypes,'PointerRecList':ExtentsIndexTypes}
-nodeTypes['Attr']={'LeafRecList':AttrLeafTypes,'BTHeaderRec':HeaderTypes,'PointerRecList':AttrIndexTypes}
+nodeTypes['Attributes']={'LeafRecList':AttrLeafTypes,'BTHeaderRec':HeaderTypes,'PointerRecList':AttrIndexTypes}
 volumeHeaderTypes=genTypes(set(),'',getVolumeHeader(2*emptyString))
 
 def temp(path,jParseList):
@@ -109,8 +109,10 @@ def outputKeyedRec(f,records,nodeType):
 
     for i in range(len(records)):
         for j in getRow1(records[i],nodeType):
+
             print j
-            f.write(unicode(j).replace(",","','").replace('"',+'\'"\'').replace("\n","'\n'").encode('utf-8'))
+            f.write(unicode(j).replace('"','""').replace(',','","').replace('"','"""').replace('\n','"\n"').encode('utf-8'))
+        
         f.write('\n')
 
 
@@ -139,21 +141,26 @@ def rawCSV(path,jParseList):
         for j in range(len(blocks)):
 
             block=blocks[j]
-            records=block[1]
 
-            if type(records)==list:
+            if type(block[1])==list:
+
+                records=block[1]
+
+                print block
+                print records[0].getType()
+                print block._fields[1]
 
                 nt=nodeTypes[records[0].getType()][block._fields[1]]
 
-                outputKeyedRec(f[records[0].getType()][blocks._fields[1]],records,nt)
+                outputKeyedRec(f[records[0].getType()][block._fields[1]],records,nt)
 
             elif block.__class__.__name__=='VolumeHeader':
 
                 for k in getRow2(block,volumeHeaderTypes):
 
-                    f['VolumeHeader'].write(unicode(j).replace('"','""').replace(',','","').replace('"',+'"""').replace('\n','"\n"').encode('utf-8'))
+                    f['VolumeHeader'].write(unicode(j).replace('"','""').replace(',','","').replace('"','"""').replace('\n','"\n"').encode('utf-8'))
 
-                f.write('\n')
+                f['VolumeHeader'].write('\n')
 
     f['VolumeHeader'].close()
 
@@ -180,9 +187,10 @@ def rawSQLite3(path,jParseList):
         for j in range(len(blocks)):
             
             block=blocks[j]
-            records=block[1]
 
-            if type(records)==list:
+            if type(block[j][1])==list:
+
+                records=block[1]
 
                 nt=nodeTypes[records[0].getType()][block._fields[1]]
 

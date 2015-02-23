@@ -1,10 +1,10 @@
 from collections import namedtuple
 
-JournalHeader = namedtuple("JournalHeader", ['magic','endian','start','end','size','blhdr_size','checksum','jhdr_size'])
+JournalHeader = namedtuple("JournalHeader", ['magic','endian','start','end','size','blhdr_size','checksum','jhdr_size', 'sequence_num'])
 # endian contains '>' or '<' (instead of 0x12345678; the original value) 
 
-BlockListHeader = namedtuple("BlockListHeader", ['max_blocks','num_blocks','bytes_used','checksum','pad','binfo0'])
-BlockInfo = namedtuple("BlockInfo", ['bnum', 'bsize', 'next'])
+BlockListHeader = namedtuple("BlockListHeader", ['max_blocks','num_blocks','bytes_used','checksum','flags','binfo0'])
+BlockInfo = namedtuple("BlockInfo", ['bnum', 'bsize', 'cksum'])
 NodeDescriptor = namedtuple("NodeDescriptor", ['fLink','bLink','kind','height','numRecords','reserved'])
 BTHeaderRec = namedtuple("BTHeaderRec", ['treeDepth','rootNode',
                                         'leafRecords','firstLeafNode','lastLeafNode','nodeSize',
@@ -67,12 +67,14 @@ Finder
 '''
 Point = namedtuple('Point', ["v", "h"])
 Rect = namedtuple('Rect', ['top', 'left', 'bottom', 'right'])
-FileInfo = namedtuple('FileInfo', ['fileType', 'fileCreator', 'finderFlags', 'location', 'reservedField'])
-ExtendedFileInfo = namedtuple("ExtendedFileInfo", ['reserved1', 'extendedFinderFlags', 'reserved2', 'putAwayFolderID'])
-FolderInfo = namedtuple('FolderInfo', ['windowBounds', 'finderFlags', 'location', 'reservedField'])
-ExtendedFolderInfo = namedtuple("ExtendedFolderInfo", ['scrollPosition', 'reserved1', 'extendedFinderFlags', 'reserved2', 'putAwayFolderID'])
+FileInfo = namedtuple('FileInfo', ['fileType', 'fileCreator', 'finderFlags', 'location', 'opaque'])
+ExtendedFileInfo = namedtuple("ExtendedFileInfo", ['document_id','date_added', 'extendedFinderFlags', 'reserved2', 'write_gen_counter'])
+FolderInfo = namedtuple('FolderInfo', ['windowBounds', 'finderFlags', 'location', 'opaque'])
+ExtendedFolderInfo = namedtuple("ExtendedFolderInfo", ['document_id', 'date_added', 'extendedFinderFlags', 'reserved3', 'write_gen_counter'])
 
-''' 
+OpaqueInfo = namedtuple("OpaqueInfo", ['opaque'])
+
+'''
 Catalog Records 
 '''
 class CatalogKey(namedtuple("CatalogKey", ["keyLength", "parentID", "nodeName"])):
@@ -95,8 +97,9 @@ class CatalogKey(namedtuple("CatalogKey", ["keyLength", "parentID", "nodeName"])
 sCatalogFolder = namedtuple('CatalogFolder', ['recordType', 'flags', 
                                              'valence', 'CNID', 
                                              'createDate', 'contentModDate', 'attributeModDate', 'accessDate', 'backupDate', 
-                                             'permissions','userInfo','finderInfo',
-                                             'textEncoding', 'reserved'])
+                                             'bsdInfo', 'userInfo','finderInfo',
+                                             'textEncoding', 'folderCount'])
+# folderCount ; # of enclosed folders, active when HasFolderCount is set
 class CatalogFolder(sCatalogFolder):
     __slots__ = ()
     def __len__(self):
