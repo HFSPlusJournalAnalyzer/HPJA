@@ -3,7 +3,6 @@ from HFSPlus_sStructure import *
 from collections import *
 from HFSPlus_GetInstance import *
 from Utility import *
-from Analyzer import *
 
 def genTypes(seen,prefix,*standard):
     seen_add = seen.add
@@ -35,52 +34,28 @@ def getTypesNFields(data,prefix):
 
     return typesNFields
 
-def getRow1(data,types):
-
+def getRow(data,types):
     fields=OrderedDict([(i,'') for i in types])
     for i,j in getTypesNFields(data.record,''):
         fields[i]=j
-    if 'recordType' in fields
-
-        if fields['recordType']==3 or fields['recordType']==4:
-            for i,j in getTypesNFields(data.key,''):
-
-                if i!='nodeName/nameLen' and i!='nodeName/nodeUnicode':
-
-                    if i=='parentID':
-                        fields['CNID']=j
-                    else:
-                        fields[i]=j
-
-        fields['fullPath']=getFullPath(fields['CNID'])
-
-    if 'recordType' not in fields or fields['recordType']==1 or fields['recordType']==2:
+    if 'recordType' in fields and (fields['recordType']==3 or fields['recordType']==4):
+        for i,j in getTypesNFields(data.key,''):
+            if i!='nodeName/nameLen' and i!='nodeName/nodeUnicode':
+                if i=='parentID':
+                    fields['CNID']=j
+                else:
+                    fields[i]=j
+    else :
         for i,j in getTypesNFields(data.key,''):
             fields[i]=j
         
-    return fields.values()
-
-def getRow2(data,types):
-
-    fields=OrderedDict([(i,'') for i in types])
-    for i,j in getTypesNFields(data,''):
-        fields[i]=j
-        
+                    
     return fields.values()
 
 emptyString=300*'\x00'
-CatalogLeafTypes=genTypes(set(),'',getCatalogKey(emptyString),getCatalogFile(emptyString),getCatalogFolder(emptyString),getCatalogThread(emptyString)).append('fullPath')
+CatalogLeafTypes=genTypes(set(),'',getCatalogKey(emptyString),getCatalogFile(emptyString),getCatalogFolder(emptyString),getCatalogThread(emptyString))
 ExtentsLeafTypes=genTypes(set(),'',getExtentsKey(emptyString),ExtentsDataRec(getExtentDescriptor(emptyString),getExtentDescriptor(emptyString),getExtentDescriptor(emptyString),getExtentDescriptor(emptyString),getExtentDescriptor(emptyString),getExtentDescriptor(emptyString),getExtentDescriptor(emptyString),getExtentDescriptor(emptyString)))
 AttrLeafTypes=genTypes(set(),'',getAttributesKey(emptyString),getAttributesForkData(emptyString),getAttributesExtents(emptyString),getAttributesData(emptyString))
-CatalogIndexTypes=genTypes(set(),'',getCatalogKey(emptyString),BTPointer(0))
-ExtentsIndexTypes=genTypes(set(),'',getCatalogKey(emptyString),BTPointer(0))
-AttrIndexTypes=genTypes(set(),'',getCatalogKey(emptyString),BTPointer(0))
-HeaderTypes=genTypes(set(),'',getHeaderNode(emptyString))
-
-nodeTypes={'Catalog':{'LeafRecList':CatalogLeafTypes,'BTHeaderRec':HeaderTypes,'PointerRecList':CatalogIndexTypes}}
-nodeTypes['Extents']={'LeafRecList':ExentsLeafTypes,'BTHeaderRec':HeaderTypes,'PointerRecList':ExtentsIndexTypes}
-nodeTypes['Attr']={'LeafRecList':AttrLeafTypes,'BTHeaderRec':HeaderTypes,'PointerRecList':AttrIndexTypes}
-volumeHeaderTypes=genTypes(set(),'',getVolumeHeader(2*emptyString))
 
 def temp(path,jParseList):
 
@@ -102,64 +77,43 @@ def volumeInfo(path,vh):
     
     f.close()
 
-def outputKeyedRec(f,records,nodeType):
+leafNodeTypes={'Catalog':CatalogLeafTypes,"Extents":ExtentsLeafTypes,"Attributes":AttrLeafTypes}
 
-    for i in range(len(records)):
-        for j in getRow1(records[j],nodeType):
-            f.write((unicode(j).replace(',','","')+',').encode('utf-8'))
-        f.write('\n')
+def outputNode(f,blocks):
+
+    for i in range(len(blocks)):
+
+        try:
+
+            records=blocks[i].LeafRecList
+
+            for j in range(len(records)):
+
+                index=records[j].getType()
+                lf=getRow(records[j],leafNodeTypes[index])
+
+                for k in lf:
+                    f[index].write((unicode(k).replace(',','","')+',').encode('utf-8'))
+                f[index].write('\n')
+
+        except AttributeError:
+            pass
 
 
 def rawCSV(path,jParseList):
 
-    f={'VolumeHeader':open('{0}/VolumeHeader.csv'.format(path),'w')}
+    f={}
+    for i in ['Catalog','Extents','Attributes']:
+        f[i]=open('{0}/{1}.csv'.format(path,i),'w')
+        for j in leafNodeTypes[i]:
+            f[i].write('{0},'.format(j))
+        f[i].write('\n')
+
+    for i in range(1,len(jParseList)):
+        outputNode(f,jParseList[i][2])
 
     for i in ['Catalog','Extents','Attributes']:
-
-        f[i]={}
-
-        for j in ['LeafRecList','BTHeaderRec','PointerRecList']:
-
-            f[i][j]=open('{0}/{1}{2}.csv'.format(path,i,j),'w')
-
-            for k in nodeTypes[i][j]:
-                f[i][j].write('{0},'.format(k))
-
-            f[i][j].write('\n')
-
-    for i in range(1,len(jParseList)):        
-
-        blocks=jParseList[i][2]
-
-        for j in range(len(blocks)):
-
-            block=blocks[j]
-            records=block[1]
-
-            if type(records)==list:
-
-                nt=nodeTypes[records[0].getType()][block._fields[1]]
-
-                outputKeyedRec(f[records[0].getType()][blocks._fields[1]],records,nt)
-
-            '''
-            elif block.__class__.__name__=="HeaderNode":
-
-                for k in getRow2(blocks,nodeTypes[]['BTHeaderRec']):
-                    f.write((unicode(j).replace(',','","')+',').encode('utf-8'))
-                f.write('\n')
-            '''
-
-            elif block.__class__.__name__=='VolumeHeader':
-                for k in getRow2(block,volumeHeaderTypes):
-                    f[''].write((unicode(j).replace(',','","')+',').encode('utf-8'))
-                f.write('\n')
-
-    f['VolumeHeader'].close()
-
-    for i in ['Catalog','Extents','Attributes']:
-        for j in ['LeafRecList','BTHeaderRec','PointerRecList']:
-            f[i][j].close()
+        f[i].close()
 
 
 def rawSQLite3(path,jParseList):
@@ -186,12 +140,13 @@ def rawSQLite3(path,jParseList):
                     lf=getRow(records[k],leafNodeTypes[index])                    
 
                     for i in range(len(lf)):
-                        if type(lf)==tuple:
-                            lf=unicode(lf)
                         if type(lf)==str or type(lf)==unicode:
-                            lf=lf.replace("'","''").replace('"',"'")
+                            lf=lf.replace("'","''")
+                        elif type(lf)==tuple:
+                            lf=unicode(lf)
+                        lf[i]=lf[i].replace("'","''")
 
-                    cur.execute(u'insert into {0} values {1}'.format(index,tuple(lf)).replace("u'","'"))
+                    cur.execute(u'insert into {0} values {1}'.format(index,tuple(lf)).replace('"',"'"))
 
             except AttributeError:
                 pass

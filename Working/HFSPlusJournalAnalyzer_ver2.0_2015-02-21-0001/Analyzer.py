@@ -12,54 +12,101 @@ import sys
 import datetime
 import csv
 
-def specialFileAnalyzer(path,specialFile):
+def catalogFileAnalyzer(catalogFile,tranBlocks):
 
-    fileType=['Extents','Catalog','Attr']
+    modifiedNodes=[]
+    for i in range(1,trnaBlock[0]+1):
+        if tranBlocks[i].blockType[0]==2 and tranBlocks[i].offset not in modifiedNodes:
+            modifiedNodes.append(tranBlocks[i].offset)
 
-    f=[]
-    fstruct={}
+    nodeSize,temp1,totalNodes=unpack_from('>HHL',catalogFile,32)
 
+    nodePointer=0
+    for i in range(1,totalNodes):
+
+        nodePointer+=nodeSize
+
+        if nodePointer not in modifiedNodes and ord(catalogFile[nodePointer+8])==0xFF:
+
+            numRecords=unpack_from('>H',catalogFile,nodePointer+10)
+
+            for j in range(numRecords):
+
+                offset=nodePointer+unpack_from('>H',catalogFile,nodePointer+nodeSize-2*(j+1))
+                        
+                keyLength=unpack_from('>H',catalogFile,offset)
+
+                if unpack_from('>H',catalogFile,offset+keyLength+2)<3:
+
+                    parentID=unpack_from('>L',catalogFile,offset+2)
+
+                    for k in range(unpack_from('>H',catalogFile,offset+6)):
+                        nodeName+=('\u'+catalogFile[offset+8+2*k].encode('hex')+catalogFile[offset+8+2*k+1].encode('hex')).decode('unicode-escape')
+
+                    offset+=2+keyLength
+                    
+                    CNID=unpack_from('>L',catalogFile,offset+keyLength+0xA)
+
+                elif unpack_from('>H',catalogFile,offset+keyLength+2)<5:
+
+                    CNID=unpack_from('>L',catalogFile,offset+2)
+
+                    offset+=2+keyLength
+                    
+                    parentID=unpack_from('>L',catalogFile,offset+4)
+
+                    nodeName=u''
+                    for k in range(unpack_from('>H',catalogFile,offset+8)):
+                        nodeName+=('\u'+catalogFile[offset+2*k+10].encode('hex')+catalogFile[offset+2*k+11].encode('hex')).decode('unicode-escape')
+                    
+                nameAndParent[0][CNID]=[nodeName,parentID]
+
+
+def parsingBlock(specialFileFork,allocBlockSize):
+
+    nonLeafNode=[BTIndexNode,BTHeaderNode,BTMapNode]
+    leafNodeType=[ExtentsLeafNode,CatalogLeafNode,AttrLeafNode]
+
+    if self.offset==1024:
+
+        self.blockType.append(4)
+        self.content=VolumeHeader(self.content)
+    
     for i in range(3):
+        
+        check=False
+        offset=0
 
-        sf=specialFile[i]
-        if sf==0:
-            break
-        ft=fileType[i]
+        for j in range(8):
 
-        f.append({})
-        fp=f[i]
+            if specialFileFork[i].extents[j].startBlock*allocBlockSize<=self.offset<(specialFileFork[i].extents[j].startBlock+specialFileFork[i].extents[j])*allocBlockSize:
+                offset+=self.offset-specialFileFork[i].extents[j].startBlock*allocBlockSize
+                check=True
+                break
 
-        for j,k in enumerate(["Leaf", "Index", "Header"]):
-            fp[j]=open('{0}/{1}{2}'.format(path,ft,j))
+            self.offset=offset+specialFileFork[i].extents[j].startBlock*allocBlockSize
+            
+        if check:
 
-        nodeSize,temp1,totalNodes=unpack_from('>HHL',sf,32)
+            self.blockType.append(i)
 
-        nodePointer=0
-        for j in xrange(totalNodes):
+            if k>0:
 
-            node=getBlock(buffer(sf,nodePointer,nodeSize),ft)
-            index=node.kind+1
+                kind=ord(self.content[8])
+                self.blockType.append(kind)
 
-            if index<3:
-
-                records=blocks[1]
-
-                if type(records)==list:
-                    for l in records:
-                        outputRecords(fp[index],l)
+                if kind==255:
+                    self.content=leafNodeType[i](self.content,size)
 
                 else:
-                    outputRecords(fp[index],records)
+                    self.content=nonLeafNode[kind]
 
-                if i==1 and index==0:
-                    for k in blocks.LeafRecList:
-                        if k.record.recordType<2:
-                            fstruct[k.key.parentID]=[k.record.nodeName.nodeUnicode,k.record.parentID]
+            else:
+                self.allocDataAnalyzer()
 
-            nodePointer+=nodeSize
+            break
 
-    return fstruct
-'''
+
 def allocDataAnalyzer(self):
 
     allocatedBlock=[0]
@@ -135,25 +182,49 @@ def modifiedInit(self):
 
         existentExtent[0]+=1
         existentExtent.append(self)
-'''
 
-def getFullPath(CNID,fstruct):
+
+def initFullPath(self):
+
+    nameAndParent[1][self.CNID]=[self.nodeName,self.parentID]
+    fullPath=[]
+
+    i=self.CNID
+    while i in nameAndParent[1].keys():
+        fullPath.insert(0,'/{0}'.format(nameAndParent[1][i][0]))
+        i=nameAndParent[1][i][1]
+
+    self.fullPath=u''.join(fullPath)
+    self.unidentifiedAncestor=i
+
+
+def completeFullPath(self):
 
     fullPath=[]
 
-    i=CNID
+    i=self.unidentifiedAncestor
     while i!=1:
 
-        if i not in fstruct.keys():
-            fullPath=['unknown']
+        if i not in nameAndParent[0].keys():
+
+            self.fullPath='unknown'
+            fullPath=[]
             break
 
-        fullPath.insert(0,u'{0}/'.format(fstruct[CNID][0]))
-        i=fstruct[CNID][1]
+        fullPath.insert(0,'/{0}'.format(nameAndParent[0][j][0]))
+        i=nameAndParent[0][j][1]
 
-    fullPath=u''.join(fullPath)
+    self.fullPath+=u''.join(fullPath)
 
-    return fullPath
+
+def initFullPathOfRecords(self):
+
+    self.records.initFullPath()
+
+
+def completeFullPathOfRecords(self):
+
+    self.records.completeFullPath()
 
 
 def main(option):

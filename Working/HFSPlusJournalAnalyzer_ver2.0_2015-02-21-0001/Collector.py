@@ -14,9 +14,9 @@ def journalCarving(disk,offset,path):
     fi.seek(offset)
 
     i=-1
-    while True:
+    while fi.tell()<maxSize:
         try:
-            while i==-1:
+            while i==-1 and fi.tell()<maxSize:
                 image=fi.read()
                 gc.collect()
                 i=image.find('\x78\x4c\x4e\x4a\x78\x56\x34\x12')
@@ -24,9 +24,7 @@ def journalCarving(disk,offset,path):
                 print fi.tell()
             fi.seek(i-maxSize,os.SEEK_CUR)
             gc.collect()
-            jh=getJournalHeader(f.read(4096))
-            gc.collect()
-            fi.seek(i-4096,os.SEEK_CUR)
+            jh=getJournalHeader(buffer(image,i))
             fo=open('{0}/Journal_{1}'.format(path,fi.tell()),'wb')
             for j in range(jh.size/maxSize):
                 fo.write(fi.read())
@@ -41,11 +39,7 @@ def journalCarving(disk,offset,path):
             gc.collect()
 
         except Exception:
-            print fi.tell(),'error!'
-            temp=fi.tell()
-            fi.seek(1048576,os.SEEK_CUR)
-            if temp=fi.tell():
-                break
+            fi.seek(1048576,0)
             
     
     fi.close()

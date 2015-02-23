@@ -325,7 +325,7 @@ def getAttributesIndex(ai_binary):
 Header, Map
 '''
 
-def getHeaderNode(ch_binary):
+def getHeaderNode(ch_binary): 
     ch_buf = memoryview(ch_binary)
     nd = getNodeDescriptor(ch_buf)
     hr = getBTHeaderRec(ch_buf[14:])
