@@ -9,10 +9,10 @@ def genTypes(seen,prefix,*standard):
     seen_add = seen.add
     types=[]
     for i in standard:
-        for j,k in i.__dict__.iteritems():
+        for j,k in i._asdict().iteritems():
             j=prefix+j
             try:
-                k.__dict__
+                k._asdict()
                 types+=genTypes(seen,j+'/',k)
 
             except AttributeError:
@@ -24,10 +24,10 @@ def genTypes(seen,prefix,*standard):
 
 def getTypesNFields(data,prefix):
     typesNFields=[]
-    for i,j in data.__dict__.iteritems():
+    for i,j in data._asdict().iteritems():
         i=prefix+i
         try:
-            j.__dict__
+            j._asdict()
             typesNFields+=getTypesNFields(j,i+'/')
 
         except AttributeError:
@@ -38,11 +38,14 @@ def getTypesNFields(data,prefix):
 def getRow1(data,types):
 
     fields=OrderedDict([(i,'') for i in types])
+
     for i,j in getTypesNFields(data.record,''):
         fields[i]=j
-    if 'recordType' in fields
+
+    if 'recordType' in fields:
 
         if fields['recordType']==3 or fields['recordType']==4:
+
             for i,j in getTypesNFields(data.key,''):
 
                 if i!='nodeName/nameLen' and i!='nodeName/nodeUnicode':
@@ -52,9 +55,9 @@ def getRow1(data,types):
                     else:
                         fields[i]=j
 
-        fields['fullPath']=getFullPath(fields['CNID'])
+        #fields['fullPath']=getFullPath(fields['CNID'])
 
-    if 'recordType' not in fields or fields['recordType']==1 or fields['recordType']==2:
+    if 'recordType' not in fields or (fields['recordType']!=3 and fields['recordType']!=4):
         for i,j in getTypesNFields(data.key,''):
             fields[i]=j
         
@@ -69,7 +72,7 @@ def getRow2(data,types):
     return fields.values()
 
 emptyString=300*'\x00'
-CatalogLeafTypes=genTypes(set(),'',getCatalogKey(emptyString),getCatalogFile(emptyString),getCatalogFolder(emptyString),getCatalogThread(emptyString)).append('fullPath')
+CatalogLeafTypes=genTypes(set(),'',getCatalogKey(emptyString),getCatalogFile(emptyString),getCatalogFolder(emptyString),getCatalogThread(emptyString))#.append('fullPath')
 ExtentsLeafTypes=genTypes(set(),'',getExtentsKey(emptyString),ExtentsDataRec(getExtentDescriptor(emptyString),getExtentDescriptor(emptyString),getExtentDescriptor(emptyString),getExtentDescriptor(emptyString),getExtentDescriptor(emptyString),getExtentDescriptor(emptyString),getExtentDescriptor(emptyString),getExtentDescriptor(emptyString)))
 AttrLeafTypes=genTypes(set(),'',getAttributesKey(emptyString),getAttributesForkData(emptyString),getAttributesExtents(emptyString),getAttributesData(emptyString))
 CatalogIndexTypes=genTypes(set(),'',getCatalogKey(emptyString),BTPointer(0))
@@ -78,7 +81,7 @@ AttrIndexTypes=genTypes(set(),'',getCatalogKey(emptyString),BTPointer(0))
 HeaderTypes=genTypes(set(),'',getHeaderNode(emptyString))
 
 nodeTypes={'Catalog':{'LeafRecList':CatalogLeafTypes,'BTHeaderRec':HeaderTypes,'PointerRecList':CatalogIndexTypes}}
-nodeTypes['Extents']={'LeafRecList':ExentsLeafTypes,'BTHeaderRec':HeaderTypes,'PointerRecList':ExtentsIndexTypes}
+nodeTypes['Extents']={'LeafRecList':ExtentsLeafTypes,'BTHeaderRec':HeaderTypes,'PointerRecList':ExtentsIndexTypes}
 nodeTypes['Attr']={'LeafRecList':AttrLeafTypes,'BTHeaderRec':HeaderTypes,'PointerRecList':AttrIndexTypes}
 volumeHeaderTypes=genTypes(set(),'',getVolumeHeader(2*emptyString))
 
@@ -97,16 +100,17 @@ def volumeInfo(path,vh):
 
     if vh!=0:
         f = open("{0}/VolumeInfo.txt".format(path),'w')
-        for i in vh.__dict__:
-            f.write('{0} : {1}\n'.format(i,vh.__dict__[i]))
+        for i in vh._asdict():
+            f.write('{0} : {1}\n'.format(i,vh.__getattribute__(i)))
     
     f.close()
 
 def outputKeyedRec(f,records,nodeType):
 
     for i in range(len(records)):
-        for j in getRow1(records[j],nodeType):
-            f.write((unicode(j).replace(',','","')+',').encode('utf-8'))
+        for j in getRow1(records[i],nodeType):
+            print j
+            f.write(unicode(j).replace(",","','").replace('"',+'\'"\'').replace("\n","'\n'").encode('utf-8'))
         f.write('\n')
 
 
@@ -127,6 +131,7 @@ def rawCSV(path,jParseList):
 
             f[i][j].write('\n')
 
+
     for i in range(1,len(jParseList)):        
 
         blocks=jParseList[i][2]
@@ -142,17 +147,12 @@ def rawCSV(path,jParseList):
 
                 outputKeyedRec(f[records[0].getType()][blocks._fields[1]],records,nt)
 
-            '''
-            elif block.__class__.__name__=="HeaderNode":
-
-                for k in getRow2(blocks,nodeTypes[]['BTHeaderRec']):
-                    f.write((unicode(j).replace(',','","')+',').encode('utf-8'))
-                f.write('\n')
-            '''
-
             elif block.__class__.__name__=='VolumeHeader':
+
                 for k in getRow2(block,volumeHeaderTypes):
-                    f[''].write((unicode(j).replace(',','","')+',').encode('utf-8'))
+
+                    f['VolumeHeader'].write(unicode(j).replace('"','""').replace(',','","').replace('"',+'"""').replace('\n','"\n"').encode('utf-8'))
+
                 f.write('\n')
 
     f['VolumeHeader'].close()
@@ -162,6 +162,8 @@ def rawCSV(path,jParseList):
             f[i][j].close()
 
 
+leafNodeTypes={'Catalog':CatalogLeafTypes,'Extents':ExtentsLeafTypes,'Attributes':AttrLeafTypes}
+
 def rawSQLite3(path,jParseList):
 
     con=sqlite3.connect('{0}/sqlite3.db'.format(path))
@@ -169,32 +171,45 @@ def rawSQLite3(path,jParseList):
     cur=con.cursor()
 
     for i in ['Catalog','Extents','Attributes']:
-        cur.execute('CREATE TABLE {0} {1}'.format(i,tuple(leafNodeTypes[i])))
+        for j in ['LeafRecList','BTHeaderRec','PointerRecList']:
+            cur.execute('CREATE TABLE {0} {1}'.format(i,tuple(nodeTypes[i][j])))
 
     for i in range(1,len(jParseList)):
 
         blocks=jParseList[i][2]
         for j in range(len(blocks)):
             
-            try:
+            block=blocks[j]
+            records=block[1]
 
-                records=blocks[j].LeafRecList
+            if type(records)==list:
+
+                nt=nodeTypes[records[0].getType()][block._fields[1]]
 
                 for k in range(len(records)):
 
-                    index=records[k].getType()
-                    lf=getRow(records[k],leafNodeTypes[index])                    
+                    lf=getRow1(records[k],nt)
 
                     for i in range(len(lf)):
-                        if type(lf)==tuple:
-                            lf=unicode(lf)
-                        if type(lf)==str or type(lf)==unicode:
-                            lf=lf.replace("'","''").replace('"',"'")
+                        if type(lf[i])==tuple:
+                            lf[i]=unicode(lf[i])
+                        if type(lf[i])==str or type(lf[i])==unicode:
+                            lf[i]=lf[i].replace("'","''").replace('&','&&')
 
-                    cur.execute(u'insert into {0} values {1}'.format(index,tuple(lf)).replace("u'","'"))
+                    print lf
+                    cur.execute(u'insert into {0} values {1}'.format(index,tuple(lf)).replace("u'","'").replace('u"','"') .replace('"',"'"))
 
-            except AttributeError:
-                pass
+            elif block.__class__.__name__=='VolumeHeader':
+
+                vh=getRow2(block,volumeHeaderTypes)
+
+                for i in range(len(lf)):
+                    if type(lf[i])==tuple:
+                        lf[i]=unicode(lf[i])
+                    if type(lf[i])==str or type(lf[i])==unicode:
+                        lf[i]=lf[i].replace("'","''").replace('&','&&')
+
+                cur.execute(u'insert into {0} values {1}'.format(index,tuple(vh)).replace("u'","'").replace('u"','"') .replace('"',"'"))
 
     cur.close()
     con.close()
@@ -221,7 +236,7 @@ def recovery(disk,path,target,jParseList,vh):
 
                             dataFork=[]
                             extents=records.record.dataFork.extents
-                            for l in extents.__dict__.itervalues():
+                            for l in extents._asdict().itervalues():
                                 dataFork.append(DiskDump(disk,'',vh.blockSize,l.startBlock,l.blockCount))
                             dataFork=''.join(dataFork)
                             f=open('{0}/{1}_DataFork'.format(path,nodeName),'wb')
@@ -230,7 +245,7 @@ def recovery(disk,path,target,jParseList,vh):
 
                             resourceFork=[]
                             extents=records.record.resourceFork.extents
-                            for l in extents.__dict__.itervalues():
+                            for l in extents._asdict().itervalues():
                                 resourceFork.append(DiskDump(disk,'{0}/{1}'.format(path,nodeName),vh.blockSize,l.startBlock,l.blockCount))
                             resourceFork=''.join(resourceFork)
                             f=open('{0}/{1}_ResourceFork'.format(path,nodeName),'wb')

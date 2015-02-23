@@ -44,7 +44,7 @@ def journalCarving(disk,offset,path):
             print fi.tell(),'error!'
             temp=fi.tell()
             fi.seek(1048576,os.SEEK_CUR)
-            if temp=fi.tell():
+            if temp==fi.tell():
                 break
             
     
@@ -72,8 +72,8 @@ def specialFileExtractor(disk,vh,select,path):
 
         fileContent=[]
         for j in range(8):
-            if vh.__dict__[specialFileName[i]].extents[j].startBlock!=0 or vh.__dict__[specialFileName[i]].extents[j].blockCount!=0:
-                fileContent.append(DiskDump(disk,'{0}/{1}{2}'.format(path,specialFileName[i],j),vh.blockSize,vh.__dict__[specialFileName[i]].extents[j].startBlock,vh.__dict__[specialFileName[i]].extents[j].blockCount,select))
+            if vh.__getattribute__(specialFileName[i]).extents[j].startBlock!=0 or vh.__getattribute__(specialFileName[i]).extents[j].blockCount!=0:
+                fileContent.append(DiskDump(disk,'{0}/{1}{2}'.format(path,specialFileName[i],j),vh.blockSize,vh.__getattribute__[specialFileName[i]].extents[j].startBlock,vh.__getattribute__(specialFileName[i]).extents[j].blockCount,select))
         
         specialFile.append(''.join(fileContent))
 
