@@ -5,6 +5,7 @@ from HFSPlus_GetInstance import *
 from Utility import *
 from Analyzer import *
 
+
 def genTypes(seen,prefix,*standard):
     seen_add = seen.add
     types=[]
@@ -22,6 +23,7 @@ def genTypes(seen,prefix,*standard):
 
     return types
 
+
 def getTypesNFields(data,prefix):
     typesNFields=[]
     for i,j in data._asdict().iteritems():
@@ -35,6 +37,7 @@ def getTypesNFields(data,prefix):
 
     return typesNFields
 
+
 def getRow1(data,types):
 
     fields=OrderedDict([(i,'') for i in types])
@@ -42,7 +45,7 @@ def getRow1(data,types):
     for i,j in getTypesNFields(data.record,''):
         fields[i]=j
 
-    if 'recordType' in fields:
+    if 'recordType' in fields and fields['recordType']<5:
 
         if fields['recordType']==3 or fields['recordType']==4:
 
@@ -55,13 +58,14 @@ def getRow1(data,types):
                     else:
                         fields[i]=j
 
-        #fields['fullPath']=getFullPath(fields['CNID'])
+        fields['fullPath']=getFullPath(fields['CNID'])
 
     if 'recordType' not in fields or (fields['recordType']!=3 and fields['recordType']!=4):
         for i,j in getTypesNFields(data.key,''):
             fields[i]=j
         
     return fields.values()
+
 
 def getRow2(data,types):
 
@@ -71,14 +75,16 @@ def getRow2(data,types):
         
     return fields.values()
 
+
 emptyString=300*'\x00'
-CatalogLeafTypes=genTypes(set(),'',getCatalogKey(emptyString),getCatalogFile(emptyString),getCatalogFolder(emptyString),getCatalogThread(emptyString))#.append('fullPath')
+CatalogLeafTypes=genTypes(set(),'',getCatalogKey(emptyString),getCatalogFile(emptyString),getCatalogFolder(emptyString),getCatalogThread(emptyString))
+CatalogLeafTypes.append('fullPath')
 ExtentsLeafTypes=genTypes(set(),'',getExtentsKey(emptyString),ExtentsDataRec(getExtentDescriptor(emptyString),getExtentDescriptor(emptyString),getExtentDescriptor(emptyString),getExtentDescriptor(emptyString),getExtentDescriptor(emptyString),getExtentDescriptor(emptyString),getExtentDescriptor(emptyString),getExtentDescriptor(emptyString)))
 AttrLeafTypes=genTypes(set(),'',getAttributesKey(emptyString),getAttributesForkData(emptyString),getAttributesExtents(emptyString),getAttributesData(emptyString))
 CatalogIndexTypes=genTypes(set(),'',getCatalogKey(emptyString),BTPointer(0))
-ExtentsIndexTypes=genTypes(set(),'',getCatalogKey(emptyString),BTPointer(0))
-AttrIndexTypes=genTypes(set(),'',getCatalogKey(emptyString),BTPointer(0))
-HeaderTypes=genTypes(set(),'',getHeaderNode(emptyString))
+ExtentsIndexTypes=genTypes(set(),'',getExtentsKey(emptyString),BTPointer(0))
+AttrIndexTypes=genTypes(set(),'',getAttributesKey(emptyString),BTPointer(0))
+HeaderTypes=genTypes(set(),'',getBTHeaderRec(emptyString))
 
 nodeTypes={'Catalog':{'LeafRecList':CatalogLeafTypes,'BTHeaderRec':HeaderTypes,'PointerRecList':CatalogIndexTypes}}
 nodeTypes['Extents']={'LeafRecList':ExtentsLeafTypes,'BTHeaderRec':HeaderTypes,'PointerRecList':ExtentsIndexTypes}
@@ -109,10 +115,12 @@ def outputKeyedRec(f,records,nodeType):
 
     for i in range(len(records)):
         for j in getRow1(records[i],nodeType):
+            if type(j)==str or type(j)==unicode:
+                j=j.replace('"','"""')
+            if type(j)==tuple:
+                j='"'+unicode(j).replace('"','"""')+'"'
+            f.write(unicode(j).encode('utf-8')+',')
 
-            print j
-            f.write(unicode(j).replace('"','""').replace(',','","').replace('"','"""').replace('\n','"\n"').encode('utf-8'))
-        
         f.write('\n')
 
 
@@ -120,13 +128,16 @@ def rawCSV(path,jParseList):
 
     f={'VolumeHeader':open('{0}/VolumeHeader.csv'.format(path),'w')}
 
+    for i in volumeHeaderTypes:
+        f['VolumeHeader'].write('{0},'.format(i))
+
     for i in ['Catalog','Extents','Attributes']:
 
         f[i]={}
 
-        for j in ['LeafRecList','BTHeaderRec','PointerRecList']:
+        for j in ['LeafRecList','PointerRecList','BTHeaderRec']:
 
-            f[i][j]=open('{0}/{1}{2}.csv'.format(path,i,j),'w')
+            f[i][j]=open('{0}/Journal_{1}{2}.csv'.format(path,i,j),'w')
 
             for k in nodeTypes[i][j]:
                 f[i][j].write('{0},'.format(k))
@@ -142,25 +153,32 @@ def rawCSV(path,jParseList):
 
             block=blocks[j]
 
-            if type(block[1])==list:
-
+            try:
                 records=block[1]
 
-                print block
-                print records[0].getType()
-                print block._fields[1]
+                if type(records)==list:
 
-                nt=nodeTypes[records[0].getType()][block._fields[1]]
+                    fileType=records[0].getType()
+                    recType=block._fields[1]
 
-                outputKeyedRec(f[records[0].getType()][block._fields[1]],records,nt)
+                    nt=nodeTypes[fileType][recType]
 
-            elif block.__class__.__name__=='VolumeHeader':
+                    outputKeyedRec(f[fileType][recType],records,nt)
 
-                for k in getRow2(block,volumeHeaderTypes):
+                elif block.__class__.__name__=='VolumeHeader':
 
-                    f['VolumeHeader'].write(unicode(j).replace('"','""').replace(',','","').replace('"','"""').replace('\n','"\n"').encode('utf-8'))
+                    for k in getRow2(block,volumeHeaderTypes):
+                        if type(k)==str or type(k)==unicode:
+                            k=k.replace('"','"""')
+                        if type(k)==tuple:
+                            k='"'+unicode(k).replace('"','"""')+'"'
+                        f['VolumeHeader'].write(unicode(k).encode('utf-8')+',')
 
-                f['VolumeHeader'].write('\n')
+                    f['VolumeHeader'].write('\n')
+
+            except Exception,e:
+                print e
+                pass
 
     f['VolumeHeader'].close()
 
@@ -169,17 +187,17 @@ def rawCSV(path,jParseList):
             f[i][j].close()
 
 
-leafNodeTypes={'Catalog':CatalogLeafTypes,'Extents':ExtentsLeafTypes,'Attributes':AttrLeafTypes}
-
 def rawSQLite3(path,jParseList):
 
     con=sqlite3.connect('{0}/sqlite3.db'.format(path))
     con.isolation_level=None
     cur=con.cursor()
 
+    cur.execute('CREATE TABLE VolumeHeader {0}'.format(tuple(volumeHeaderTypes)))
+
     for i in ['Catalog','Extents','Attributes']:
-        for j in ['LeafRecList','BTHeaderRec','PointerRecList']:
-            cur.execute('CREATE TABLE {0} {1}'.format(i,tuple(nodeTypes[i][j])))
+        for j in ['LeafRecList','PointerRecList','BTHeaderRec']:
+            cur.execute('CREATE TABLE {0}{1} {2}'.format(i,j,tuple(nodeTypes[i][j])))
 
     for i in range(1,len(jParseList)):
 
@@ -188,36 +206,44 @@ def rawSQLite3(path,jParseList):
             
             block=blocks[j]
 
-            if type(block[j][1])==list:
+            try:
 
                 records=block[1]
 
-                nt=nodeTypes[records[0].getType()][block._fields[1]]
+                if type(records)==list:
 
-                for k in range(len(records)):
+                    fileType=records[0].getType()
+                    recType=block._fields[1]
 
-                    lf=getRow1(records[k],nt)
+                    nt=nodeTypes[fileType][recType]
 
-                    for i in range(len(lf)):
-                        if type(lf[i])==tuple:
-                            lf[i]=unicode(lf[i])
-                        if type(lf[i])==str or type(lf[i])==unicode:
-                            lf[i]=lf[i].replace("'","''").replace('&','&&')
+                    for k in range(len(records)):
 
-                    print lf
-                    cur.execute(u'insert into {0} values {1}'.format(index,tuple(lf)).replace("u'","'").replace('u"','"') .replace('"',"'"))
+                        lf=getRow1(records[k],nt)
 
-            elif block.__class__.__name__=='VolumeHeader':
+                        for i in range(len(lf)):
+                            if type(lf[i])==tuple:
+                                lf[i]=unicode(lf[i])
+                            if type(lf[i])==str or type(lf[i])==unicode:
+                                lf[i]=lf[i].replace("'","''").replace('&','&&')
 
-                vh=getRow2(block,volumeHeaderTypes)
+                        cur.execute(u'insert into {0}{1} values {2}'.format(fileType,recType,tuple(lf)).replace("u'","'").replace('u"','"') .replace('"',"'"))
 
-                for i in range(len(lf)):
-                    if type(lf[i])==tuple:
-                        lf[i]=unicode(lf[i])
-                    if type(lf[i])==str or type(lf[i])==unicode:
-                        lf[i]=lf[i].replace("'","''").replace('&','&&')
+                elif block.__class__.__name__=='VolumeHeader':
 
-                cur.execute(u'insert into {0} values {1}'.format(index,tuple(vh)).replace("u'","'").replace('u"','"') .replace('"',"'"))
+                    vh=getRow2(block,volumeHeaderTypes)
+
+                    for i in range(len(vh)):
+                        if type(vh[i])==tuple:
+                            vh[i]=unicode(vh[i])
+                        if type(vh[i])==str or type(vh[i])==unicode:
+                            vh[i]=vh[i].replace("'","''").replace('&','&&')
+
+                    cur.execute(u'insert into VolumeHeader values {0}'.format(tuple(vh)).replace("u'","'").replace('u"','"') .replace('"',"'"))
+
+            except Exception,e:
+                print e
+                pass
 
     cur.close()
     con.close()

@@ -12,53 +12,79 @@ import sys
 import datetime
 import csv
 
+fstruct={}
+
 def specialFileAnalyzer(path,specialFile):
 
-    fileType=['Extents','Catalog','Attributes']
+    fileTypes=['Extents','Catalog','Attributes']
+    recTypes=["LeafRecList", "PointerRecList", "BTHeaderRec"]
 
-    f=[]
-    fstruct={}
+    f={}
 
-    for i in range(3):
+    sf=specialFile['Catalog']
+
+    if sf!=0:
+
+        nodeSize,temp1,totalNodes=unpack_from('>HHL',sf,32)
+
+        
+        nodePointer=0
+        for i in xrange(totalNodes):
+
+            node=getBlock(buffer(sf,nodePointer,nodeSize),'Catalog')
+
+            if node.NodeDescriptor.kind==-1:
+                for j in node.LeafRecList:
+                    if j.record.recordType>2:
+                        fstruct[j.key.parentID]=[j.record.nodeName.nodeUnicode,j.record.parentID]
+
+            nodePointer+=nodeSize
+
+
+    for i in fileTypes:
 
         sf=specialFile[i]
+
         if sf==0:
             break
-        ft=fileType[i]
 
-        f.append({})
-        fp=f[i]
+        fp=f[i]={}
 
-        for j,k in enumerate(["Leaf", "Index", "Header"]):
-            fp[j]=open('{0}/{1}{2}'.format(path,ft,j))
+        for j in recTypes:
+
+            f[i][j]=open('{0}/{1}{2}.csv'.format(path,i,j),'w')
+
+            for k in nodeTypes[i][j]:
+                f[i][j].write('{0},'.format(k))
+
+            f[i][j].write('\n')
 
         nodeSize,temp1,totalNodes=unpack_from('>HHL',sf,32)
 
         nodePointer=0
         for j in xrange(totalNodes):
 
-            node=getBlock(buffer(sf,nodePointer,nodeSize),ft)
-            index=node.kind+1
+            node=getBlock(buffer(sf,nodePointer,nodeSize),i)
 
-            if index<3:
+            if node.NodeDescriptor.kind<2:
 
-                records=blocks[1]
+                index=recTypes[node.NodeDescriptor.kind+1]
+                records=node[1]
 
                 if type(records)==list:
-                    for l in records:
-                        outputRecords(fp[index],l)
+                    outputKeyedRec(fp[index],records,nodeTypes[i][index])
 
                 else:
-                    outputRecords(fp[index],records)
 
-                if i==1 and index==0:
-                    for k in blocks.LeafRecList:
-                        if k.record.recordType<2:
-                            fstruct[k.key.parentID]=[k.record.nodeName.nodeUnicode,k.record.parentID]
+                    for k in getRow2(records,nodeTypes[i][index]):
+                        fp[index].write(unicode(k).replace('"','""').replace(',','","').replace('"','"""').replace('\n','"\n"').encode('utf-8')+',')
+
+                    fp[index].write('\n')
 
             nodePointer+=nodeSize
 
-    return fstruct
+
+
 '''
 def allocDataAnalyzer(self):
 
@@ -137,7 +163,7 @@ def modifiedInit(self):
         existentExtent.append(self)
 '''
 
-def getFullPath(CNID,fstruct):
+def getFullPath(CNID):
 
     fullPath=[]
 
@@ -198,6 +224,8 @@ def main(option):
     path='result{0}'.format(option['id'])
 
     DirectoryCleaning(path)
+
+    specialFileAnalyzer(path,{'Extents':extentsFile,'Catalog':catalogFile,'Attributes':attributesFile})
 
     rawCSV(path,jParseList)
     rawSQLite3(path,jParseList)

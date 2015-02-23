@@ -23,6 +23,8 @@ class Binary:
             return self.data.tobytes()
         except(AssertionError):
             return str(self.data)
+    def __repr__(self):
+        return self.tobytes()
     
 # variable for storing a sector size 
 # variable for storing a magnification of block from sect_size (blockSize/sect_size)
@@ -257,13 +259,11 @@ def getAttributesKey(ak_binary):
 def getAttributesData(ad_binary):
     vec = list(unpack_from(">IQI", ad_binary))
     attrSize = vec[-1]
-
     temp=[]
     for i in ad_binary[16:16+attrSize]:
         temp.append(i)
-
     attrData = tuple(temp)
-    vec.append(Binary(attrData, "attrData"))
+    vec.append(attrData)
     return ss.AttrData(*vec)
 
 def getAttributesForkData(af_binary):

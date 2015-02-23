@@ -24,7 +24,7 @@ def journalCarving(disk,offset,path):
                 print fi.tell()
             fi.seek(i-maxSize,os.SEEK_CUR)
             gc.collect()
-            jh=getJournalHeader(f.read(4096))
+            jh=getJournalHeader(fi.read(4096))
             gc.collect()
             fi.seek(i-4096,os.SEEK_CUR)
             fo=open('{0}/Journal_{1}'.format(path,fi.tell()),'wb')
