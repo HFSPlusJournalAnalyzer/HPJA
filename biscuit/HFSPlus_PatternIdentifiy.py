@@ -7,7 +7,6 @@ Created on 2015. 2. 16.
 from HFSPlus_JournalTrack import *
 from HFSPlus_ParseModule import *
 from collections import namedtuple
-import codecs
 
 class CatalObjPatVec(namedtuple("CatalObjPatVec", ['Insert', 'Remove'])):
     def __str__(self):
