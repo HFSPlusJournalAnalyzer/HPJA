@@ -183,7 +183,7 @@ def rawCSV(path,jParseList):
 
 def rawSQLite3(path,jParseList):
 
-    con=sqlite3.connect('{0}/sqlite3.db'.format(path))
+    con=sqlite3.connect('{0}/Journal.db'.format(path))
     con.isolation_level=None
     cur=con.cursor()
 
