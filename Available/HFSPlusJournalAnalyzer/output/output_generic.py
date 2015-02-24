@@ -95,16 +95,6 @@ nodeTypes['Extents']={'LeafRecList':ExtentsLeafTypes,'BTHeaderRec':HeaderTypes,'
 nodeTypes['Attributes']={'LeafRecList':AttrLeafTypes,'BTHeaderRec':HeaderTypes,'PointerRecList':AttrIndexTypes}
 volumeHeaderTypes=genTypes(set(),'',getVolumeHeader(2*emptyString))
 
-
-def volumeInfo(path,vh):
-
-    if vh!=0:
-        f = open("{0}/VolumeInfo.txt".format(path),'w')
-        for i in vh._asdict():
-            f.write('{0} : {1}\n'.format(i,vh.__getattribute__(i)))
-    
-        f.close()
-
 def outputKeyedRec(f,records,nodeType):
 
     for i in range(len(records)):
@@ -170,8 +160,7 @@ def rawCSV(path,jParseList):
 
                     f['VolumeHeader'].write('\n')
 
-            except Exception,e:
-                print e
+            except Exception:
                 pass
 
     f['VolumeHeader'].close()
@@ -235,8 +224,7 @@ def rawSQLite3(path,jParseList):
 
                     cur.execute(u'insert into VolumeHeader values {0}'.format(tuple(vh)).replace("u'","'").replace('u"','"') .replace('"',"'"))
 
-            except Exception,e:
-                print e
+            except Exception:
                 pass
 
     cur.close()

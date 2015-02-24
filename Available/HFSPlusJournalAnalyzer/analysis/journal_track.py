@@ -144,10 +144,7 @@ def block_check(b_info, data, pInfo):
     except(AssertionError): 
         return newObjectInfo(data, b_info.bnum, data.__class__.__name__ )
     
-    try:
-        attList = data._fields
-    except(AttributeError):
-        print 'sibal'
+    attList = data._fields
     curCh = []
     chHead = dataChangeHead(b_info.bnum, curSType, curCh)
     for att in attList:

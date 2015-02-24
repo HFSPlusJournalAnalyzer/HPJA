@@ -55,29 +55,38 @@ def main(option):
     DirectoryCleaning(path)
     
     if 't' in option:
+        print 'Tracking journal...'
         journalTrackPrint(jT, "{0}/journalTrack.txt".format(path))
 
     if 'p' in option:
+        print 'Finding pattern...'
         Pattern_useMe(jT, "{0}/pattern.txt".format(path))
 
     if 'f' in option:
+        print 'Output file system format result...'
         getFSOutput(journal, jParseList, pInfo, bOffList)
 
     if 'va' in option:
+        print 'Analyzing volume...'
         volumeInfo(path,vh)
         specialFileAnalyzer(path,{'Extents':extentsFile,'Catalog':catalogFile,'Attributes':attributesFile})
 
     if 'csv' in option:
+        print 'Creating CSV files...'
         rawCSV(path,jParseList)
 
     if 'sql' in option:
+        print 'Creating SQLite file...'
         rawSQLite3(path,jParseList)
 
     if 'r' in option:
         if 'i' in option:
+            print 'Recover the file...'
             recovery(option['l'],path,option['r'],jParseList,vh)
         else:
             print 'Not able to recover the file. Please input a disk image.'
+
+    print 'Mnemosyne zzang!'
 
 if __name__=='__main__':
     main(translatingInput(sys.argv))

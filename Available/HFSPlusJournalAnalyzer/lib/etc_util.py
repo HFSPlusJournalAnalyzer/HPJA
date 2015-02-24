@@ -20,33 +20,6 @@ def translatingInput(argv):
 
     return option
 
-
-def unpackLarge(fmt,string):
-    
-    result=0
-    size=int(buffer(fmt,1,len(fmt)-1))
-    
-    if fmt[0]=='>':
-
-        for i in range(size):
-            result=result*256+ord(string[i])
-
-    elif fmt[0]=='<':
-
-        for i in range(size-1,-1,-1):
-            result=result*256+ord(string[i])
-
-    else:
-        return 'Unsupported mode'
-
-    return result
-
-
-def unpackLarge_from(fmt,string,offset=0):
-
-    unpackLarge(fmt,buffer(string,offset,len(string)-offset))
-
-
 def DiskDump(inputFile, outputFile, bs, skip, count, select=False):
 
     fi=open(inputFile,'rb')
@@ -73,7 +46,7 @@ def DirectoryCleaning(directory):
 
     os.mkdir(directory)
 
-
+'''
 def VerifyChecksum(headerType,endian,ptr,length):
 
     cksum=0
@@ -89,8 +62,4 @@ def VerifyChecksum(headerType,endian,ptr,length):
         return True
     else:
         return False
-
-
-def RangeChecking(base,size,startBlock,blockCount=0):
-
-    return (base<=startBlock<base+size)+(base<startBlock+blockCount<=base+size)
+'''

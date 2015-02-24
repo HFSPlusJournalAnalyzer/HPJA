@@ -15,6 +15,16 @@ from recovery import *
 
 fstruct={}
 
+def volumeInfo(path,vh):
+
+    if vh!=0:
+        f = open("{0}/VolumeInfo.txt".format(path),'w')
+        for i in vh._asdict():
+            f.write('{0} : {1}\n'.format(i,vh.__getattribute__(i)))
+    
+        f.close()
+
+
 def specialFileAnalyzer(path,specialFile):
 
     fileTypes=['Extents','Catalog','Attributes']
@@ -78,6 +88,7 @@ def specialFileAnalyzer(path,specialFile):
                     fp[index].write('\n')
 
             nodePointer+=nodeSize
+
 
 def getFullPath(CNID):
 
