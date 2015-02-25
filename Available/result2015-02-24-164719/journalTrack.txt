@@ -1,0 +1,2024 @@
+trans_1=================================
+[NEW] 0x120 Allocation
+[NEW] 0x34e10 Catalog
+[NEW] 0x2 VolumeHeader
+[NEW] 0x128 Allocation
+trans_2=================================
+[Renewal] Allocation
+@0x34e10 Catalog-----------------------------
+ LeafRecList
+  {'ID': 13809, 'type': 'file', 'nodeName': u'temp13809', 'thID': 18}
+   record
+    [Renewal] contentModDate	2015-02-24 00:17:39 -> 2015-02-24 00:18:11
+    [Renewal] attributeModDate	2015-02-24 00:17:39 -> 2015-02-24 00:18:11
+    finderInfo
+     [Modify] write_gen_counter	8403 -> 9396
+    dataFork
+     [Modify] logicalSize	968888320 -> 1083187200
+     [Modify] totalBlocks	239361 -> 267266
+     extents
+      extent2
+       [Modify] blockCount	95744 -> 123649
+@0x2 VolumeHeader-----------------------------
+[Renewal] modifyDate	2015-02-24 00:17:42 -> 2015-02-24 00:18:13
+[Modify] freeBlocks	1163102 -> 1135197
+[Modify] writeCount	24959 -> 25904
+[NEW] 0x130 Allocation
+trans_3=================================
+[Renewal] Allocation
+@0x34e10 Catalog-----------------------------
+ LeafRecList
+  {'ID': 13809, 'type': 'file', 'nodeName': u'temp13809', 'thID': 18}
+   record
+    [Renewal] contentModDate	2015-02-24 00:18:11 -> 2015-02-24 00:18:41
+    [Renewal] attributeModDate	2015-02-24 00:18:11 -> 2015-02-24 00:18:41
+    finderInfo
+     [Modify] write_gen_counter	9396 -> 10396
+    dataFork
+     [Modify] logicalSize	1083187200 -> 1198530560
+     [Modify] totalBlocks	267266 -> 295426
+     extents
+      extent2
+       [Modify] blockCount	123649 -> 151809
+@0x2 VolumeHeader-----------------------------
+[Renewal] modifyDate	2015-02-24 00:18:13 -> 2015-02-24 00:18:42
+[Modify] freeBlocks	1135197 -> 1107037
+[Modify] writeCount	25904 -> 26884
+[NEW] 0x138 Allocation
+trans_4=================================
+[Renewal] Allocation
+@0x34e10 Catalog-----------------------------
+ LeafRecList
+  {'ID': 13809, 'type': 'file', 'nodeName': u'temp13809', 'thID': 18}
+   record
+    [Renewal] contentModDate	2015-02-24 00:18:41 -> 2015-02-24 00:19:08
+    [Renewal] attributeModDate	2015-02-24 00:18:41 -> 2015-02-24 00:19:08
+    finderInfo
+     [Modify] write_gen_counter	10396 -> 11296
+    dataFork
+     [Modify] logicalSize	1198530560 -> 1302339584
+     [Modify] totalBlocks	295426 -> 320770
+     extents
+      extent2
+       [Modify] blockCount	151809 -> 177153
+@0x2 VolumeHeader-----------------------------
+[Renewal] modifyDate	2015-02-24 00:18:42 -> 2015-02-24 00:19:11
+[Modify] freeBlocks	1107037 -> 1081693
+[Modify] writeCount	26884 -> 27826
+trans_5=================================
+[Renewal] Allocation
+@0x34e10 Catalog-----------------------------
+ LeafRecList
+  {'ID': 13809, 'type': 'file', 'nodeName': u'temp13809', 'thID': 18}
+   record
+    [Renewal] contentModDate	2015-02-24 00:19:08 -> 2015-02-24 00:19:42
+    [Renewal] attributeModDate	2015-02-24 00:19:08 -> 2015-02-24 00:19:42
+    finderInfo
+     [Modify] write_gen_counter	11296 -> 12396
+    dataFork
+     [Modify] logicalSize	1302339584 -> 1429217280
+     [Modify] totalBlocks	320770 -> 351746
+     extents
+      extent2
+       [Modify] blockCount	177153 -> 208129
+@0x2 VolumeHeader-----------------------------
+[Renewal] modifyDate	2015-02-24 00:19:11 -> 2015-02-24 00:19:42
+[Modify] freeBlocks	1081693 -> 1050717
+[Modify] writeCount	27826 -> 28837
+[NEW] 0x140 Allocation
+trans_6=================================
+[Renewal] Allocation
+@0x34e10 Catalog-----------------------------
+ LeafRecList
+  {'ID': 13809, 'type': 'file', 'nodeName': u'temp13809', 'thID': 18}
+   record
+    [Renewal] contentModDate	2015-02-24 00:19:42 -> 2015-02-24 00:20:12
+    [Renewal] attributeModDate	2015-02-24 00:19:42 -> 2015-02-24 00:20:12
+    finderInfo
+     [Modify] write_gen_counter	12396 -> 13396
+    dataFork
+     [Modify] logicalSize	1429217280 -> 1544560640
+     [Modify] totalBlocks	351746 -> 379906
+     extents
+      extent2
+       [Modify] blockCount	208129 -> 236289
+@0x2 VolumeHeader-----------------------------
+[Renewal] modifyDate	2015-02-24 00:19:42 -> 2015-02-24 00:20:13
+[Modify] freeBlocks	1050717 -> 1022557
+[Modify] writeCount	28837 -> 29822
+[NEW] 0x148 Allocation
+trans_7=================================
+[Renewal] Allocation
+@0x34e10 Catalog-----------------------------
+ LeafRecList
+  {'ID': 13809, 'type': 'file', 'nodeName': u'temp13809', 'thID': 18}
+   record
+    [Renewal] contentModDate	2015-02-24 00:20:12 -> 2015-02-24 00:20:40
+    [Renewal] attributeModDate	2015-02-24 00:20:12 -> 2015-02-24 00:20:40
+    finderInfo
+     [Modify] write_gen_counter	13396 -> 14296
+    dataFork
+     [Modify] logicalSize	1544560640 -> 1648369664
+     [Modify] totalBlocks	379906 -> 405250
+     extents
+      extent2
+       [Modify] blockCount	236289 -> 261633
+@0x2 VolumeHeader-----------------------------
+[Renewal] modifyDate	2015-02-24 00:20:13 -> 2015-02-24 00:20:42
+[Modify] freeBlocks	1022557 -> 997213
+[Modify] writeCount	29822 -> 30766
+[NEW] 0x150 Allocation
+trans_8=================================
+[Renewal] Allocation
+@0x34e10 Catalog-----------------------------
+ LeafRecList
+  {'ID': 13809, 'type': 'file', 'nodeName': u'temp13809', 'thID': 18}
+   record
+    [Renewal] contentModDate	2015-02-24 00:20:40 -> 2015-02-24 00:21:10
+    [Renewal] attributeModDate	2015-02-24 00:20:40 -> 2015-02-24 00:21:10
+    finderInfo
+     [Modify] write_gen_counter	14296 -> 15296
+    dataFork
+     [Modify] logicalSize	1648369664 -> 1763713024
+     [Modify] totalBlocks	405250 -> 433410
+     extents
+      extent2
+       [Modify] blockCount	261633 -> 289793
+@0x2 VolumeHeader-----------------------------
+[Renewal] modifyDate	2015-02-24 00:20:42 -> 2015-02-24 00:21:12
+[Modify] freeBlocks	997213 -> 969053
+[Modify] writeCount	30766 -> 31746
+[NEW] 0x158 Allocation
+trans_9=================================
+[Renewal] Allocation
+@0x34e10 Catalog-----------------------------
+ LeafRecList
+  {'ID': 13809, 'type': 'file', 'nodeName': u'temp13809', 'thID': 18}
+   record
+    [Renewal] contentModDate	2015-02-24 00:21:10 -> 2015-02-24 00:21:41
+    [Renewal] attributeModDate	2015-02-24 00:21:10 -> 2015-02-24 00:21:41
+    finderInfo
+     [Modify] write_gen_counter	15296 -> 16296
+    dataFork
+     [Modify] logicalSize	1763713024 -> 1879056384
+     [Modify] totalBlocks	433410 -> 461570
+     extents
+      extent2
+       [Modify] blockCount	289793 -> 317953
+@0x2 VolumeHeader-----------------------------
+[Renewal] modifyDate	2015-02-24 00:21:12 -> 2015-02-24 00:21:42
+[Modify] freeBlocks	969053 -> 940893
+[Modify] writeCount	31746 -> 32715
+[NEW] 0x160 Allocation
+trans_10=================================
+[Renewal] Allocation
+@0x34e10 Catalog-----------------------------
+ LeafRecList
+  {'ID': 13809, 'type': 'file', 'nodeName': u'temp13809', 'thID': 18}
+   record
+    [Renewal] contentModDate	2015-02-24 00:21:41 -> 2015-02-24 00:22:12
+    [Renewal] attributeModDate	2015-02-24 00:21:41 -> 2015-02-24 00:22:12
+    finderInfo
+     [Modify] write_gen_counter	16296 -> 17296
+    dataFork
+     [Modify] logicalSize	1879056384 -> 1994399744
+     [Modify] totalBlocks	461570 -> 489730
+     extents
+      extent2
+       [Modify] blockCount	317953 -> 346113
+@0x2 VolumeHeader-----------------------------
+[Renewal] modifyDate	2015-02-24 00:21:42 -> 2015-02-24 00:22:13
+[Modify] freeBlocks	940893 -> 912733
+[Modify] writeCount	32715 -> 33705
+trans_11=================================
+[Renewal] Allocation
+[NEW] 0x168 Allocation
+@0x34e10 Catalog-----------------------------
+ LeafRecList
+  {'ID': 13809, 'type': 'file', 'nodeName': u'temp13809', 'thID': 18}
+   record
+    [Renewal] contentModDate	2015-02-24 00:22:12 -> 2015-02-24 00:22:41
+    [Renewal] attributeModDate	2015-02-24 00:22:12 -> 2015-02-24 00:22:41
+    finderInfo
+     [Modify] write_gen_counter	17296 -> 18296
+    dataFork
+     [Modify] logicalSize	1994399744 -> 2109743104
+     [Modify] totalBlocks	489730 -> 517890
+     extents
+      extent2
+       [Modify] blockCount	346113 -> 374273
+@0x2 VolumeHeader-----------------------------
+[Renewal] modifyDate	2015-02-24 00:22:13 -> 2015-02-24 00:22:43
+[Modify] freeBlocks	912733 -> 884573
+[Modify] writeCount	33705 -> 34677
+trans_12=================================
+[Renewal] Allocation
+@0x34e10 Catalog-----------------------------
+ LeafRecList
+  {'ID': 13809, 'type': 'file', 'nodeName': u'temp13809', 'thID': 18}
+   record
+    [Renewal] contentModDate	2015-02-24 00:22:41 -> 2015-02-24 00:23:11
+    [Renewal] attributeModDate	2015-02-24 00:22:41 -> 2015-02-24 00:23:11
+    finderInfo
+     [Modify] write_gen_counter	18296 -> 19289
+    dataFork
+     [Modify] logicalSize	2109743104 -> 2224041984
+     [Modify] totalBlocks	517890 -> 545795
+     extents
+      extent2
+       [Modify] blockCount	374273 -> 402178
+@0x2 VolumeHeader-----------------------------
+[Renewal] modifyDate	2015-02-24 00:22:43 -> 2015-02-24 00:23:12
+[Modify] freeBlocks	884573 -> 856668
+[Modify] writeCount	34677 -> 35674
+[NEW] 0x170 Allocation
+trans_13=================================
+[Renewal] Allocation
+@0x34e10 Catalog-----------------------------
+ LeafRecList
+  {'ID': 13809, 'type': 'file', 'nodeName': u'temp13809', 'thID': 18}
+   record
+    [Renewal] contentModDate	2015-02-24 00:23:11 -> 2015-02-24 00:23:39
+    [Renewal] attributeModDate	2015-02-24 00:23:11 -> 2015-02-24 00:23:39
+    finderInfo
+     [Modify] write_gen_counter	19289 -> 20289
+    dataFork
+     [Modify] logicalSize	2224041984 -> 2339385344
+     [Modify] totalBlocks	545795 -> 573955
+     extents
+      extent2
+       [Modify] blockCount	402178 -> 430338
+@0x2 VolumeHeader-----------------------------
+[Renewal] modifyDate	2015-02-24 00:23:12 -> 2015-02-24 00:23:42
+[Modify] freeBlocks	856668 -> 828508
+[Modify] writeCount	35674 -> 36719
+[NEW] 0x178 Allocation
+trans_14=================================
+[Renewal] Allocation
+@0x34e10 Catalog-----------------------------
+ LeafRecList
+  {'ID': 13809, 'type': 'file', 'nodeName': u'temp13809', 'thID': 18}
+   record
+    [Renewal] contentModDate	2015-02-24 00:23:39 -> 2015-02-24 00:24:11
+    [Renewal] attributeModDate	2015-02-24 00:23:39 -> 2015-02-24 00:24:11
+    finderInfo
+     [Modify] write_gen_counter	20289 -> 21389
+    dataFork
+     [Modify] logicalSize	2339385344 -> 2466263040
+     [Modify] totalBlocks	573955 -> 604931
+     extents
+      extent2
+       [Modify] blockCount	430338 -> 461314
+@0x2 VolumeHeader-----------------------------
+[Renewal] modifyDate	2015-02-24 00:23:42 -> 2015-02-24 00:24:13
+[Modify] freeBlocks	828508 -> 797532
+[Modify] writeCount	36719 -> 37771
+[NEW] 0x180 Allocation
+trans_15=================================
+[Renewal] Allocation
+@0x34e10 Catalog-----------------------------
+ LeafRecList
+  {'ID': 13809, 'type': 'file', 'nodeName': u'temp13809', 'thID': 18}
+   record
+    [Renewal] contentModDate	2015-02-24 00:24:11 -> 2015-02-24 00:24:41
+    [Renewal] attributeModDate	2015-02-24 00:24:11 -> 2015-02-24 00:24:41
+    finderInfo
+     [Modify] write_gen_counter	21389 -> 22489
+    dataFork
+     [Modify] logicalSize	2466263040 -> 2593140736
+     [Modify] totalBlocks	604931 -> 635907
+     extents
+      extent2
+       [Modify] blockCount	461314 -> 492290
+@0x2 VolumeHeader-----------------------------
+[Renewal] modifyDate	2015-02-24 00:24:13 -> 2015-02-24 00:24:43
+[Modify] freeBlocks	797532 -> 766556
+[Modify] writeCount	37771 -> 38859
+[NEW] 0x188 Allocation
+trans_16=================================
+[Renewal] Allocation
+@0x34e10 Catalog-----------------------------
+ LeafRecList
+  {'ID': 13809, 'type': 'file', 'nodeName': u'temp13809', 'thID': 18}
+   record
+    [Renewal] contentModDate	2015-02-24 00:24:41 -> 2015-02-24 00:25:10
+    [Renewal] attributeModDate	2015-02-24 00:24:41 -> 2015-02-24 00:25:10
+    finderInfo
+     [Modify] write_gen_counter	22489 -> 23489
+    dataFork
+     [Modify] logicalSize	2593140736 -> 2708484096
+     [Modify] totalBlocks	635907 -> 664067
+     extents
+      extent2
+       [Modify] blockCount	492290 -> 520450
+@0x2 VolumeHeader-----------------------------
+[Renewal] modifyDate	2015-02-24 00:24:43 -> 2015-02-24 00:25:12
+[Modify] freeBlocks	766556 -> 738396
+[Modify] writeCount	38859 -> 39875
+[NEW] 0x190 Allocation
+trans_17=================================
+[Renewal] Allocation
+@0x34e10 Catalog-----------------------------
+ LeafRecList
+  {'ID': 13809, 'type': 'file', 'nodeName': u'temp13809', 'thID': 18}
+   record
+    [Renewal] contentModDate	2015-02-24 00:25:10 -> 2015-02-24 00:25:40
+    [Renewal] attributeModDate	2015-02-24 00:25:10 -> 2015-02-24 00:25:40
+    finderInfo
+     [Modify] write_gen_counter	23489 -> 24589
+    dataFork
+     [Modify] logicalSize	2708484096 -> 2835361792
+     [Modify] totalBlocks	664067 -> 695043
+     extents
+      extent2
+       [Modify] blockCount	520450 -> 551426
+@0x2 VolumeHeader-----------------------------
+[Renewal] modifyDate	2015-02-24 00:25:12 -> 2015-02-24 00:25:42
+[Modify] freeBlocks	738396 -> 707420
+[Modify] writeCount	39875 -> 40979
+[NEW] 0x198 Allocation
+trans_18=================================
+[Renewal] Allocation
+@0x34e10 Catalog-----------------------------
+ LeafRecList
+  {'ID': 13809, 'type': 'file', 'nodeName': u'temp13809', 'thID': 18}
+   record
+    [Renewal] contentModDate	2015-02-24 00:25:40 -> 2015-02-24 00:26:12
+    [Renewal] attributeModDate	2015-02-24 00:25:40 -> 2015-02-24 00:26:12
+    finderInfo
+     [Modify] write_gen_counter	24589 -> 25689
+    dataFork
+     [Modify] logicalSize	2835361792 -> 2962239488
+     [Modify] totalBlocks	695043 -> 726019
+     extents
+      extent2
+       [Modify] blockCount	551426 -> 582402
+@0x2 VolumeHeader-----------------------------
+[Renewal] modifyDate	2015-02-24 00:25:42 -> 2015-02-24 00:26:13
+[Modify] freeBlocks	707420 -> 676444
+[Modify] writeCount	40979 -> 42016
+[NEW] 0x1a0 Allocation
+trans_19=================================
+[Renewal] Allocation
+@0x34e10 Catalog-----------------------------
+ LeafRecList
+  {'ID': 13809, 'type': 'file', 'nodeName': u'temp13809', 'thID': 18}
+   record
+    [Renewal] contentModDate	2015-02-24 00:26:12 -> 2015-02-24 00:26:42
+    [Renewal] attributeModDate	2015-02-24 00:26:12 -> 2015-02-24 00:26:42
+    finderInfo
+     [Modify] write_gen_counter	25689 -> 26789
+    dataFork
+     [Modify] logicalSize	2962239488 -> 3089117184
+     [Modify] totalBlocks	726019 -> 756995
+     extents
+      extent2
+       [Modify] blockCount	582402 -> 613378
+@0x2 VolumeHeader-----------------------------
+[Renewal] modifyDate	2015-02-24 00:26:13 -> 2015-02-24 00:26:42
+[Modify] freeBlocks	676444 -> 645468
+[Modify] writeCount	42016 -> 43105
+[NEW] 0x1a8 Allocation
+trans_20=================================
+[Renewal] Allocation
+@0x34e10 Catalog-----------------------------
+ LeafRecList
+  {'ID': 13809, 'type': 'file', 'nodeName': u'temp13809', 'thID': 18}
+   record
+    [Renewal] contentModDate	2015-02-24 00:26:42 -> 2015-02-24 00:27:11
+    [Renewal] attributeModDate	2015-02-24 00:26:42 -> 2015-02-24 00:27:11
+    finderInfo
+     [Modify] write_gen_counter	26789 -> 27782
+    dataFork
+     [Modify] logicalSize	3089117184 -> 3203416064
+     [Modify] totalBlocks	756995 -> 784900
+     extents
+      extent2
+       [Modify] blockCount	613378 -> 641283
+@0x2 VolumeHeader-----------------------------
+[Renewal] modifyDate	2015-02-24 00:26:42 -> 2015-02-24 00:27:13
+[Modify] freeBlocks	645468 -> 617563
+[Modify] writeCount	43105 -> 44122
+trans_21=================================
+[Renewal] Allocation
+[NEW] 0x1b0 Allocation
+@0x34e10 Catalog-----------------------------
+ LeafRecList
+  {'ID': 13809, 'type': 'file', 'nodeName': u'temp13809', 'thID': 18}
+   record
+    [Renewal] contentModDate	2015-02-24 00:27:11 -> 2015-02-24 00:27:41
+    [Renewal] attributeModDate	2015-02-24 00:27:11 -> 2015-02-24 00:27:41
+    finderInfo
+     [Modify] write_gen_counter	27782 -> 28782
+    dataFork
+     [Modify] logicalSize	3203416064 -> 3318759424
+     [Modify] totalBlocks	784900 -> 813060
+     extents
+      extent2
+       [Modify] blockCount	641283 -> 669443
+@0x2 VolumeHeader-----------------------------
+[Renewal] modifyDate	2015-02-24 00:27:13 -> 2015-02-24 00:27:42
+[Modify] freeBlocks	617563 -> 589403
+[Modify] writeCount	44122 -> 45069
+trans_22=================================
+[Renewal] Allocation
+@0x34e10 Catalog-----------------------------
+ LeafRecList
+  {'ID': 13809, 'type': 'file', 'nodeName': u'temp13809', 'thID': 18}
+   record
+    [Renewal] contentModDate	2015-02-24 00:27:41 -> 2015-02-24 00:28:12
+    [Renewal] attributeModDate	2015-02-24 00:27:41 -> 2015-02-24 00:28:12
+    finderInfo
+     [Modify] write_gen_counter	28782 -> 29782
+    dataFork
+     [Modify] logicalSize	3318759424 -> 3434102784
+     [Modify] totalBlocks	813060 -> 841220
+     extents
+      extent2
+       [Modify] blockCount	669443 -> 697603
+@0x2 VolumeHeader-----------------------------
+[Renewal] modifyDate	2015-02-24 00:27:42 -> 2015-02-24 00:28:13
+[Modify] freeBlocks	589403 -> 561243
+[Modify] writeCount	45069 -> 46044
+[NEW] 0x1b8 Allocation
+trans_23=================================
+[Renewal] Allocation
+@0x34e10 Catalog-----------------------------
+ LeafRecList
+  {'ID': 13809, 'type': 'file', 'nodeName': u'temp13809', 'thID': 18}
+   record
+    [Renewal] contentModDate	2015-02-24 00:28:12 -> 2015-02-24 00:28:42
+    [Renewal] attributeModDate	2015-02-24 00:28:12 -> 2015-02-24 00:28:42
+    finderInfo
+     [Modify] write_gen_counter	29782 -> 30582
+    dataFork
+     [Modify] logicalSize	3434102784 -> 3526377472
+     [Modify] totalBlocks	841220 -> 863748
+     extents
+      extent2
+       [Modify] blockCount	697603 -> 711683
+      extent3
+       [Modify] startBlock	0 -> 5178
+       [Modify] blockCount	0 -> 8448
+@0x2 VolumeHeader-----------------------------
+[Renewal] modifyDate	2015-02-24 00:28:13 -> 2015-02-24 00:28:43
+[Modify] freeBlocks	561243 -> 538715
+[Modify] writeCount	46044 -> 46863
+[NEW] 0x1c0 Allocation
+[NEW] 0x8 Allocation
+trans_24=================================
+[Renewal] Allocation
+@0x34e10 Catalog-----------------------------
+ LeafRecList
+  {'ID': 13809, 'type': 'file', 'nodeName': u'temp13809', 'thID': 18}
+   record
+    [Renewal] contentModDate	2015-02-24 00:28:42 -> 2015-02-24 00:29:10
+    [Renewal] attributeModDate	2015-02-24 00:28:42 -> 2015-02-24 00:29:10
+    finderInfo
+     [Modify] write_gen_counter	30582 -> 31482
+    dataFork
+     [Modify] logicalSize	3526377472 -> 3630186496
+     [Modify] totalBlocks	863748 -> 889092
+     extents
+      extent3
+       [Modify] blockCount	8448 -> 19712
+      extent4
+       [Modify] startBlock	0 -> 27706
+       [Modify] blockCount	0 -> 14080
+@0x2 VolumeHeader-----------------------------
+[Renewal] modifyDate	2015-02-24 00:28:43 -> 2015-02-24 00:29:13
+[Modify] freeBlocks	538715 -> 513371
+[Modify] nextAllocation	1093893 -> 27706
+[Modify] writeCount	46863 -> 47816
+[NEW] 0x10 Allocation
+trans_25=================================
+[Renewal] Allocation
+@0x34e10 Catalog-----------------------------
+ LeafRecList
+  {'ID': 13809, 'type': 'file', 'nodeName': u'temp13809', 'thID': 18}
+   record
+    [Renewal] contentModDate	2015-02-24 00:29:10 -> 2015-02-24 00:29:41
+    [Renewal] attributeModDate	2015-02-24 00:29:10 -> 2015-02-24 00:29:41
+    finderInfo
+     [Modify] write_gen_counter	31482 -> 32382
+    dataFork
+     [Modify] logicalSize	3630186496 -> 3733995520
+     [Modify] totalBlocks	889092 -> 914436
+     extents
+      extent4
+       [Modify] blockCount	14080 -> 28160
+      extent5
+       [Modify] startBlock	0 -> 57209
+       [Modify] blockCount	0 -> 5632
+      extent6
+       [Modify] startBlock	0 -> 132365
+       [Modify] blockCount	0 -> 5632
+@0x2 VolumeHeader-----------------------------
+[Renewal] modifyDate	2015-02-24 00:29:13 -> 2015-02-24 00:29:42
+[Modify] freeBlocks	513371 -> 488027
+[Modify] nextAllocation	27706 -> 132365
+[Modify] writeCount	47816 -> 48630
+[NEW] 0x28 Allocation
+trans_26=================================
+[Renewal] Allocation
+@0x34e10 Catalog-----------------------------
+ LeafRecList
+  {'ID': 13809, 'type': 'file', 'nodeName': u'temp13809', 'thID': 18}
+   record
+    [Renewal] contentModDate	2015-02-24 00:29:41 -> 2015-02-24 00:30:12
+    [Renewal] attributeModDate	2015-02-24 00:29:41 -> 2015-02-24 00:30:12
+    finderInfo
+     [Modify] write_gen_counter	32382 -> 33382
+    dataFork
+     [Modify] logicalSize	3733995520 -> 3849338880
+     [Modify] totalBlocks	914436 -> 942596
+     extents
+      extent6
+       [Modify] blockCount	5632 -> 33792
+@0x2 VolumeHeader-----------------------------
+[Renewal] modifyDate	2015-02-24 00:29:42 -> 2015-02-24 00:30:13
+[Modify] freeBlocks	488027 -> 459867
+[Modify] writeCount	48630 -> 49606
+[NEW] 0x30 Allocation
+trans_27=================================
+[Renewal] Allocation
+@0x34e10 Catalog-----------------------------
+ LeafRecList
+  {'ID': 13809, 'type': 'file', 'nodeName': u'temp13809', 'thID': 18}
+   record
+    [Renewal] contentModDate	2015-02-24 00:30:12 -> 2015-02-24 00:30:39
+    [Renewal] attributeModDate	2015-02-24 00:30:12 -> 2015-02-24 00:30:39
+    finderInfo
+     [Modify] write_gen_counter	33382 -> 34282
+    dataFork
+     [Modify] logicalSize	3849338880 -> 3953147904
+     [Modify] totalBlocks	942596 -> 967940
+     extents
+      extent6
+       [Modify] blockCount	33792 -> 59136
+@0x2 VolumeHeader-----------------------------
+[Renewal] modifyDate	2015-02-24 00:30:13 -> 2015-02-24 00:30:42
+[Modify] freeBlocks	459867 -> 434523
+[Modify] writeCount	49606 -> 50586
+trans_28=================================
+[Renewal] Allocation
+@0x34e10 Catalog-----------------------------
+ LeafRecList
+  {'ID': 13809, 'type': 'file', 'nodeName': u'temp13809', 'thID': 18}
+   record
+    [Renewal] contentModDate	2015-02-24 00:30:39 -> 2015-02-24 00:31:11
+    [Renewal] attributeModDate	2015-02-24 00:30:39 -> 2015-02-24 00:31:11
+    finderInfo
+     [Modify] write_gen_counter	34282 -> 35282
+    dataFork
+     [Modify] logicalSize	3953147904 -> 4068491264
+     [Modify] totalBlocks	967940 -> 996100
+     extents
+      extent6
+       [Modify] blockCount	59136 -> 61952
+      extent7
+       [Modify] startBlock	0 -> 196613
+       [Modify] blockCount	0 -> 25344
+@0x2 VolumeHeader-----------------------------
+[Renewal] modifyDate	2015-02-24 00:30:42 -> 2015-02-24 00:31:12
+[Modify] freeBlocks	434523 -> 406363
+[Modify] nextAllocation	132365 -> 196613
+[Modify] writeCount	50586 -> 51500
+[NEW] 0x38 Allocation
+trans_29=================================
+[Renewal] Allocation
+@0x34e10 Catalog-----------------------------
+ LeafRecList
+  {'ID': 13809, 'type': 'file', 'nodeName': u'temp13809', 'thID': 18}
+   record
+    [Renewal] contentModDate	2015-02-24 00:31:11 -> 2015-02-24 00:31:42
+    [Renewal] attributeModDate	2015-02-24 00:31:11 -> 2015-02-24 00:31:42
+    finderInfo
+     [Modify] write_gen_counter	35282 -> 36382
+    dataFork
+     [Modify] logicalSize	4068491264 -> 4195368960
+     [Modify] totalBlocks	996100 -> 1027076
+     extents
+      extent7
+       [Modify] blockCount	25344 -> 30976
+@0x2 VolumeHeader-----------------------------
+[Renewal] modifyDate	2015-02-24 00:31:12 -> 2015-02-24 00:31:42
+[Modify] freeBlocks	406363 -> 375387
+[Modify] nextAllocation	196613 -> 232787
+[Modify] writeCount	51500 -> 52571
+[NEW] 0x40 Allocation
+[NEW] 0x41d0 Extents
+[NEW] 0x41d8 Extents
+trans_30=================================
+[Renewal] Allocation
+@0x34e10 Catalog-----------------------------
+ LeafRecList
+  {'ID': 13809, 'type': 'file', 'nodeName': u'temp13809', 'thID': 18}
+   record
+    [Renewal] contentModDate	2015-02-24 00:31:42 -> 2015-02-24 00:32:09
+    [Renewal] attributeModDate	2015-02-24 00:31:42 -> 2015-02-24 00:32:09
+    finderInfo
+     [Modify] write_gen_counter	36382 -> 37175
+    dataFork
+     [Modify] logicalSize	4195368960 -> 4286599168
+     [Modify] totalBlocks	1027076 -> 1049349
+@0x2 VolumeHeader-----------------------------
+[Renewal] modifyDate	2015-02-24 00:31:42 -> 2015-02-24 00:32:12
+[Modify] freeBlocks	375387 -> 353114
+[Modify] nextAllocation	232787 -> 590538
+[Modify] writeCount	52571 -> 53442
+[NEW] 0x98 Allocation
+trans_31=================================
+[Renewal] Allocation
+@0x41d8 Extents-----------------------------
+ LeafRecList
+  {'forkType': 0, 'fileID': 13809}
+   record
+    extent0
+     [Modify] startBlock	0 -> 622987
+     [Modify] blockCount	0 -> 19712
+@0x34e10 Catalog-----------------------------
+ LeafRecList
+  {'ID': 13809, 'type': 'file', 'nodeName': u'temp13809', 'thID': 18}
+   record
+    [Renewal] contentModDate	2015-02-24 00:32:09 -> 2015-02-24 00:32:41
+    [Renewal] attributeModDate	2015-02-24 00:32:09 -> 2015-02-24 00:32:41
+    finderInfo
+     [Modify] write_gen_counter	37175 -> 38275
+    dataFork
+     [Modify] logicalSize	4286599168 -> 4413476864
+     [Modify] totalBlocks	1049349 -> 1080325
+@0x2 VolumeHeader-----------------------------
+[Renewal] modifyDate	2015-02-24 00:32:12 -> 2015-02-24 00:32:42
+[Modify] freeBlocks	353114 -> 322138
+[Modify] nextAllocation	590538 -> 622987
+[Modify] writeCount	53442 -> 54460
+[NEW] 0xa0 Allocation
+trans_32=================================
+[Renewal] Allocation
+@0x41d8 Extents-----------------------------
+ LeafRecList
+  {'forkType': 0, 'fileID': 13809}
+   record
+    extent0
+     [Modify] blockCount	19712 -> 47872
+@0x34e10 Catalog-----------------------------
+ LeafRecList
+  {'ID': 13809, 'type': 'file', 'nodeName': u'temp13809', 'thID': 18}
+   record
+    [Renewal] contentModDate	2015-02-24 00:32:41 -> 2015-02-24 00:33:10
+    [Renewal] attributeModDate	2015-02-24 00:32:41 -> 2015-02-24 00:33:10
+    finderInfo
+     [Modify] write_gen_counter	38275 -> 39275
+    dataFork
+     [Modify] logicalSize	4413476864 -> 4528820224
+     [Modify] totalBlocks	1080325 -> 1108485
+@0x2 VolumeHeader-----------------------------
+[Renewal] modifyDate	2015-02-24 00:32:42 -> 2015-02-24 00:33:13
+[Modify] freeBlocks	322138 -> 293978
+[Modify] writeCount	54460 -> 55512
+[NEW] 0xa8 Allocation
+trans_33=================================
+[Renewal] Allocation
+@0x41d8 Extents-----------------------------
+ LeafRecList
+  {'forkType': 0, 'fileID': 13809}
+   record
+    extent0
+     [Modify] blockCount	47872 -> 78848
+@0x34e10 Catalog-----------------------------
+ LeafRecList
+  {'ID': 13809, 'type': 'file', 'nodeName': u'temp13809', 'thID': 18}
+   record
+    [Renewal] contentModDate	2015-02-24 00:33:10 -> 2015-02-24 00:33:40
+    [Renewal] attributeModDate	2015-02-24 00:33:10 -> 2015-02-24 00:33:40
+    finderInfo
+     [Modify] write_gen_counter	39275 -> 40375
+    dataFork
+     [Modify] logicalSize	4528820224 -> 4655697920
+     [Modify] totalBlocks	1108485 -> 1139461
+@0x2 VolumeHeader-----------------------------
+[Renewal] modifyDate	2015-02-24 00:33:13 -> 2015-02-24 00:33:42
+[Modify] freeBlocks	293978 -> 263002
+[Modify] writeCount	55512 -> 56600
+[NEW] 0xb0 Allocation
+trans_34=================================
+[Renewal] Allocation
+@0x41d8 Extents-----------------------------
+ LeafRecList
+  {'forkType': 0, 'fileID': 13809}
+   record
+    extent0
+     [Modify] blockCount	78848 -> 109824
+@0x34e10 Catalog-----------------------------
+ LeafRecList
+  {'ID': 13809, 'type': 'file', 'nodeName': u'temp13809', 'thID': 18}
+   record
+    [Renewal] contentModDate	2015-02-24 00:33:40 -> 2015-02-24 00:34:11
+    [Renewal] attributeModDate	2015-02-24 00:33:40 -> 2015-02-24 00:34:11
+    finderInfo
+     [Modify] write_gen_counter	40375 -> 41475
+    dataFork
+     [Modify] logicalSize	4655697920 -> 4782575616
+     [Modify] totalBlocks	1139461 -> 1170437
+@0x2 VolumeHeader-----------------------------
+[Renewal] modifyDate	2015-02-24 00:33:42 -> 2015-02-24 00:34:13
+[Modify] freeBlocks	263002 -> 232026
+[Modify] writeCount	56600 -> 57653
+[NEW] 0xb8 Allocation
+trans_35=================================
+[Renewal] Allocation
+@0x41d8 Extents-----------------------------
+ LeafRecList
+  {'forkType': 0, 'fileID': 13809}
+   record
+    extent0
+     [Modify] blockCount	109824 -> 129536
+    extent1
+     [Modify] startBlock	0 -> 753670
+     [Modify] blockCount	0 -> 5632
+@0x34e10 Catalog-----------------------------
+ LeafRecList
+  {'ID': 13809, 'type': 'file', 'nodeName': u'temp13809', 'thID': 18}
+   record
+    [Renewal] contentModDate	2015-02-24 00:34:11 -> 2015-02-24 00:34:41
+    [Renewal] attributeModDate	2015-02-24 00:34:11 -> 2015-02-24 00:34:41
+    finderInfo
+     [Modify] write_gen_counter	41475 -> 42375
+    dataFork
+     [Modify] logicalSize	4782575616 -> 4886384640
+     [Modify] totalBlocks	1170437 -> 1195781
+@0x2 VolumeHeader-----------------------------
+[Renewal] modifyDate	2015-02-24 00:34:13 -> 2015-02-24 00:34:42
+[Modify] freeBlocks	232026 -> 206682
+[Modify] nextAllocation	622987 -> 753670
+[Modify] writeCount	57653 -> 58546
+[NEW] 0xc0 Allocation
+trans_36=================================
+[Renewal] Allocation
+@0x41d8 Extents-----------------------------
+ LeafRecList
+  {'forkType': 0, 'fileID': 13809}
+   record
+    extent1
+     [Modify] blockCount	5632 -> 33792
+@0x34e10 Catalog-----------------------------
+ LeafRecList
+  {'ID': 13809, 'type': 'file', 'nodeName': u'temp13809', 'thID': 18}
+   record
+    [Renewal] contentModDate	2015-02-24 00:34:41 -> 2015-02-24 00:35:11
+    [Renewal] attributeModDate	2015-02-24 00:34:41 -> 2015-02-24 00:35:11
+    finderInfo
+     [Modify] write_gen_counter	42375 -> 43375
+    dataFork
+     [Modify] logicalSize	4886384640 -> 5001728000
+     [Modify] totalBlocks	1195781 -> 1223941
+@0x2 VolumeHeader-----------------------------
+[Renewal] modifyDate	2015-02-24 00:34:42 -> 2015-02-24 00:35:13
+[Modify] freeBlocks	206682 -> 178522
+[Modify] writeCount	58546 -> 59534
+[NEW] 0xc8 Allocation
+trans_37=================================
+[Renewal] Allocation
+@0x41d8 Extents-----------------------------
+ LeafRecList
+  {'forkType': 0, 'fileID': 13809}
+   record
+    extent1
+     [Modify] blockCount	33792 -> 59136
+@0x34e10 Catalog-----------------------------
+ LeafRecList
+  {'ID': 13809, 'type': 'file', 'nodeName': u'temp13809', 'thID': 18}
+   record
+    [Renewal] contentModDate	2015-02-24 00:35:11 -> 2015-02-24 00:35:39
+    [Renewal] attributeModDate	2015-02-24 00:35:11 -> 2015-02-24 00:35:39
+    finderInfo
+     [Modify] write_gen_counter	43375 -> 44275
+    dataFork
+     [Modify] logicalSize	5001728000 -> 5105537024
+     [Modify] totalBlocks	1223941 -> 1249285
+@0x2 VolumeHeader-----------------------------
+[Renewal] modifyDate	2015-02-24 00:35:13 -> 2015-02-24 00:35:42
+[Modify] freeBlocks	178522 -> 153178
+[Modify] writeCount	59534 -> 60478
+trans_38=================================
+[Renewal] Allocation
+@0x41d8 Extents-----------------------------
+ LeafRecList
+  {'forkType': 0, 'fileID': 13809}
+   record
+    extent1
+     [Modify] blockCount	59136 -> 64768
+    extent2
+     [Modify] startBlock	0 -> 819202
+     [Modify] blockCount	0 -> 7424
+@0x34e10 Catalog-----------------------------
+ LeafRecList
+  {'ID': 13809, 'type': 'file', 'nodeName': u'temp13809', 'thID': 18}
+   record
+    [Renewal] contentModDate	2015-02-24 00:35:39 -> 2015-02-24 00:36:00
+    [Renewal] attributeModDate	2015-02-24 00:35:39 -> 2015-02-24 00:36:00
+    finderInfo
+     [Modify] write_gen_counter	44275 -> 44836
+    dataFork
+     [Modify] logicalSize	5105537024 -> 5170155520
+     [Modify] totalBlocks	1249285 -> 1262341
+@0x2 VolumeHeader-----------------------------
+[Renewal] modifyDate	2015-02-24 00:35:42 -> 2015-02-24 00:36:00
+[Modify] freeBlocks	153178 -> 140122
+[Modify] nextAllocation	753670 -> 819202
+[Modify] writeCount	60478 -> 60940
+[NEW] 0xd0 Allocation
+trans_39=================================
+trans_40=================================
+[NEW] 0x321e0 Catalog
+@0x34e10 Catalog-----------------------------
+ NodeDescriptor
+  [Modify] numRecords	23 -> 24
+ LeafRecList
+  [Insert] {'ID': 13810, 'type': 'file', 'nodeName': u'.com.apple.diskmanagement.EFTFile2.finalfile', 'thID': 2}
+  {'ID': 2, 'type': 'folder', 'nodeName': u'disk1s2', 'thID': 1}
+   record
+    [Modify] valence	17 -> 18
+    [Renewal] contentModDate	2015-02-24 00:13:22 -> 2015-02-24 00:36:01
+    [Renewal] attributeModDate	2015-02-24 00:13:22 -> 2015-02-24 00:36:01
+    finderInfo
+     [Modify] write_gen_counter	17 -> 18
+[NEW] 0x321d0 Catalog
+@0x2 VolumeHeader-----------------------------
+[Renewal] modifyDate	2015-02-24 00:36:00 -> 2015-02-24 00:36:01
+[Modify] fileCount	13120 -> 13123
+[Modify] freeBlocks	140122 -> 0
+[Modify] nextAllocation	819202 -> 826626
+[Modify] nextCatalogID	13810 -> 13813
+[Modify] writeCount	60940 -> 60945
+[Renewal] Allocation
+[NEW] 0xd8 Allocation
+[NEW] 0xe0 Allocation
+[NEW] 0xe8 Allocation
+[Renewal] Allocation
+[NEW] 0x18 Allocation
+[Renewal] Allocation
+[Renewal] Allocation
+[Renewal] Allocation
+[Renewal] Allocation
+[NEW] 0x48 Allocation
+[Renewal] Allocation
+[Renewal] Allocation
+[Renewal] Allocation
+@0x41d8 Extents-----------------------------
+ NodeDescriptor
+  [Modify] numRecords	1 -> 7
+ LeafRecList
+  [Insert] {'forkType': 0, 'fileID': 13810}
+  {'forkType': 0, 'fileID': 13809}
+   record
+    extent6
+     [Modify] startBlock	0 -> 655360
+     [Modify] blockCount	0 -> 13810
+    extent7
+     [Modify] startBlock	0 -> 135246
+     [Modify] blockCount	0 -> 1805576
+@0x41d0 Extents-----------------------------
+ BTHeaderRec
+  [Modify] leafRecords	1 -> 7
+[Renewal] userDataRecord
+[Renewal] mapRecord
+[Renewal] Allocation
+[NEW] 0x20 Allocation
+[Renewal] Allocation
+[NEW] 0x70 Allocation
+[NEW] 0x80 Allocation
+[NEW] 0x90 Allocation
+[Renewal] Allocation
+[Renewal] Allocation
+[NEW] 0x61e0 Attributes
+[NEW] 0x61d0 Attributes
+[NEW] 0x32220 Catalog
+[NEW] 0x32250 Catalog
+[NEW] 0x34e20 Catalog
+[NEW] 0x32240 Catalog
+[NEW] 0x34e30 Catalog
+trans_41=================================
+@0x34e10 Catalog-----------------------------
+ LeafRecList
+  {'ID': 13810, 'type': 'file', 'nodeName': u'.com.apple.diskmanagement.EFTFile2.finalfile', 'thID': 2}
+   record
+    dataFork
+     [Modify] logicalSize	0 -> 573939712
+trans_42=================================
+[Renewal] Allocation
+[Renewal] Allocation
+[Renewal] Allocation
+[Renewal] Allocation
+@0x41d8 Extents-----------------------------
+ NodeDescriptor
+  [Modify] numRecords	7 -> 6
+ LeafRecList
+  [Remove] {'forkType': 0, 'fileID': 13809}
+@0x34e10 Catalog-----------------------------
+ NodeDescriptor
+  [Modify] numRecords	24 -> 23
+ LeafRecList
+  [Remove] {'ID': 13809, 'type': 'file', 'nodeName': u'temp13809', 'thID': 18}
+  {'ID': 18, 'type': 'folder', 'nodeName': u'\x00\x00\x00\x00HFS+ Private Data', 'thID': 2}
+   record
+    [Modify] valence	1 -> 0
+@0x2 VolumeHeader-----------------------------
+[Renewal] modifyDate	2015-02-24 00:36:01 -> 2015-02-24 00:39:07
+[Modify] fileCount	13123 -> 13122
+[Modify] freeBlocks	0 -> 1262340
+[Modify] nextAllocation	826626 -> 5178
+[Modify] writeCount	60945 -> 60949
+[Renewal] Allocation
+[Renewal] Allocation
+[Renewal] Allocation
+[Renewal] Allocation
+[Renewal] Allocation
+[Renewal] Allocation
+[Renewal] Allocation
+@0x41d0 Extents-----------------------------
+ BTHeaderRec
+  [Modify] leafRecords	7 -> 6
+[Renewal] userDataRecord
+[Renewal] mapRecord
+[Renewal] Allocation
+[Renewal] Allocation
+[Renewal] Allocation
+[Renewal] Allocation
+[Renewal] Allocation
+[Renewal] Allocation
+[Renewal] Allocation
+[Renewal] Allocation
+[Renewal] Allocation
+[Renewal] Allocation
+[Renewal] Allocation
+[Renewal] Allocation
+[Renewal] Allocation
+[Renewal] Allocation
+[Renewal] Allocation
+[Renewal] Allocation
+[Renewal] Allocation
+[Renewal] Allocation
+[Renewal] Allocation
+[Renewal] Allocation
+[Renewal] Allocation
+[Renewal] Allocation
+[Renewal] Allocation
+[NEW] 0x110 Allocation
+[NEW] 0x118 Allocation
+[Renewal] Allocation
+[NEW] 0xf8 Allocation
+[NEW] 0x100 Allocation
+[NEW] 0x108 Allocation
+[NEW] 0xf0 Allocation
+@0x61e0 Attributes-----------------------------
+ NodeDescriptor
+  [Modify] numRecords	24 -> 23
+ LeafRecList
+  [Insert] {'attrName': u'com.apple.decmpfs', 'type': 'InlineData', 'fileID': 13722}
+  [Insert] {'attrName': u'com.apple.metadata:com_apple_backup_excludeItem', 'type': 'InlineData', 'fileID': 13810}
+  [Insert] {'attrName': u'com.apple.decmpfs', 'type': 'InlineData', 'fileID': 13719}
+  [Insert] {'attrName': u'com.apple.decmpfs', 'type': 'InlineData', 'fileID': 13721}
+  [Insert] {'attrName': u'com.apple.system.Security', 'type': 'InlineData', 'fileID': 175}
+  [Insert] {'attrName': u'com.apple.metadata:com_apple_backup_excludeItem', 'type': 'InlineData', 'fileID': 175}
+  [Insert] {'attrName': u'com.apple.quarantine', 'type': 'InlineData', 'fileID': 184}
+  [Insert] {'attrName': u'com.apple.metadata:com_apple_backup_excludeItem', 'type': 'InlineData', 'fileID': 174}
+  [Insert] {'attrName': u'com.apple.metadata:com_apple_backup_excludeItem', 'type': 'InlineData', 'fileID': 166}
+  [Insert] {'attrName': u'com.apple.system.Security', 'type': 'InlineData', 'fileID': 176}
+  [Insert] {'attrName': u'com.apple.metadata:kMDItemWhereFroms', 'type': 'InlineData', 'fileID': 186}
+  [Insert] {'attrName': u'com.apple.quarantine', 'type': 'InlineData', 'fileID': 183}
+  [Insert] {'attrName': u'com.apple.system.Security', 'type': 'InlineData', 'fileID': 170}
+  [Insert] {'attrName': u'com.apple.quarantine', 'type': 'InlineData', 'fileID': 8381}
+  [Insert] {'attrName': u'com.apple.quarantine', 'type': 'InlineData', 'fileID': 1045}
+  [Insert] {'attrName': u'com.apple.metadata:kMDItemWhereFroms', 'type': 'InlineData', 'fileID': 177}
+  [Insert] {'attrName': u'com.apple.metadata:kMDItemWhereFroms', 'type': 'InlineData', 'fileID': 1045}
+  [Insert] {'attrName': u'com.apple.quarantine', 'type': 'InlineData', 'fileID': 186}
+  [Insert] {'attrName': u'com.apple.quarantine', 'type': 'InlineData', 'fileID': 185}
+  [Insert] {'attrName': u'com.apple.decmpfs', 'type': 'InlineData', 'fileID': 13720}
+  [Insert] {'attrName': u'com.apple.metadata:com_apple_backup_excludeItem', 'type': 'InlineData', 'fileID': 176}
+  [Insert] {'attrName': u'com.apple.metadata:com_apple_backup_excludeItem', 'type': 'InlineData', 'fileID': 170}
+  [Insert] {'attrName': u'com.apple.quarantine', 'type': 'InlineData', 'fileID': 177}
+  [Remove] {'attrName': u'com.apple.decmpfs', 'type': 'InlineData', 'fileID': 13722}
+  [Remove] {'attrName': u'com.apple.metadata:com_apple_backup_excludeItem', 'type': 'InlineData', 'fileID': 13810}
+  [Remove] {'attrName': u'com.apple.decmpfs', 'type': 'InlineData', 'fileID': 13719}
+  [Remove] {'attrName': u'com.apple.decmpfs', 'type': 'InlineData', 'fileID': 13721}
+  [Remove] {'attrName': u'com.apple.system.Security', 'type': 'InlineData', 'fileID': 175}
+  [Remove] {'attrName': u'com.apple.metadata:com_apple_backup_excludeItem', 'type': 'InlineData', 'fileID': 175}
+  [Remove] {'attrName': u'com.apple.quarantine', 'type': 'InlineData', 'fileID': 184}
+  [Remove] {'attrName': u'com.apple.metadata:com_apple_backup_excludeItem', 'type': 'InlineData', 'fileID': 174}
+  [Remove] {'attrName': u'com.apple.metadata:com_apple_backup_excludeItem', 'type': 'InlineData', 'fileID': 166}
+  [Remove] {'attrName': u'com.apple.system.Security', 'type': 'InlineData', 'fileID': 176}
+  [Remove] {'attrName': u'com.apple.metadata:kMDItemWhereFroms', 'type': 'InlineData', 'fileID': 186}
+  [Remove] {'attrName': u'com.apple.quarantine', 'type': 'InlineData', 'fileID': 183}
+  [Remove] {'attrName': u'com.apple.system.Security', 'type': 'InlineData', 'fileID': 170}
+  [Remove] {'attrName': u'com.apple.metadata:com_apple_backup_excludeItem', 'type': 'InlineData', 'fileID': 13809}
+  [Remove] {'attrName': u'com.apple.quarantine', 'type': 'InlineData', 'fileID': 8381}
+  [Remove] {'attrName': u'com.apple.quarantine', 'type': 'InlineData', 'fileID': 1045}
+  [Remove] {'attrName': u'com.apple.metadata:kMDItemWhereFroms', 'type': 'InlineData', 'fileID': 177}
+  [Remove] {'attrName': u'com.apple.metadata:kMDItemWhereFroms', 'type': 'InlineData', 'fileID': 1045}
+  [Remove] {'attrName': u'com.apple.quarantine', 'type': 'InlineData', 'fileID': 186}
+  [Remove] {'attrName': u'com.apple.quarantine', 'type': 'InlineData', 'fileID': 185}
+  [Remove] {'attrName': u'com.apple.decmpfs', 'type': 'InlineData', 'fileID': 13720}
+  [Remove] {'attrName': u'com.apple.metadata:com_apple_backup_excludeItem', 'type': 'InlineData', 'fileID': 176}
+  [Remove] {'attrName': u'com.apple.metadata:com_apple_backup_excludeItem', 'type': 'InlineData', 'fileID': 170}
+  [Remove] {'attrName': u'com.apple.quarantine', 'type': 'InlineData', 'fileID': 177}
+@0x61d0 Attributes-----------------------------
+ BTHeaderRec
+  [Modify] leafRecords	24 -> 23
+[Renewal] userDataRecord
+[Renewal] mapRecord
+@0x321e0 Catalog-----------------------------
+ NodeDescriptor
+  [Modify] numRecords	74 -> 73
+ LeafRecList
+  [Remove] {'parID': 18, 'type': 'thread', 'nodeName': u'temp13809', 'thID': 13809}
+@0x321d0 Catalog-----------------------------
+ BTHeaderRec
+  [Modify] leafRecords	27294 -> 27292
+[Renewal] userDataRecord
+[Renewal] mapRecord
+@0x32250 Catalog-----------------------------
+ LeafRecList
+  {'ID': 13811, 'type': 'file', 'nodeName': u'permStore', 'thID': 92}
+   record
+    [Renewal] contentModDate	2015-02-24 00:36:01 -> 2015-02-24 00:39:07
+    [Renewal] attributeModDate	2015-02-24 00:36:01 -> 2015-02-24 00:39:07
+    finderInfo
+     [Modify] write_gen_counter	2 -> 7
+    dataFork
+     [Modify] logicalSize	0 -> 17
+     [Modify] totalBlocks	0 -> 1
+     extents
+      extent0
+       [Modify] startBlock	0 -> 5178
+       [Modify] blockCount	0 -> 1
+trans_43=================================
+@0x34e10 Catalog-----------------------------
+ LeafRecList
+  [Insert] {'ID': 13810, 'type': 'file', 'nodeName': u'temp13810', 'thID': 18}
+  [Remove] {'ID': 13810, 'type': 'file', 'nodeName': u'.com.apple.diskmanagement.EFTFile2.finalfile', 'thID': 2}
+  {'ID': 18, 'type': 'folder', 'nodeName': u'\x00\x00\x00\x00HFS+ Private Data', 'thID': 2}
+   record
+    [Modify] valence	0 -> 1
+  {'ID': 2, 'type': 'folder', 'nodeName': u'disk1s2', 'thID': 1}
+   record
+    [Modify] valence	18 -> 17
+    [Renewal] contentModDate	2015-02-24 00:36:01 -> 2015-02-24 00:39:07
+    [Renewal] attributeModDate	2015-02-24 00:36:01 -> 2015-02-24 00:39:07
+    finderInfo
+     [Modify] write_gen_counter	18 -> 19
+@0x321e0 Catalog-----------------------------
+ LeafRecList
+  [Insert] {'parID': 18, 'type': 'thread', 'nodeName': u'temp13810', 'thID': 13810}
+  [Insert] {'parID': 92, 'type': 'thread', 'nodeName': u'journalAttr.6', 'thID': 13813}
+  [Remove] {'parID': 2, 'type': 'thread', 'nodeName': u'.com.apple.diskmanagement.EFTFile2.finalfile', 'thID': 13810}
+  [Remove] {'parID': 92, 'type': 'thread', 'nodeName': u'journalAttr.5', 'thID': 13806}
+@0x321d0 Catalog-----------------------------
+[Renewal] userDataRecord
+[Renewal] mapRecord
+@0x34e20 Catalog-----------------------------
+ LeafRecList
+  {'ID': 126, 'type': 'file', 'nodeName': u'reverseDirectoryStore', 'thID': 92}
+   record
+    [Renewal] contentModDate	2015-02-23 21:43:13 -> 2015-02-24 00:39:17
+    [Renewal] attributeModDate	2015-02-23 21:43:13 -> 2015-02-24 00:39:17
+    [Renewal] accessDate	2015-02-24 00:36:01 -> 2015-02-24 00:39:17
+    finderInfo
+     [Modify] write_gen_counter	31 -> 32
+  {'ID': 129, 'type': 'file', 'nodeName': u'store_generation', 'thID': 92}
+   record
+    [Renewal] accessDate	2015-02-23 21:37:43 -> 2015-02-24 00:39:12
+@0x32240 Catalog-----------------------------
+ LeafRecList
+  {'ID': 127, 'type': 'file', 'nodeName': u'tmp.spotlight.state', 'thID': 92}
+   record
+    [Renewal] contentModDate	2015-02-24 00:15:54 -> 2015-02-24 00:39:17
+    [Renewal] attributeModDate	2015-02-24 00:15:54 -> 2015-02-24 00:39:17
+    [Renewal] accessDate	2015-02-23 21:37:43 -> 2015-02-24 00:39:17
+    finderInfo
+     [Modify] write_gen_counter	94 -> 96
+    dataFork
+     extents
+      extent0
+       [Modify] startBlock	1093892 -> 5179
+@0x2 VolumeHeader-----------------------------
+[Renewal] modifyDate	2015-02-24 00:39:07 -> 2015-02-24 00:39:17
+[Modify] freeBlocks	1262340 -> 1262341
+[Modify] nextAllocation	5178 -> 5179
+[Modify] nextCatalogID	13813 -> 13814
+[Modify] writeCount	60949 -> 61129
+@0x32220 Catalog-----------------------------
+ LeafRecList
+  {'ID': 92, 'type': 'folder', 'nodeName': u'CB432386-058C-4A8E-A5D4-35A9E2728E53', 'thID': 90}
+   record
+    [Renewal] contentModDate	2015-02-24 00:36:01 -> 2015-02-24 00:39:17
+    [Renewal] attributeModDate	2015-02-24 00:36:01 -> 2015-02-24 00:39:17
+    [Renewal] accessDate	2015-02-24 00:36:06 -> 2015-02-24 00:39:17
+    finderInfo
+     [Modify] write_gen_counter	390 -> 392
+  {'ID': 13800, 'type': 'file', 'nodeName': u'0.directoryStoreFile', 'thID': 92}
+   record
+    [Renewal] contentModDate	2015-02-24 00:16:13 -> 2015-02-24 00:39:17
+    [Renewal] attributeModDate	2015-02-24 00:16:13 -> 2015-02-24 00:39:17
+    [Renewal] accessDate	2015-02-24 00:36:06 -> 2015-02-24 00:39:17
+    finderInfo
+     [Modify] write_gen_counter	7 -> 8
+  {'ID': 125, 'type': 'file', 'nodeName': u'.store.db', 'thID': 92}
+   record
+    [Renewal] contentModDate	2015-02-24 00:36:01 -> 2015-02-24 00:39:18
+    [Renewal] attributeModDate	2015-02-24 00:36:01 -> 2015-02-24 00:39:18
+    [Renewal] accessDate	2015-02-24 00:36:01 -> 2015-02-24 00:39:18
+    finderInfo
+     [Modify] write_gen_counter	204 -> 205
+@0x32250 Catalog-----------------------------
+ LeafRecList
+  {'ID': 13750, 'type': 'file', 'nodeName': u'live.0.indexArrays', 'thID': 92}
+   record
+    [Renewal] contentModDate	2015-02-23 21:42:52 -> 2015-02-24 00:39:17
+    [Renewal] attributeModDate	2015-02-23 21:42:52 -> 2015-02-24 00:39:17
+    [Renewal] accessDate	2015-02-24 00:36:06 -> 2015-02-24 00:39:17
+    finderInfo
+     [Modify] write_gen_counter	4 -> 5
+  {'ID': 13742, 'type': 'file', 'nodeName': u'live.0.indexIds', 'thID': 92}
+   record
+    [Renewal] contentModDate	2015-02-24 00:16:13 -> 2015-02-24 00:39:17
+    [Renewal] attributeModDate	2015-02-24 00:16:13 -> 2015-02-24 00:39:17
+    [Renewal] accessDate	2015-02-24 00:36:06 -> 2015-02-24 00:39:17
+    finderInfo
+     [Modify] write_gen_counter	4 -> 5
+  {'ID': 13811, 'type': 'file', 'nodeName': u'permStore', 'thID': 92}
+   record
+    [Renewal] contentModDate	2015-02-24 00:39:07 -> 2015-02-24 00:39:17
+    [Renewal] attributeModDate	2015-02-24 00:39:07 -> 2015-02-24 00:39:17
+    [Renewal] accessDate	2015-02-24 00:36:01 -> 2015-02-24 00:39:17
+    finderInfo
+     [Modify] write_gen_counter	7 -> 8
+  {'ID': 13745, 'type': 'file', 'nodeName': u'live.0.indexTermIds', 'thID': 92}
+   record
+    [Renewal] contentModDate	2015-02-23 21:42:52 -> 2015-02-24 00:39:17
+    [Renewal] attributeModDate	2015-02-23 21:42:52 -> 2015-02-24 00:39:17
+    [Renewal] accessDate	2015-02-24 00:36:06 -> 2015-02-24 00:39:17
+    finderInfo
+     [Modify] write_gen_counter	4 -> 5
+  {'ID': 13744, 'type': 'file', 'nodeName': u'live.0.indexPostings', 'thID': 92}
+   record
+    [Renewal] contentModDate	2015-02-23 21:42:52 -> 2015-02-24 00:39:17
+    [Renewal] attributeModDate	2015-02-23 21:42:52 -> 2015-02-24 00:39:17
+    finderInfo
+     [Modify] write_gen_counter	3 -> 4
+  {'ID': 13749, 'type': 'file', 'nodeName': u'live.0.indexCompactDirectory', 'thID': 92}
+   record
+    [Renewal] contentModDate	2015-02-23 21:42:52 -> 2015-02-24 00:39:17
+    [Renewal] attributeModDate	2015-02-23 21:42:52 -> 2015-02-24 00:39:17
+    [Renewal] accessDate	2015-02-24 00:36:06 -> 2015-02-24 00:39:17
+    finderInfo
+     [Modify] write_gen_counter	4 -> 5
+  {'ID': 13747, 'type': 'file', 'nodeName': u'live.0.indexPositionTable', 'thID': 92}
+   record
+    [Renewal] contentModDate	2015-02-23 21:42:52 -> 2015-02-24 00:39:17
+    [Renewal] attributeModDate	2015-02-23 21:42:52 -> 2015-02-24 00:39:17
+    [Renewal] accessDate	2015-02-24 00:36:06 -> 2015-02-24 00:39:17
+    finderInfo
+     [Modify] write_gen_counter	4 -> 5
+  {'ID': 13743, 'type': 'file', 'nodeName': u'live.0.indexGroups', 'thID': 92}
+   record
+    [Renewal] contentModDate	2015-02-24 00:15:52 -> 2015-02-24 00:39:17
+    [Renewal] attributeModDate	2015-02-24 00:15:52 -> 2015-02-24 00:39:17
+    [Renewal] accessDate	2015-02-24 00:36:06 -> 2015-02-24 00:39:17
+    finderInfo
+     [Modify] write_gen_counter	4 -> 5
+  {'ID': 13752, 'type': 'file', 'nodeName': u'live.0.directoryStoreFile', 'thID': 92}
+   record
+    [Renewal] contentModDate	2015-02-24 00:16:13 -> 2015-02-24 00:39:17
+    [Renewal] attributeModDate	2015-02-24 00:16:13 -> 2015-02-24 00:39:17
+    [Renewal] accessDate	2015-02-24 00:36:06 -> 2015-02-24 00:39:17
+    finderInfo
+     [Modify] write_gen_counter	6 -> 7
+  {'ID': 13748, 'type': 'file', 'nodeName': u'live.0.indexDirectory', 'thID': 92}
+   record
+    [Renewal] contentModDate	2015-02-23 21:42:52 -> 2015-02-24 00:39:17
+    [Renewal] attributeModDate	2015-02-23 21:42:52 -> 2015-02-24 00:39:17
+    finderInfo
+     [Modify] write_gen_counter	4 -> 5
+  {'ID': 13746, 'type': 'file', 'nodeName': u'live.0.indexPositions', 'thID': 92}
+   record
+    [Renewal] contentModDate	2015-02-23 21:42:52 -> 2015-02-24 00:39:17
+    [Renewal] attributeModDate	2015-02-23 21:42:52 -> 2015-02-24 00:39:17
+    finderInfo
+     [Modify] write_gen_counter	3 -> 4
+@0x34e30 Catalog-----------------------------
+ LeafRecList
+  [Insert] {'ID': 13813, 'type': 'file', 'nodeName': u'journalAttr.6', 'thID': 92}
+  [Remove] {'ID': 13806, 'type': 'file', 'nodeName': u'journalAttr.5', 'thID': 92}
+[Renewal] Allocation
+[Renewal] Allocation
+[Renewal] Allocation
+trans_44=================================
+@0x32250 Catalog-----------------------------
+ LeafRecList
+  {'ID': 13741, 'type': 'file', 'nodeName': u'live.0.indexHead', 'thID': 92}
+   record
+    [Renewal] contentModDate	2015-02-24 00:15:57 -> 2015-02-24 00:39:19
+    [Renewal] attributeModDate	2015-02-24 00:15:57 -> 2015-02-24 00:39:19
+    [Renewal] accessDate	2015-02-24 00:36:06 -> 2015-02-24 00:39:17
+    finderInfo
+     [Modify] write_gen_counter	7 -> 8
+trans_45=================================
+@0x2 VolumeHeader-----------------------------
+[Renewal] modifyDate	2015-02-24 00:39:17 -> 2015-02-24 00:39:20
+[Modify] writeCount	61129 -> 61195
+trans_46=================================
+[Renewal] Allocation
+@0x34e30 Catalog-----------------------------
+ LeafRecList
+  {'ID': 13813, 'type': 'file', 'nodeName': u'journalAttr.6', 'thID': 92}
+   record
+    [Renewal] accessDate	2015-02-24 00:39:17 -> 2015-02-24 00:39:42
+    finderInfo
+     [Modify] write_gen_counter	1 -> 2
+    dataFork
+     [Modify] logicalSize	0 -> 140
+     [Modify] totalBlocks	0 -> 1
+     extents
+      extent0
+       [Modify] startBlock	0 -> 5180
+       [Modify] blockCount	0 -> 1
+@0x2 VolumeHeader-----------------------------
+[Renewal] modifyDate	2015-02-24 00:39:20 -> 2015-02-24 00:39:44
+[Modify] freeBlocks	1262341 -> 1262340
+[Modify] nextAllocation	5179 -> 5180
+[Modify] writeCount	61195 -> 61909
+trans_47=================================
+@0x2 VolumeHeader-----------------------------
+[Renewal] modifyDate	2015-02-24 00:39:44 -> 2015-02-24 00:40:13
+[Modify] writeCount	61909 -> 62717
+trans_48=================================
+@0x2 VolumeHeader-----------------------------
+[Renewal] modifyDate	2015-02-24 00:40:13 -> 2015-02-24 00:40:44
+[Modify] writeCount	62717 -> 63626
+trans_49=================================
+@0x2 VolumeHeader-----------------------------
+[Renewal] modifyDate	2015-02-24 00:40:44 -> 2015-02-24 00:41:14
+[Modify] writeCount	63626 -> 64526
+trans_50=================================
+@0x2 VolumeHeader-----------------------------
+[Renewal] modifyDate	2015-02-24 00:41:14 -> 2015-02-24 00:41:47
+[Modify] writeCount	64526 -> 65242
+trans_51=================================
+@0x34e10 Catalog-----------------------------
+ LeafRecList
+  {'ID': 13810, 'type': 'file', 'nodeName': u'temp13810', 'thID': 18}
+   record
+    [Renewal] contentModDate	2015-02-24 00:36:01 -> 2015-02-24 00:41:59
+    [Renewal] attributeModDate	2015-02-24 00:39:07 -> 2015-02-24 00:41:59
+    finderInfo
+     [Modify] write_gen_counter	2 -> 4381
+    dataFork
+     [Modify] logicalSize	573939712 -> 573964288
+     [Modify] totalBlocks	140122 -> 140128
+@0x2 VolumeHeader-----------------------------
+[Renewal] modifyDate	2015-02-24 00:41:47 -> 2015-02-24 00:41:59
+[Modify] freeBlocks	1262340 -> 1262334
+[Modify] writeCount	65242 -> 65333
+[Renewal] Allocation
+trans_52=================================
+[Renewal] Allocation
+[Renewal] Allocation
+[Renewal] Allocation
+[Renewal] Allocation
+[Renewal] Allocation
+[Renewal] Allocation
+[Renewal] Allocation
+[Renewal] Allocation
+[Renewal] Allocation
+[Renewal] Allocation
+[Renewal] Allocation
+[Renewal] Allocation
+[Renewal] Allocation
+[Renewal] Allocation
+@0x41d0 Extents-----------------------------
+ BTHeaderRec
+  [Modify] treeDepth	1 -> 0
+  [Modify] rootNode	1 -> 0
+  [Modify] leafRecords	6 -> 0
+  [Modify] firstLeafNode	1 -> 0
+  [Modify] lastLeafNode	1 -> 0
+  [Modify] freeNodes	1022 -> 1023
+[Renewal] userDataRecord
+[Renewal] mapRecord
+[Renewal] Allocation
+[Renewal] Allocation
+[Renewal] Allocation
+[Renewal] Allocation
+[Renewal] Allocation
+[Renewal] Allocation
+[Renewal] Allocation
+[Renewal] Allocation
+@0x34e10 Catalog-----------------------------
+ NodeDescriptor
+  [Modify] numRecords	23 -> 22
+ LeafRecList
+  [Remove] {'ID': 13810, 'type': 'file', 'nodeName': u'temp13810', 'thID': 18}
+  {'ID': 18, 'type': 'folder', 'nodeName': u'\x00\x00\x00\x00HFS+ Private Data', 'thID': 2}
+   record
+    [Modify] valence	1 -> 0
+@0x2 VolumeHeader-----------------------------
+[Renewal] modifyDate	2015-02-24 00:41:59 -> 2015-02-24 00:42:20
+[Modify] fileCount	13122 -> 13121
+[Modify] freeBlocks	1262334 -> 1402462
+@0x61e0 Attributes-----------------------------
+ NodeDescriptor
+  [Modify] numRecords	23 -> 22
+ LeafRecList
+  [Insert] {'attrName': u'com.apple.decmpfs', 'type': 'InlineData', 'fileID': 13722}
+  [Insert] {'attrName': u'com.apple.decmpfs', 'type': 'InlineData', 'fileID': 13719}
+  [Insert] {'attrName': u'com.apple.decmpfs', 'type': 'InlineData', 'fileID': 13721}
+  [Insert] {'attrName': u'com.apple.system.Security', 'type': 'InlineData', 'fileID': 175}
+  [Insert] {'attrName': u'com.apple.metadata:com_apple_backup_excludeItem', 'type': 'InlineData', 'fileID': 175}
+  [Insert] {'attrName': u'com.apple.quarantine', 'type': 'InlineData', 'fileID': 184}
+  [Insert] {'attrName': u'com.apple.metadata:com_apple_backup_excludeItem', 'type': 'InlineData', 'fileID': 174}
+  [Insert] {'attrName': u'com.apple.metadata:com_apple_backup_excludeItem', 'type': 'InlineData', 'fileID': 166}
+  [Insert] {'attrName': u'com.apple.system.Security', 'type': 'InlineData', 'fileID': 176}
+  [Insert] {'attrName': u'com.apple.metadata:kMDItemWhereFroms', 'type': 'InlineData', 'fileID': 186}
+  [Insert] {'attrName': u'com.apple.quarantine', 'type': 'InlineData', 'fileID': 183}
+  [Insert] {'attrName': u'com.apple.system.Security', 'type': 'InlineData', 'fileID': 170}
+  [Insert] {'attrName': u'com.apple.quarantine', 'type': 'InlineData', 'fileID': 8381}
+  [Insert] {'attrName': u'com.apple.quarantine', 'type': 'InlineData', 'fileID': 1045}
+  [Insert] {'attrName': u'com.apple.metadata:kMDItemWhereFroms', 'type': 'InlineData', 'fileID': 177}
+  [Insert] {'attrName': u'com.apple.metadata:kMDItemWhereFroms', 'type': 'InlineData', 'fileID': 1045}
+  [Insert] {'attrName': u'com.apple.quarantine', 'type': 'InlineData', 'fileID': 186}
+  [Insert] {'attrName': u'com.apple.quarantine', 'type': 'InlineData', 'fileID': 185}
+  [Insert] {'attrName': u'com.apple.decmpfs', 'type': 'InlineData', 'fileID': 13720}
+  [Insert] {'attrName': u'com.apple.metadata:com_apple_backup_excludeItem', 'type': 'InlineData', 'fileID': 176}
+  [Insert] {'attrName': u'com.apple.metadata:com_apple_backup_excludeItem', 'type': 'InlineData', 'fileID': 170}
+  [Insert] {'attrName': u'com.apple.quarantine', 'type': 'InlineData', 'fileID': 177}
+  [Remove] {'attrName': u'com.apple.decmpfs', 'type': 'InlineData', 'fileID': 13722}
+  [Remove] {'attrName': u'com.apple.metadata:com_apple_backup_excludeItem', 'type': 'InlineData', 'fileID': 13810}
+  [Remove] {'attrName': u'com.apple.decmpfs', 'type': 'InlineData', 'fileID': 13719}
+  [Remove] {'attrName': u'com.apple.decmpfs', 'type': 'InlineData', 'fileID': 13721}
+  [Remove] {'attrName': u'com.apple.system.Security', 'type': 'InlineData', 'fileID': 175}
+  [Remove] {'attrName': u'com.apple.metadata:com_apple_backup_excludeItem', 'type': 'InlineData', 'fileID': 175}
+  [Remove] {'attrName': u'com.apple.quarantine', 'type': 'InlineData', 'fileID': 184}
+  [Remove] {'attrName': u'com.apple.metadata:com_apple_backup_excludeItem', 'type': 'InlineData', 'fileID': 174}
+  [Remove] {'attrName': u'com.apple.metadata:com_apple_backup_excludeItem', 'type': 'InlineData', 'fileID': 166}
+  [Remove] {'attrName': u'com.apple.system.Security', 'type': 'InlineData', 'fileID': 176}
+  [Remove] {'attrName': u'com.apple.metadata:kMDItemWhereFroms', 'type': 'InlineData', 'fileID': 186}
+  [Remove] {'attrName': u'com.apple.quarantine', 'type': 'InlineData', 'fileID': 183}
+  [Remove] {'attrName': u'com.apple.system.Security', 'type': 'InlineData', 'fileID': 170}
+  [Remove] {'attrName': u'com.apple.quarantine', 'type': 'InlineData', 'fileID': 8381}
+  [Remove] {'attrName': u'com.apple.quarantine', 'type': 'InlineData', 'fileID': 1045}
+  [Remove] {'attrName': u'com.apple.metadata:kMDItemWhereFroms', 'type': 'InlineData', 'fileID': 177}
+  [Remove] {'attrName': u'com.apple.metadata:kMDItemWhereFroms', 'type': 'InlineData', 'fileID': 1045}
+  [Remove] {'attrName': u'com.apple.quarantine', 'type': 'InlineData', 'fileID': 186}
+  [Remove] {'attrName': u'com.apple.quarantine', 'type': 'InlineData', 'fileID': 185}
+  [Remove] {'attrName': u'com.apple.decmpfs', 'type': 'InlineData', 'fileID': 13720}
+  [Remove] {'attrName': u'com.apple.metadata:com_apple_backup_excludeItem', 'type': 'InlineData', 'fileID': 176}
+  [Remove] {'attrName': u'com.apple.metadata:com_apple_backup_excludeItem', 'type': 'InlineData', 'fileID': 170}
+  [Remove] {'attrName': u'com.apple.quarantine', 'type': 'InlineData', 'fileID': 177}
+@0x61d0 Attributes-----------------------------
+ BTHeaderRec
+  [Modify] leafRecords	23 -> 22
+[Renewal] userDataRecord
+[Renewal] mapRecord
+@0x321e0 Catalog-----------------------------
+ NodeDescriptor
+  [Modify] numRecords	73 -> 72
+ LeafRecList
+  [Remove] {'parID': 18, 'type': 'thread', 'nodeName': u'temp13810', 'thID': 13810}
+@0x321d0 Catalog-----------------------------
+ BTHeaderRec
+  [Modify] leafRecords	27292 -> 27290
+[Renewal] userDataRecord
+[Renewal] mapRecord
+trans_53=================================
+[Renewal] Allocation
+@0x32250 Catalog-----------------------------
+ LeafRecList
+  {'ID': 13743, 'type': 'file', 'nodeName': u'live.0.indexGroups', 'thID': 92}
+   record
+    [Renewal] contentModDate	2015-02-24 00:39:17 -> 2015-02-24 00:43:13
+    [Renewal] attributeModDate	2015-02-24 00:39:17 -> 2015-02-24 00:43:13
+    finderInfo
+     [Modify] write_gen_counter	5 -> 6
+  {'ID': 13751, 'type': 'file', 'nodeName': u'live.0.indexUpdates', 'thID': 92}
+   record
+    [Renewal] contentModDate	2015-02-24 00:15:45 -> 2015-02-24 00:43:13
+    [Renewal] attributeModDate	2015-02-24 00:15:45 -> 2015-02-24 00:43:13
+    [Renewal] accessDate	2015-02-24 00:36:06 -> 2015-02-24 00:39:17
+    finderInfo
+     [Modify] write_gen_counter	6 -> 8
+    dataFork
+     [Modify] logicalSize	779 -> 812
+     extents
+      extent0
+       [Modify] startBlock	1091073 -> 5181
+@0x2 VolumeHeader-----------------------------
+[Renewal] modifyDate	2015-02-24 00:42:20 -> 2015-02-24 00:43:13
+[Modify] nextAllocation	5180 -> 5183
+[Modify] writeCount	65333 -> 65337
+[Renewal] Allocation
+@0x32220 Catalog-----------------------------
+ LeafRecList
+  {'ID': 125, 'type': 'file', 'nodeName': u'.store.db', 'thID': 92}
+   record
+    [Renewal] contentModDate	2015-02-24 00:39:18 -> 2015-02-24 00:43:13
+    [Renewal] attributeModDate	2015-02-24 00:39:18 -> 2015-02-24 00:43:13
+    finderInfo
+     [Modify] write_gen_counter	205 -> 206
+@0x34e20 Catalog-----------------------------
+ LeafRecList
+  {'ID': 160, 'type': 'file', 'nodeName': u'reverseStore.updates', 'thID': 92}
+   record
+    [Renewal] contentModDate	2015-02-24 00:15:46 -> 2015-02-24 00:43:13
+    [Renewal] attributeModDate	2015-02-24 00:15:46 -> 2015-02-24 00:43:13
+    finderInfo
+     [Modify] write_gen_counter	46 -> 48
+    dataFork
+     extents
+      extent0
+       [Modify] startBlock	1093891 -> 5183
+  {'ID': 159, 'type': 'file', 'nodeName': u'store.updates', 'thID': 92}
+   record
+    [Renewal] contentModDate	2015-02-24 00:15:46 -> 2015-02-24 00:43:13
+    [Renewal] attributeModDate	2015-02-24 00:15:46 -> 2015-02-24 00:43:13
+    [Renewal] accessDate	2015-02-24 00:36:01 -> 2015-02-24 00:39:17
+    finderInfo
+     [Modify] write_gen_counter	46 -> 48
+    dataFork
+     extents
+      extent0
+       [Modify] startBlock	1091074 -> 5182
+trans_54=================================
+[Renewal] Allocation
+@0x32240 Catalog-----------------------------
+ LeafRecList
+  {'ID': 127, 'type': 'file', 'nodeName': u'tmp.spotlight.state', 'thID': 92}
+   record
+    [Renewal] contentModDate	2015-02-24 00:39:17 -> 2015-02-24 00:43:13
+    [Renewal] attributeModDate	2015-02-24 00:39:17 -> 2015-02-24 00:43:13
+    finderInfo
+     [Modify] write_gen_counter	96 -> 98
+    dataFork
+     extents
+      extent0
+       [Modify] startBlock	5179 -> 5184
+@0x2 VolumeHeader-----------------------------
+[Modify] nextAllocation	5183 -> 5184
+[Modify] writeCount	65337 -> 65339
+@0x32220 Catalog-----------------------------
+ LeafRecList
+  {'ID': 125, 'type': 'file', 'nodeName': u'.store.db', 'thID': 92}
+   record
+    finderInfo
+     [Modify] write_gen_counter	206 -> 207
+trans_55=================================
+@0x34e30 Catalog-----------------------------
+ LeafRecList
+  {'ID': 99, 'type': 'file', 'nodeName': u'indexState', 'thID': 92}
+   record
+    [Renewal] contentModDate	2015-02-24 00:15:55 -> 2015-02-24 00:43:13
+    [Renewal] attributeModDate	2015-02-24 00:15:55 -> 2015-02-24 00:43:13
+    [Renewal] accessDate	2015-02-24 00:36:12 -> 2015-02-24 00:39:20
+    finderInfo
+     [Modify] write_gen_counter	27 -> 28
+trans_56=================================
+@0x32250 Catalog-----------------------------
+ LeafRecList
+  {'ID': 13741, 'type': 'file', 'nodeName': u'live.0.indexHead', 'thID': 92}
+   record
+    [Renewal] contentModDate	2015-02-24 00:39:19 -> 2015-02-24 00:43:13
+    [Renewal] attributeModDate	2015-02-24 00:39:19 -> 2015-02-24 00:43:13
+    finderInfo
+     [Modify] write_gen_counter	8 -> 10
+  {'ID': 13742, 'type': 'file', 'nodeName': u'live.0.indexIds', 'thID': 92}
+   record
+    [Renewal] contentModDate	2015-02-24 00:39:17 -> 2015-02-24 00:43:42
+    [Renewal] attributeModDate	2015-02-24 00:39:17 -> 2015-02-24 00:43:42
+    finderInfo
+     [Modify] write_gen_counter	5 -> 6
+  {'ID': 13752, 'type': 'file', 'nodeName': u'live.0.directoryStoreFile', 'thID': 92}
+   record
+    [Renewal] contentModDate	2015-02-24 00:39:17 -> 2015-02-24 00:43:42
+    [Renewal] attributeModDate	2015-02-24 00:39:17 -> 2015-02-24 00:43:42
+    [Renewal] accessDate	2015-02-24 00:39:17 -> 2015-02-24 00:43:13
+    finderInfo
+     [Modify] write_gen_counter	7 -> 8
+@0x2 VolumeHeader-----------------------------
+[Renewal] modifyDate	2015-02-24 00:43:13 -> 2015-02-24 00:43:42
+[Modify] writeCount	65339 -> 65342
+trans_57=================================
+[Renewal] Allocation
+@0x32250 Catalog-----------------------------
+ LeafRecList
+  {'ID': 13750, 'type': 'file', 'nodeName': u'live.0.indexArrays', 'thID': 92}
+   record
+    finderInfo
+     [Modify] write_gen_counter	5 -> 6
+  {'ID': 13742, 'type': 'file', 'nodeName': u'live.0.indexIds', 'thID': 92}
+   record
+    finderInfo
+     [Modify] write_gen_counter	6 -> 7
+  {'ID': 13811, 'type': 'file', 'nodeName': u'permStore', 'thID': 92}
+   record
+    [Renewal] contentModDate	2015-02-24 00:39:17 -> 2015-02-24 05:37:40
+    [Renewal] attributeModDate	2015-02-24 00:39:17 -> 2015-02-24 05:37:40
+    finderInfo
+     [Modify] write_gen_counter	8 -> 14
+    dataFork
+     [Modify] logicalSize	17 -> 30
+     extents
+      extent0
+       [Modify] startBlock	5178 -> 5185
+  {'ID': 13745, 'type': 'file', 'nodeName': u'live.0.indexTermIds', 'thID': 92}
+   record
+    finderInfo
+     [Modify] write_gen_counter	5 -> 6
+  {'ID': 13749, 'type': 'file', 'nodeName': u'live.0.indexCompactDirectory', 'thID': 92}
+   record
+    finderInfo
+     [Modify] write_gen_counter	5 -> 6
+  {'ID': 13747, 'type': 'file', 'nodeName': u'live.0.indexPositionTable', 'thID': 92}
+   record
+    finderInfo
+     [Modify] write_gen_counter	5 -> 6
+  {'ID': 13743, 'type': 'file', 'nodeName': u'live.0.indexGroups', 'thID': 92}
+   record
+    finderInfo
+     [Modify] write_gen_counter	6 -> 7
+  {'ID': 13752, 'type': 'file', 'nodeName': u'live.0.directoryStoreFile', 'thID': 92}
+   record
+    finderInfo
+     [Modify] write_gen_counter	8 -> 9
+  {'ID': 13748, 'type': 'file', 'nodeName': u'live.0.indexDirectory', 'thID': 92}
+   record
+    [Renewal] accessDate	2015-02-24 00:36:06 -> 2015-02-24 00:39:17
+    finderInfo
+     [Modify] write_gen_counter	5 -> 6
+@0x2 VolumeHeader-----------------------------
+[Renewal] modifyDate	2015-02-24 00:43:42 -> 2015-02-24 05:37:40
+[Modify] fileCount	13121 -> 13123
+[Modify] freeBlocks	1402462 -> 1402459
+[Modify] nextAllocation	5184 -> 27708
+[Modify] nextCatalogID	13814 -> 13816
+[Modify] writeCount	65342 -> 65355
+@0x32220 Catalog-----------------------------
+ LeafRecList
+  {'ID': 13791, 'type': 'file', 'nodeName': u'0.indexGroups', 'thID': 92}
+   record
+    [Renewal] accessDate	2015-02-24 00:36:06 -> 2015-02-24 00:39:17
+    finderInfo
+     [Modify] write_gen_counter	12 -> 13
+  {'ID': 13790, 'type': 'file', 'nodeName': u'0.indexIds', 'thID': 92}
+   record
+    [Renewal] accessDate	2015-02-24 00:36:06 -> 2015-02-24 00:39:17
+    finderInfo
+     [Modify] write_gen_counter	12 -> 13
+  {'ID': 13800, 'type': 'file', 'nodeName': u'0.directoryStoreFile', 'thID': 92}
+   record
+    finderInfo
+     [Modify] write_gen_counter	8 -> 9
+  {'ID': 125, 'type': 'file', 'nodeName': u'.store.db', 'thID': 92}
+   record
+    [Renewal] contentModDate	2015-02-24 00:43:13 -> 2015-02-24 05:37:40
+    [Renewal] attributeModDate	2015-02-24 00:43:13 -> 2015-02-24 05:37:40
+    finderInfo
+     [Modify] write_gen_counter	207 -> 209
+@0x34e20 Catalog-----------------------------
+ LeafRecList
+  {'ID': 13812, 'type': 'file', 'nodeName': u'shutdown_time', 'thID': 92}
+   record
+    [Renewal] contentModDate	2015-02-24 00:36:01 -> 2015-02-24 05:37:40
+    [Renewal] attributeModDate	2015-02-24 00:36:01 -> 2015-02-24 05:37:40
+    [Renewal] accessDate	2015-02-24 00:36:01 -> 2015-02-24 00:39:17
+    finderInfo
+     [Modify] write_gen_counter	4 -> 8
+    dataFork
+     [Modify] logicalSize	0 -> 4
+     [Modify] totalBlocks	0 -> 1
+     extents
+      extent0
+       [Modify] startBlock	0 -> 27706
+       [Modify] blockCount	0 -> 1
+  {'ID': 126, 'type': 'file', 'nodeName': u'reverseDirectoryStore', 'thID': 92}
+   record
+    finderInfo
+     [Modify] write_gen_counter	32 -> 33
+@0x321e0 Catalog-----------------------------
+ NodeDescriptor
+  [Modify] numRecords	72 -> 74
+ LeafRecList
+  [Insert] {'parID': 54, 'type': 'thread', 'nodeName': u'000000000192e3bf', 'thID': 13814}
+  [Insert] {'parID': 54, 'type': 'thread', 'nodeName': u'000000000192e3c0', 'thID': 13815}
+[NEW] 0x33310 Catalog
+@0x321d0 Catalog-----------------------------
+ BTHeaderRec
+  [Modify] leafRecords	27290 -> 27294
+[Renewal] userDataRecord
+[Renewal] mapRecord
+@0x34e10 Catalog-----------------------------
+ LeafRecList
+  {'ID': 54, 'type': 'folder', 'nodeName': u'.fseventsd', 'thID': 2}
+   record
+    [Modify] valence	1 -> 3
+    [Renewal] contentModDate	2015-02-23 21:37:43 -> 2015-02-24 05:37:40
+    [Renewal] attributeModDate	2015-02-23 21:37:43 -> 2015-02-24 05:37:40
+    finderInfo
+     [Modify] write_gen_counter	8 -> 10
+trans_58=================================
+@0x2 VolumeHeader-----------------------------
+[Modify] attributes	2147491840 -> 2147492096
+trans_59=================================
+@0x2 VolumeHeader-----------------------------
+[Modify] attributes	2147492096 -> 2147491840
+[Renewal] modifyDate	2015-02-24 05:37:40 -> 2015-02-24 05:45:12
+[Modify] fileCount	13123 -> 13124
+[Modify] nextCatalogID	13816 -> 13817
+[Modify] writeCount	65355 -> 65357
+[NEW] 0x32210 Catalog
+@0x34e20 Catalog-----------------------------
+ LeafRecList
+  {'ID': 13812, 'type': 'file', 'nodeName': u'shutdown_time', 'thID': 92}
+   record
+    [Renewal] accessDate	2015-02-24 00:39:17 -> 2015-02-24 05:45:12
+  {'ID': 126, 'type': 'file', 'nodeName': u'reverseDirectoryStore', 'thID': 92}
+   record
+    [Renewal] contentModDate	2015-02-24 00:39:17 -> 2015-02-24 05:45:12
+    [Renewal] attributeModDate	2015-02-24 00:39:17 -> 2015-02-24 05:45:12
+    [Renewal] accessDate	2015-02-24 00:39:17 -> 2015-02-24 05:45:12
+    finderInfo
+     [Modify] write_gen_counter	33 -> 34
+  {'ID': 124, 'type': 'file', 'nodeName': u'store.db', 'thID': 92}
+   record
+    [Renewal] accessDate	2015-02-24 00:36:01 -> 2015-02-24 05:45:12
+  {'ID': 159, 'type': 'file', 'nodeName': u'store.updates', 'thID': 92}
+   record
+    [Renewal] accessDate	2015-02-24 00:39:17 -> 2015-02-24 05:45:12
+  {'ID': 129, 'type': 'file', 'nodeName': u'store_generation', 'thID': 92}
+   record
+    [Renewal] accessDate	2015-02-24 00:39:12 -> 2015-02-24 05:45:12
+@0x32240 Catalog-----------------------------
+ LeafRecList
+  {'ID': 127, 'type': 'file', 'nodeName': u'tmp.spotlight.state', 'thID': 92}
+   record
+    [Renewal] accessDate	2015-02-24 00:39:17 -> 2015-02-24 05:45:12
+  {'ID': 162, 'type': 'file', 'nodeName': u'tmp.spotlight.loc', 'thID': 92}
+   record
+    [Renewal] accessDate	2015-02-24 00:36:06 -> 2015-02-24 05:45:12
+@0x32220 Catalog-----------------------------
+ LeafRecList
+  {'ID': 13797, 'type': 'file', 'nodeName': u'0.indexCompactDirectory', 'thID': 92}
+   record
+    [Renewal] accessDate	2015-02-24 00:36:06 -> 2015-02-24 05:45:12
+  {'ID': 13791, 'type': 'file', 'nodeName': u'0.indexGroups', 'thID': 92}
+   record
+    [Renewal] accessDate	2015-02-24 00:39:17 -> 2015-02-24 05:45:12
+  {'ID': 13796, 'type': 'file', 'nodeName': u'0.indexDirectory', 'thID': 92}
+   record
+    [Renewal] accessDate	2015-02-24 00:36:06 -> 2015-02-24 05:45:12
+  {'ID': 13790, 'type': 'file', 'nodeName': u'0.indexIds', 'thID': 92}
+   record
+    [Renewal] accessDate	2015-02-24 00:39:17 -> 2015-02-24 05:45:12
+  {'ID': 92, 'type': 'folder', 'nodeName': u'CB432386-058C-4A8E-A5D4-35A9E2728E53', 'thID': 90}
+   record
+    [Modify] valence	65 -> 66
+    [Renewal] contentModDate	2015-02-24 00:39:17 -> 2015-02-24 05:45:12
+    [Renewal] attributeModDate	2015-02-24 00:39:17 -> 2015-02-24 05:45:12
+    [Renewal] accessDate	2015-02-24 00:39:17 -> 2015-02-24 05:45:12
+    finderInfo
+     [Modify] write_gen_counter	392 -> 393
+  {'ID': 13789, 'type': 'file', 'nodeName': u'0.indexHead', 'thID': 92}
+   record
+    [Renewal] accessDate	2015-02-24 00:36:06 -> 2015-02-24 05:45:12
+  {'ID': 13800, 'type': 'file', 'nodeName': u'0.directoryStoreFile', 'thID': 92}
+   record
+    [Renewal] contentModDate	2015-02-24 00:39:17 -> 2015-02-24 05:45:12
+    [Renewal] attributeModDate	2015-02-24 00:39:17 -> 2015-02-24 05:45:12
+    [Renewal] accessDate	2015-02-24 00:39:17 -> 2015-02-24 05:45:12
+    finderInfo
+     [Modify] write_gen_counter	9 -> 10
+  {'ID': 13798, 'type': 'file', 'nodeName': u'0.indexArrays', 'thID': 92}
+   record
+    [Renewal] accessDate	2015-02-24 00:36:06 -> 2015-02-24 05:45:12
+  {'ID': 125, 'type': 'file', 'nodeName': u'.store.db', 'thID': 92}
+   record
+    [Renewal] accessDate	2015-02-24 00:39:18 -> 2015-02-24 05:45:12
+@0x32250 Catalog-----------------------------
+ LeafRecList
+  {'ID': 13750, 'type': 'file', 'nodeName': u'live.0.indexArrays', 'thID': 92}
+   record
+    [Renewal] contentModDate	2015-02-24 00:39:17 -> 2015-02-24 05:45:12
+    [Renewal] attributeModDate	2015-02-24 00:39:17 -> 2015-02-24 05:45:12
+    [Renewal] accessDate	2015-02-24 00:39:17 -> 2015-02-24 05:45:12
+    finderInfo
+     [Modify] write_gen_counter	6 -> 7
+  {'ID': 13741, 'type': 'file', 'nodeName': u'live.0.indexHead', 'thID': 92}
+   record
+    [Renewal] accessDate	2015-02-24 00:39:17 -> 2015-02-24 05:45:12
+  {'ID': 13742, 'type': 'file', 'nodeName': u'live.0.indexIds', 'thID': 92}
+   record
+    [Renewal] contentModDate	2015-02-24 00:43:42 -> 2015-02-24 05:45:12
+    [Renewal] attributeModDate	2015-02-24 00:43:42 -> 2015-02-24 05:45:12
+    [Renewal] accessDate	2015-02-24 00:39:17 -> 2015-02-24 05:45:12
+    finderInfo
+     [Modify] write_gen_counter	7 -> 8
+  {'ID': 13811, 'type': 'file', 'nodeName': u'permStore', 'thID': 92}
+   record
+    [Renewal] contentModDate	2015-02-24 05:37:40 -> 2015-02-24 05:45:12
+    [Renewal] attributeModDate	2015-02-24 05:37:40 -> 2015-02-24 05:45:12
+    [Renewal] accessDate	2015-02-24 00:39:17 -> 2015-02-24 05:45:12
+    finderInfo
+     [Modify] write_gen_counter	14 -> 15
+  {'ID': 13745, 'type': 'file', 'nodeName': u'live.0.indexTermIds', 'thID': 92}
+   record
+    [Renewal] contentModDate	2015-02-24 00:39:17 -> 2015-02-24 05:45:12
+    [Renewal] attributeModDate	2015-02-24 00:39:17 -> 2015-02-24 05:45:12
+    [Renewal] accessDate	2015-02-24 00:39:17 -> 2015-02-24 05:45:12
+    finderInfo
+     [Modify] write_gen_counter	6 -> 7
+  {'ID': 13744, 'type': 'file', 'nodeName': u'live.0.indexPostings', 'thID': 92}
+   record
+    [Renewal] contentModDate	2015-02-24 00:39:17 -> 2015-02-24 05:45:12
+    [Renewal] attributeModDate	2015-02-24 00:39:17 -> 2015-02-24 05:45:12
+    finderInfo
+     [Modify] write_gen_counter	4 -> 5
+  {'ID': 13749, 'type': 'file', 'nodeName': u'live.0.indexCompactDirectory', 'thID': 92}
+   record
+    [Renewal] contentModDate	2015-02-24 00:39:17 -> 2015-02-24 05:45:12
+    [Renewal] attributeModDate	2015-02-24 00:39:17 -> 2015-02-24 05:45:12
+    [Renewal] accessDate	2015-02-24 00:39:17 -> 2015-02-24 05:45:12
+    finderInfo
+     [Modify] write_gen_counter	6 -> 7
+  {'ID': 13747, 'type': 'file', 'nodeName': u'live.0.indexPositionTable', 'thID': 92}
+   record
+    [Renewal] contentModDate	2015-02-24 00:39:17 -> 2015-02-24 05:45:12
+    [Renewal] attributeModDate	2015-02-24 00:39:17 -> 2015-02-24 05:45:12
+    [Renewal] accessDate	2015-02-24 00:39:17 -> 2015-02-24 05:45:12
+    finderInfo
+     [Modify] write_gen_counter	6 -> 7
+  {'ID': 13743, 'type': 'file', 'nodeName': u'live.0.indexGroups', 'thID': 92}
+   record
+    [Renewal] contentModDate	2015-02-24 00:43:13 -> 2015-02-24 05:45:12
+    [Renewal] attributeModDate	2015-02-24 00:43:13 -> 2015-02-24 05:45:12
+    [Renewal] accessDate	2015-02-24 00:39:17 -> 2015-02-24 05:45:12
+    finderInfo
+     [Modify] write_gen_counter	7 -> 8
+  {'ID': 13752, 'type': 'file', 'nodeName': u'live.0.directoryStoreFile', 'thID': 92}
+   record
+    [Renewal] contentModDate	2015-02-24 00:43:42 -> 2015-02-24 05:45:12
+    [Renewal] attributeModDate	2015-02-24 00:43:42 -> 2015-02-24 05:45:12
+    [Renewal] accessDate	2015-02-24 00:43:13 -> 2015-02-24 05:45:12
+    finderInfo
+     [Modify] write_gen_counter	9 -> 10
+  {'ID': 13748, 'type': 'file', 'nodeName': u'live.0.indexDirectory', 'thID': 92}
+   record
+    [Renewal] contentModDate	2015-02-24 00:39:17 -> 2015-02-24 05:45:12
+    [Renewal] attributeModDate	2015-02-24 00:39:17 -> 2015-02-24 05:45:12
+    [Renewal] accessDate	2015-02-24 00:39:17 -> 2015-02-24 05:45:12
+    finderInfo
+     [Modify] write_gen_counter	6 -> 7
+  {'ID': 13751, 'type': 'file', 'nodeName': u'live.0.indexUpdates', 'thID': 92}
+   record
+    [Renewal] accessDate	2015-02-24 00:39:17 -> 2015-02-24 05:45:12
+  {'ID': 13746, 'type': 'file', 'nodeName': u'live.0.indexPositions', 'thID': 92}
+   record
+    [Renewal] contentModDate	2015-02-24 00:39:17 -> 2015-02-24 05:45:12
+    [Renewal] attributeModDate	2015-02-24 00:39:17 -> 2015-02-24 05:45:12
+    finderInfo
+     [Modify] write_gen_counter	4 -> 5
+@0x321e0 Catalog-----------------------------
+ NodeDescriptor
+  [Modify] numRecords	74 -> 75
+ LeafRecList
+  [Insert] {'parID': 92, 'type': 'thread', 'nodeName': u'journalAttr.5', 'thID': 13816}
+@0x34e30 Catalog-----------------------------
+ NodeDescriptor
+  [Modify] numRecords	17 -> 18
+ LeafRecList
+  [Insert] {'ID': 13816, 'type': 'file', 'nodeName': u'journalAttr.5', 'thID': 92}
+  {'ID': 99, 'type': 'file', 'nodeName': u'indexState', 'thID': 92}
+   record
+    [Renewal] accessDate	2015-02-24 00:39:20 -> 2015-02-24 05:45:34
+@0x321d0 Catalog-----------------------------
+ BTHeaderRec
+  [Modify] leafRecords	27294 -> 27296
+[Renewal] userDataRecord
+[Renewal] mapRecord
+@0x34e10 Catalog-----------------------------
+ LeafRecList
+  {'ID': 54, 'type': 'folder', 'nodeName': u'.fseventsd', 'thID': 2}
+   record
+    [Renewal] accessDate	2015-02-23 21:37:43 -> 2015-02-24 05:45:12
+@0x33310 Catalog-----------------------------
+ LeafRecList
+  {'ID': 13695, 'type': 'file', 'nodeName': u'fseventsd-uuid', 'thID': 54}
+   record
+    [Renewal] accessDate	2015-02-24 05:37:40 -> 2015-02-24 05:45:12
+  {'ID': 13815, 'type': 'file', 'nodeName': u'000000000192e3c0', 'thID': 54}
+   record
+    [Renewal] accessDate	2015-02-24 05:37:40 -> 2015-02-24 05:45:12
+trans_60=================================
+@0x32220 Catalog-----------------------------
+ LeafRecList
+  {'ID': 125, 'type': 'file', 'nodeName': u'.store.db', 'thID': 92}
+   record
+    [Renewal] contentModDate	2015-02-24 05:37:40 -> 2015-02-24 05:49:15
+    [Renewal] attributeModDate	2015-02-24 05:37:40 -> 2015-02-24 05:49:15
+    [Renewal] accessDate	2015-02-24 05:45:12 -> 2015-02-24 05:45:34
+    finderInfo
+     [Modify] write_gen_counter	209 -> 210
+@0x2 VolumeHeader-----------------------------
+[Renewal] modifyDate	2015-02-24 05:45:12 -> 2015-02-24 05:49:15
+[Modify] writeCount	65357 -> 65358
+trans_61=================================
+@0x34e10 Catalog-----------------------------
+ LeafRecList
+  {'ID': 163, 'type': 'file', 'nodeName': u'.DS_Store', 'thID': 2}
+   record
+    [Renewal] accessDate	2015-02-23 21:37:56 -> 2015-02-24 07:37:10
+@0x2 VolumeHeader-----------------------------
+[Renewal] modifyDate	2015-02-24 05:49:15 -> 2015-02-24 07:37:10
+[Modify] nextAllocation	27708 -> 27709
+[Modify] writeCount	65358 -> 65360
+[Renewal] Allocation
+@0x32240 Catalog-----------------------------
+ LeafRecList
+  {'ID': 127, 'type': 'file', 'nodeName': u'tmp.spotlight.state', 'thID': 92}
+   record
+    [Renewal] contentModDate	2015-02-24 00:43:13 -> 2015-02-24 07:37:10
+    [Renewal] attributeModDate	2015-02-24 00:43:13 -> 2015-02-24 07:37:10
+    finderInfo
+     [Modify] write_gen_counter	98 -> 100
+    dataFork
+     extents
+      extent0
+       [Modify] startBlock	5184 -> 27709
+@0x32220 Catalog-----------------------------
+ LeafRecList
+  {'ID': 125, 'type': 'file', 'nodeName': u'.store.db', 'thID': 92}
+   record
+    [Renewal] contentModDate	2015-02-24 05:49:15 -> 2015-02-24 07:37:10
+    [Renewal] attributeModDate	2015-02-24 05:49:15 -> 2015-02-24 07:37:10
+    finderInfo
+     [Modify] write_gen_counter	210 -> 211
+trans_62=================================
+@0x32250 Catalog-----------------------------
+ LeafRecList
+  {'ID': 13741, 'type': 'file', 'nodeName': u'live.0.indexHead', 'thID': 92}
+   record
+    [Renewal] contentModDate	2015-02-24 00:43:13 -> 2015-02-24 07:37:10
+    [Renewal] attributeModDate	2015-02-24 00:43:13 -> 2015-02-24 07:37:10
+    finderInfo
+     [Modify] write_gen_counter	10 -> 11
+trans_63=================================
+[Renewal] Allocation
+@0x34e10 Catalog-----------------------------
+ LeafRecList
+  {'ID': 163, 'type': 'file', 'nodeName': u'.DS_Store', 'thID': 2}
+   record
+    [Renewal] contentModDate	2015-02-23 21:38:12 -> 2015-02-24 07:37:10
+    [Renewal] attributeModDate	2015-02-23 21:38:12 -> 2015-02-24 07:37:10
+    finderInfo
+     [Modify] write_gen_counter	40 -> 43
+    dataFork
+     extents
+      extent0
+       [Modify] startBlock	231334 -> 27710
+@0x2 VolumeHeader-----------------------------
+[Renewal] modifyDate	2015-02-24 07:37:10 -> 2015-02-24 07:37:34
+[Modify] freeBlocks	1402459 -> 1402458
+[Modify] nextAllocation	27709 -> 27712
+[Modify] writeCount	65360 -> 65364
+[Renewal] Allocation
+@0x34e30 Catalog-----------------------------
+ LeafRecList
+  {'ID': 13816, 'type': 'file', 'nodeName': u'journalAttr.5', 'thID': 92}
+   record
+    [Renewal] contentModDate	2015-02-24 05:45:12 -> 2015-02-24 07:37:34
+    [Renewal] attributeModDate	2015-02-24 05:45:12 -> 2015-02-24 07:37:34
+    finderInfo
+     [Modify] write_gen_counter	1 -> 2
+    dataFork
+     [Modify] logicalSize	0 -> 140
+     [Modify] totalBlocks	0 -> 1
+     extents
+      extent0
+       [Modify] startBlock	0 -> 27712
+       [Modify] blockCount	0 -> 1
+trans_64=================================
+[Renewal] Allocation
+@0x32250 Catalog-----------------------------
+ LeafRecList
+  {'ID': 13743, 'type': 'file', 'nodeName': u'live.0.indexGroups', 'thID': 92}
+   record
+    [Renewal] contentModDate	2015-02-24 05:45:12 -> 2015-02-24 07:40:12
+    [Renewal] attributeModDate	2015-02-24 05:45:12 -> 2015-02-24 07:40:12
+    finderInfo
+     [Modify] write_gen_counter	8 -> 9
+  {'ID': 13752, 'type': 'file', 'nodeName': u'live.0.directoryStoreFile', 'thID': 92}
+   record
+    [Renewal] accessDate	2015-02-24 05:45:12 -> 2015-02-24 07:40:11
+  {'ID': 13751, 'type': 'file', 'nodeName': u'live.0.indexUpdates', 'thID': 92}
+   record
+    [Renewal] contentModDate	2015-02-24 00:43:13 -> 2015-02-24 07:40:11
+    [Renewal] attributeModDate	2015-02-24 00:43:13 -> 2015-02-24 07:40:11
+    finderInfo
+     [Modify] write_gen_counter	8 -> 10
+    dataFork
+     [Modify] logicalSize	812 -> 891
+     extents
+      extent0
+       [Modify] startBlock	5181 -> 27713
+@0x2 VolumeHeader-----------------------------
+[Renewal] modifyDate	2015-02-24 07:37:34 -> 2015-02-24 07:40:11
+[Modify] nextAllocation	27712 -> 27715
+[Modify] writeCount	65364 -> 65368
+@0x32220 Catalog-----------------------------
+ LeafRecList
+  {'ID': 125, 'type': 'file', 'nodeName': u'.store.db', 'thID': 92}
+   record
+    [Renewal] contentModDate	2015-02-24 07:37:10 -> 2015-02-24 07:40:11
+    [Renewal] attributeModDate	2015-02-24 07:37:10 -> 2015-02-24 07:40:11
+    finderInfo
+     [Modify] write_gen_counter	211 -> 212
+@0x34e20 Catalog-----------------------------
+ LeafRecList
+  {'ID': 160, 'type': 'file', 'nodeName': u'reverseStore.updates', 'thID': 92}
+   record
+    [Renewal] contentModDate	2015-02-24 00:43:13 -> 2015-02-24 07:40:11
+    [Renewal] attributeModDate	2015-02-24 00:43:13 -> 2015-02-24 07:40:11
+    finderInfo
+     [Modify] write_gen_counter	48 -> 50
+    dataFork
+     extents
+      extent0
+       [Modify] startBlock	5183 -> 27715
+  {'ID': 159, 'type': 'file', 'nodeName': u'store.updates', 'thID': 92}
+   record
+    [Renewal] contentModDate	2015-02-24 00:43:13 -> 2015-02-24 07:40:11
+    [Renewal] attributeModDate	2015-02-24 00:43:13 -> 2015-02-24 07:40:11
+    finderInfo
+     [Modify] write_gen_counter	48 -> 50
+    dataFork
+     extents
+      extent0
+       [Modify] startBlock	5182 -> 27714
+trans_65=================================
+[Renewal] Allocation
+@0x32240 Catalog-----------------------------
+ LeafRecList
+  {'ID': 127, 'type': 'file', 'nodeName': u'tmp.spotlight.state', 'thID': 92}
+   record
+    [Renewal] contentModDate	2015-02-24 07:37:10 -> 2015-02-24 07:40:12
+    [Renewal] attributeModDate	2015-02-24 07:37:10 -> 2015-02-24 07:40:12
+    finderInfo
+     [Modify] write_gen_counter	100 -> 102
+    dataFork
+     extents
+      extent0
+       [Modify] startBlock	27709 -> 27716
+@0x2 VolumeHeader-----------------------------
+[Renewal] modifyDate	2015-02-24 07:40:11 -> 2015-02-24 07:40:12
+[Modify] nextAllocation	27715 -> 27716
+[Modify] writeCount	65368 -> 65370
+@0x32220 Catalog-----------------------------
+ LeafRecList
+  {'ID': 125, 'type': 'file', 'nodeName': u'.store.db', 'thID': 92}
+   record
+    [Renewal] contentModDate	2015-02-24 07:40:11 -> 2015-02-24 07:40:12
+    [Renewal] attributeModDate	2015-02-24 07:40:11 -> 2015-02-24 07:40:12
+    finderInfo
+     [Modify] write_gen_counter	212 -> 213
+trans_66=================================
+@0x34e30 Catalog-----------------------------
+ LeafRecList
+  {'ID': 99, 'type': 'file', 'nodeName': u'indexState', 'thID': 92}
+   record
+    [Renewal] contentModDate	2015-02-24 00:43:13 -> 2015-02-24 07:40:12
+    [Renewal] attributeModDate	2015-02-24 00:43:13 -> 2015-02-24 07:40:12
+    finderInfo
+     [Modify] write_gen_counter	28 -> 29
+trans_67=================================
+@0x32250 Catalog-----------------------------
+ LeafRecList
+  {'ID': 13741, 'type': 'file', 'nodeName': u'live.0.indexHead', 'thID': 92}
+   record
+    [Renewal] contentModDate	2015-02-24 07:37:10 -> 2015-02-24 07:40:12
+    [Renewal] attributeModDate	2015-02-24 07:37:10 -> 2015-02-24 07:40:12
+    finderInfo
+     [Modify] write_gen_counter	11 -> 13
+  {'ID': 13742, 'type': 'file', 'nodeName': u'live.0.indexIds', 'thID': 92}
+   record
+    [Renewal] contentModDate	2015-02-24 05:45:12 -> 2015-02-24 07:40:34
+    [Renewal] attributeModDate	2015-02-24 05:45:12 -> 2015-02-24 07:40:34
+    finderInfo
+     [Modify] write_gen_counter	8 -> 9
+  {'ID': 13752, 'type': 'file', 'nodeName': u'live.0.directoryStoreFile', 'thID': 92}
+   record
+    [Renewal] contentModDate	2015-02-24 05:45:12 -> 2015-02-24 07:40:34
+    [Renewal] attributeModDate	2015-02-24 05:45:12 -> 2015-02-24 07:40:34
+    finderInfo
+     [Modify] write_gen_counter	10 -> 11
+@0x2 VolumeHeader-----------------------------
+[Renewal] modifyDate	2015-02-24 07:40:12 -> 2015-02-24 07:40:34
+[Modify] writeCount	65370 -> 65373

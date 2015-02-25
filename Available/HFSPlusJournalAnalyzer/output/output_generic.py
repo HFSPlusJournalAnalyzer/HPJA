@@ -101,9 +101,12 @@ def outputKeyedRec(f,records,nodeType):
         for j in getRow1(records[i],nodeType):
             if type(j)==str or type(j)==unicode:
                 j=j.replace('"','"""')
-            if type(j)==tuple:
+            elif type(j)==tuple or type(j)=list:
                 j='"'+unicode(j).replace('"','"""')+'"'
-            f.write(unicode(j).encode('utf-8')+',')
+            else:
+                j=str(j)
+
+            f.write(j+',')
 
         f.write('\n')
 
@@ -154,8 +157,10 @@ def rawCSV(path,jParseList):
                     for k in getRow2(block,volumeHeaderTypes):
                         if type(k)==str or type(k)==unicode:
                             k=k.replace('"','"""')
-                        if type(k)==tuple:
+                        elif type(k)==tuple or type(k)==list:
                             k='"'+unicode(k).replace('"','"""')+'"'
+                        else:
+                            k=str(k)
                         f['VolumeHeader'].write(unicode(k).encode('utf-8')+',')
 
                     f['VolumeHeader'].write('\n')
