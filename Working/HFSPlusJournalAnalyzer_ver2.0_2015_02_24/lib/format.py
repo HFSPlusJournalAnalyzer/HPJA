@@ -230,9 +230,9 @@ class AttrData(namedtuple('AttrData',['recordType', 'reserved', 'attrSize', 'att
 
 # User data structure
     
-LeafNode = namedtuple("LeafNode", ['NodeDescriptor', 'LeafRecList'])
+LeafNode = namedtuple("LeafNode", ['NodeDescriptor', 'LeafRecList','recOffList'])
 HeaderNode = namedtuple("HeaderNode", ['NodeDescriptor', 'BTHeaderRec', 'UserDataRec', 'MapRec'])
-IndexNode = namedtuple("IndexNode", ['NodeDescriptor', 'PointerRecList'])
+IndexNode = namedtuple("IndexNode", ['NodeDescriptor', 'PointerRecList','recOffList'])
 MapNode = namedtuple('MapNode', ['NodeDescriptor', 'MapRecord'])
 class UniChar(namedtuple("UniChar", ['nameLen', 'nodeUnicode'])):
     __slots__ = ()

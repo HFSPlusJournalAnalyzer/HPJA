@@ -26,6 +26,9 @@ class Binary:
         
     def __repr__(self):
         return self.tobytes().encode('utf8')
+
+    def __str__(self):
+        return self.tobytes()
     
 # variable for storing a sector size 
 # variable for storing a magnification of block from sect_size (blockSize/sect_size)
@@ -170,12 +173,15 @@ def getCatalogLeaf(cl_binary):
     leafRecList = []
     
     cl_buf = cl_buf[14:]
-    for i in xrange(nd.numRecords):
+    recOffList=[14]
+    for i in range(nd.numRecords):
         lr = getCatalogLeafRec(cl_buf)
         leafRecList.append(lr)
         cl_buf = cl_buf[len(lr):]
+        recOffList.append(recOffList[i]+len(lr))
+    recOffList.pop()
         
-    return LeafNode(nd, leafRecList)
+    return LeafNode(nd, leafRecList,recOffList)
 
 def getCatalogPointerRec(cpr_binary):
     keyLen = unpack_from(">H", cpr_binary)[0]
@@ -196,7 +202,8 @@ def getCatalogIndex(ci_binary):
         temp = ci_buf[offsetList[i]:offsetList[i+1]]
         cpr = getCatalogPointerRec(temp)
         PointerRecList.append(cpr)
-    return IndexNode(nd,PointerRecList)
+    offsetList.pop()
+    return IndexNode(nd,PointerRecList,offsetList)
 
 '''
 Extents
@@ -221,11 +228,14 @@ def getExtentsLeaf(el_binary):
     nd = getNodeDescriptor(el_binary)
     leafRecList = []
     el_buf = el_buf[14:]
+    recOffList=[14]
     for i in xrange(nd.numRecords):
         lr = getExtentsLeafRec(el_buf)
         leafRecList.append(lr)
         el_buf = el_buf[len(lr):]
-    return LeafNode(nd, leafRecList)
+        recOffList.append(recOffList[i]+len(lr))
+    recOffList.pop()
+    return LeafNode(nd, leafRecList,recOffList)
 
 def getExtentsPointerRec(epr_binary):
     extKey = getExtentsKey(epr_binary[:12])
@@ -244,7 +254,8 @@ def getExtentsIndex(ei_binary):
         temp = ei_buf[offsetList[i]:offsetList[i+1]]
         epr = getExtentsPointerRec(temp)
         PointerRecList.append(epr)
-    return IndexNode(nd,PointerRecList)
+    offsetList.pop()
+    return IndexNode(nd,PointerRecList,offsetList)
 
 '''
 Attribute
@@ -294,12 +305,15 @@ def getAttributesLeaf(al_binary):
     leafRecList = []
     
     al_buf = al_buf[14:]
+    recOffList=[14]
     for i in xrange(nd.numRecords):
         lr = getAttributesLeafRec(al_buf)
         leafRecList.append(lr)
         al_buf = al_buf[len(lr):]
+        recOffList.append(recOffList[i]+len(lr))
+    recOffList.pop()
     
-    return LeafNode(nd, leafRecList)
+    return LeafNode(nd, leafRecList,recOffList)
 
 def getAttributesPointerRec(apr_binary):
     keyLen = unpack_from(">H", apr_binary)[0]
@@ -319,7 +333,8 @@ def getAttributesIndex(ai_binary):
         temp = ai_buf[offsetList[i]:offsetList[i+1]]
         apr = getAttributesPointerRec(temp)
         PointerRecList.append(apr)
-    return IndexNode(nd,PointerRecList)
+    offsetList.pop()
+    return IndexNode(nd,PointerRecList,offsetList)
 
 '''
 Header, Map
