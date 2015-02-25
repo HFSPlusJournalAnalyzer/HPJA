@@ -49,11 +49,31 @@ def main(option):
 
     print 'Analyzing journal...'
     jParseList, pInfo, bOffList = journalParser(journal)
-    jT = journalTrack(jParseList, pInfo)
+
+    if catalogFile!=0:
+        makefstruct(catalogFile)
 
     path='result{0}'.format(option['id'])
     DirectoryCleaning(path)
-    
+
+    form=0
+    if 'csv' in option:
+        print 'Creating CSV files...'
+        form+=1
+
+    if 'sql' in option:
+        print 'Creating SQLite file...'
+        form+=2
+
+    if form>0:
+        journalParser(form,path,jParseList,bOffList)
+        if 'va' in option:
+            print 'Analyzing volume...'
+            volumeInfo(path,vh)
+            specialFileParser(form,path,{'Extents':extentsFile,'Catalog':catalogFile,'Attributes':attributesFile})
+
+    jT = journalTrack(jParseList, pInfo)
+
     if 't' in option:
         print 'Tracking journal...'
         journalTrackPrint(jT, "{0}/journalTrack.txt".format(path))
@@ -65,19 +85,6 @@ def main(option):
     if 'f' in option:
         print 'Output file system format result...'
         getFSOutput(journal, jParseList, pInfo, bOffList)
-
-    if 'va' in option:
-        print 'Analyzing volume...'
-        volumeInfo(path,vh)
-        specialFileAnalyzer(path,{'Extents':extentsFile,'Catalog':catalogFile,'Attributes':attributesFile})
-
-    if 'csv' in option:
-        print 'Creating CSV files...'
-        rawCSV(path,jParseList)
-
-    if 'sql' in option:
-        print 'Creating SQLite file...'
-        rawSQLite3(path,jParseList)
 
     if 'r' in option:
         if 'i' in option:

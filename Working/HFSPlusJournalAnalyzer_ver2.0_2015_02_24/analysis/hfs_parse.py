@@ -17,7 +17,7 @@ def journalParser(journal_blob):
     bOffData.append(bOffsetInfo(0, pInfo.sect_size, None, j_header, "JournalHeader", 0))
     j_buf = jnl[pInfo.sect_size:]
     startOffset = getStart(j_buf, j_header.end) # setting the startOffset
-    
+    ;;
     j_ParseList, bl_bOff = journalBufferParser(j_buf, j_header, startOffset, [], [], pInfo)
     bOffData.append(bOffsetInfo(startOffset, j_header.end, bl_bOff, j_ParseList, 'JournalBuffer', pInfo.sect_size))
     # with offset pInfo.sect_size

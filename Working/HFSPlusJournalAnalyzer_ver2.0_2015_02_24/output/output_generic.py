@@ -8,7 +8,7 @@ from analysis.file_analysis import *
 con=None
 cur=None
 
-def genFields(standard,prefix,seen=set()):
+def genFields(standard,prefix='',seen=set()):
     fields=[]
     for i,j in standard._asdict().iteritems():
         i=prefix+j
@@ -77,26 +77,54 @@ def getRow2(data,fields):
 getRow=[getRow1,getRow2]
 
 
-emptyString=300*'\x00'
-CatalogLeafFields=genFields(set(),'',getCatalogKey(emptyString),getCatalogFile(emptyString),getCatalogFolder(emptyString),getCatalogThread(emptyString))
-CatalogLeafFields.append('fullPath')
-ExtentsLeafFields=genFields(set(),'',getExtentsKey(emptyString),ExtentsDataRec(getExtentDescriptor(emptyString),getExtentDescriptor(emptyString),
-                                                                             getExtentDescriptor(emptyString),getExtentDescriptor(emptyString),
-                                                                             getExtentDescriptor(emptyString),getExtentDescriptor(emptyString),
-                                                                             getExtentDescriptor(emptyString),getExtentDescriptor(emptyString)))
-AttrLeafFields=genFields(set(),'',getAttributesKey(emptyString),getAttributesForkData(emptyString),getAttributesExtents(emptyString),getAttributesData(emptyString))
-CatalogIndexFields=genFields(set(),'',getCatalogKey(emptyString),BTPointer(0))
-ExtentsIndexFields=genFields(set(),'',getExtentsKey(emptyString),BTPointer(0))
-AttrIndexFields=genFields(set(),'',getAttributesKey(emptyString),BTPointer(0))
-HeaderFields=genFields(set(),'',getBTHeaderRec(emptyString))
+es=300*'\x00'
+tableFields={}
+tableFields['Catalog_Leaf']=['journalOffset']
+tableFields['Catalog_Leaf']+=genFields(getCatalogKey(es))
+tableFields['Catalog_Leaf']+=genFields(getCatalogFile(es))
+tableFields['Catalog_Leaf']+=genFields(getCatalogFolder(es))
+tableFields['Catalog_Leaf']+=genFields(getCatalogThread(es))
+tableFields['Catalog_Leaf'].append('fullPath')
 
-nodeFields={'Catalog':{'LeafRecList':CatalogLeafFields,'BTHeaderRec':HeaderFields,'PointerRecList':CatalogIndexFields}}
-nodeFields['Extents']={'LeafRecList':ExtentsLeafFields,'BTHeaderRec':HeaderFields,'PointerRecList':ExtentsIndexFields}
-nodeFields['Attributes']={'LeafRecList':AttrLeafFields,'BTHeaderRec':HeaderFields,'PointerRecList':AttrIndexFields}
-volumeHeaderFields=genFields(set(),'',getVolumeHeader(2*emptyString))
+tableFields['Extents_Leaf']=['journalOffset']
+tableFields['Extents_Leaf']+=genFields(getExtentsKey(es))
+tableFields['Extents_Leaf']+=genFields(ExtentsDataRec(getExtentDescriptor(es),getExtentDescriptor(es),getExtentDescriptor(es),
+                            getExtentDescriptor(es),getExtentDescriptor(es),getExtentDescriptor(es),getExtentDescriptor(es),
+                            getExtentDescriptor(es)))
 
-def outputRecord(form,f,fields,record,keyed):
-    if form&1:
+tableFields['Attributes_Leaf']=['journalOffset']
+tableFields['Attributes_Leaf']+=genFields(getAttributesKey(es))
+tableFields['Attributes_Leaf']+=genFields(getAttributesForkData(es))
+tableFields['Attributes_Leaf']+=genFields(getAttributesExtents(es))
+tableFields['Attributes_Leaf']+=genFields(getAttributesData(es))
+
+tableFields['Catalog_Index']=['journalOffset']
+tableFields['Catalog_Index']+=genFields(getCatalogKey(es))
+tableFields['Catalog_Index']+=genFields(BTPointer(0))
+
+tableFields['Extents_Index']=['journalOffset']
+tableFields['Extents_Index']+=genFields(getExtentsKey(es))
+tableFields['Extents_Index']+=genFields(BTPointer(0))
+
+tableFields['Attributes_Index']=['journalOffset']
+tableFields['Attributes_Index']+=genFields(getAttributesKey(es))
+tableFields['Attributes_Index']+=genFields(BTPointer(0))
+
+tableFields['Header']=['journalOffset']
+tableFields['Header']+=genFields(getBTHeaderRec(es))
+
+tableFields['VolumeHeader']=['journalOffset']
+tableFields['VolumeHeader']+=genFields(getVolumeHeader(2*es))
+
+
+def outputRecord(form,table,fields,prefix,record,keyed):
+
+    csv=form&1
+    sql=form&2
+    if csv:
+        tc=table[csv]
+        for i in prefix:
+            tc.write(i+',')
         for i in getRow[keyed](record,fields):
             if type(i)==str or type(i)==unicode:
                 i=i.replace('"','"""')
@@ -104,155 +132,172 @@ def outputRecord(form,f,fields,record,keyed):
                 i='"'+unicode(i).replace('"','"""')+'"'
             else:
                 i=str(i)
-            f.write(i+',')
-        f.write('\n')
+            tc.write(i+',')
+        tc.write('\n')
 
-    if form&2:
+    if sql:
         row=getRow[keyed](record,fields)
         for i in range(len(row)):
             if type(row[i])==str or type(row[i])==unicode:
-                record[i]=record[i].replace("'","''").replace('&','&&')
+                row[i]=row[i].replace("'","''").replace('&','&&')
             elif type(row[i])==tuple or type(row[i])==list:
                 row[i]="'"+str(row[i]).replace("'","''").replace('&','&&')+"'"
-        cur.execute('insert into {0} values {1}'.format(f,tuple(row)).replace("u'","'").replace('u"','"'))
+        cur.execute('insert into {0} values {1}'.format(table[sql],tuple(prefix+row)).replace("u'","'").replace('u"','"'))
 
 
 fileTypes=['Catalog','Extents','Attributes']
-recordTypes=['LeafRecList','PointerRecList','BTHeaderRec']
+recordTypes=['Leaf','Pointer','Header']
 
-def initCSV(path):
+def initFileCSV(path,fileType,table={}):
+    for i in recordTypes:
+        fn='{0}_{1}'.format(fileType,i)
+        t=open('{0}/{1}.csv'.format(path,fn),'w')
+        table[fn]=t
+        for j in tableFields[fn]:
+            t.write('{0},'.format(j))
+        t.write('\n')
 
-    f={'VolumeHeader':open('{0}/Journal/VolumeHeader.csv'.format(path),'w')}
+    return table
 
-    for i in volumeHeaderFields:
-        f['VolumeHeader'].write('{0},'.format(i))
+
+def initJournalCSV(path):
+
+    table={'VolumeHeader':open('{0}/Journal/VolumeHeader.csv'.format(path),'w')}
+
+    for i in tableFields['VolumeHeader']:
+        table['VolumeHeader'].write('{0},'.format(i))
 
     for i in fileTypes:
+        initFileCSV(path,i,table)
 
-        f[i]={}
+    return table
 
-        for j in recordTypes:
 
-            f[i][j]=open('{0}/Journal/{1}{2}.csv'.format(path,i,j),'w')
+def initSQL(path):
 
-            for k in nodeFields[i][j]:
-                f[i][j].write('{0},'.format(k))
-
-            f[i][j].write('\n')
-
-    return f
-
-def initSQLite3(path):
-
-    con=sqlite3.connect('{0}/Journal/Journal.db'.format(path))
+    con=sqlite3.connect('{0}'.format(path))
     con.isolation_level=None
     cur=con.cursor()
 
-    cur.execute('CREATE TABLE VolumeHeader {0}'.format(tuple(volumeHeaderFields)))
+    cur.execute('CREATE TABLE VolumeHeader {0}'.format(tuple(tableFields['VolumeHeader'])))
 
     for i in fileTypes:
         for j in recordTypes:
-            cur.execute('CREATE TABLE {0}{1} {2}'.format(i,j,tuple(nodeFields[i][j])))
+            fn='{0}_{1}'.format(i,j)
+            table[fn]=fn
+            cur.execute('CREATE TABLE {0} {1}'.format(fn,tuple(tableFields[fn])))
+
+    return table
 
 
-def journalParsing(form,path,jParseList):
-
-    if form&1:
-        f=initCSV(path)
-    if form&2:
-        initSQLite3(path)
-
-    for i in range(1,len(jParseList)):        
-
-        blocks=jParseList[i][2]
-
-        for j in range(len(blocks)):
-
-            block=blocks[j]
-
-            try:
-                records=block[1]
-
-                if type(records)==list:
-
-                    fileType=records[0].getType()
-                    recType=block._fields[1]
-
-                    nt=nodeFields[fileType][recType]
-
-                    outputKeyedRec(f[fileType][recType],records,nt)
-
-                elif block.__class__.__name__=='VolumeHeader':
-
-                    for k in getRow2(block,volumeHeaderFields):
-                        if type(k)==str or type(k)==unicode:
-                            k=k.replace('"','"""')
-                        elif type(k)==tuple or type(k)==list:
-                            k='"'+unicode(k).replace('"','"""')+'"'
-                        else:
-                            k=str(k)
-                        f['VolumeHeader'].write(unicode(k).encode('utf-8')+',')
-
-                    f['VolumeHeader'].write('\n')
-
-            except Exception:
-                pass
-
-    f['VolumeHeader'].close()
-
-    for i in ['Catalog','Extents','Attributes']:
-        for j in ['LeafRecList','BTHeaderRec','PointerRecList']:
-            f[i][j].close()
+def finishFileCSV(table,fileType):
+    for i in recordTypes:
+        table['{0}_{1}'.format(fileType,i)].close()
 
 
+def finishJournalCSV(table):
 
+    table['VolumeHeader'][0].close()
+    for i in fileTypes:
+        finishFileCSV(table,i)
 
-    for i in range(1,len(jParseList)):
-
-        blocks=jParseList[i][2]
-        for j in range(len(blocks)):
-            
-            block=blocks[j]
-
-            try:
-
-                records=block[1]
-
-                if type(records)==list:
-
-                    fileType=records[0].getType()
-                    recType=block._fields[1]
-
-                    nt=nodeFields[fileType][recType]
-
-                    for k in range(len(records)):
-
-                        lf=getRow1(records[k],nt)
-
-                        for i in range(len(lf)):
-                            if type(lf[i])==tuple:
-                                lf[i]=unicode(lf[i])
-                            if type(lf[i])==str or type(lf[i])==unicode:
-                                lf[i]=lf[i].replace("'","''").replace('&','&&')
-
-                        cur.execute(u'insert into {0}{1} values {2}'.format(fileType,recType,tuple(lf)).replace("u'","'").replace('u"','"') .replace('"',"'"))
-
-                elif block.__class__.__name__=='VolumeHeader':
-
-                    vh=getRow2(block,volumeHeaderFields)
-
-                    for i in range(len(vh)):
-                        if type(vh[i])==tuple:
-                            vh[i]=unicode(vh[i])
-                        if type(vh[i])==str or type(vh[i])==unicode:
-                            vh[i]=vh[i].replace("'","''").replace('&','&&')
-
-                    cur.execute(u'insert into VolumeHeader values {0}'.format(tuple(vh)).replace("u'","'").replace('u"','"') .replace('"',"'"))
-
-            except Exception:
-                pass
+def finishSQL():
 
     cur.close()
     con.close()
 
 
+KeyExistence={'Catalog_Leaf':1,'Catalog_Index':1,'Catalog_Header':0,'Catalog_Map':-1,
+            'Extents_Leaf':1,'Extents_Index':1,'Extents_Header':0,'Extents_Map':-1,
+            'Attributes_Leaf':1,'Attributes_Index':1,'Attributes_Header':0,'Attributes_Map':-1,
+            'VolumeHeader':0, 'Allocation':-1}
+
+
+
+def journalParser(form,path,jParseList,bOffList):
+
+    DirectoryCleaning(path+'/Journal')
+
+    if form&1:
+        table1=initCSV(path+'/Journal')
+    if form&2:
+        table2=initSQL(path+'/Journal/Journal.db')
+
+    table={}
+    for i in fileTypes:
+        for j in recordTypes:
+            fn='{0}_{1}'.format(i,j)
+            table[fn]=[table1[fn],table2[fn]]
+
+    for i in range(1,len(jParseList)):        
+
+        blocks=jParseList[i][2]
+        bOffs=bOffList[i].contain[2]
+
+        for j in range(len(blocks)):
+
+            block=blocks[j]
+            bOff=bOffs.contain[j]
+            bn=bOff.name
+            
+            if KeyExistence[bn]==1:
+                tf=tableFields[bn]
+                rl=block[1]
+                rol=block[-1]
+                for k in range(rl):
+                    outputRecord(form,table[bn],tf,[bOff.offset+rol[k]],rl[k],1):
+
+            elif KeyExistence[bn]==0:
+                record=block
+                if bn!='VolumeHeader':
+                    record=block[1]
+                    tf=tableFields[bn.find('_')+1:]
+                else:
+                    tf=tableFields[bn]
+                outputRecord(form,table[bn],tf,[bOff.offset],record,0):
+
+    if form&1:
+        finishFileCSV(table)
+    if form&2:
+        finishSQL()
+
+
+def specialFileParser(form,path,sepcialFile):
+
+    if form&2:
+        initSQL(path+'specialFile.db')
+
+    for i in fileTypes:
+        sf=specialFile[i]
+        if sf==0:
+            break
+        if form&1:
+            initFileCSV(path,fileType,table={})
+        nodeSize,temp1,totalNodes=unpack_from('>HHL',sf,32)
+        nodePointer=0
+        for j in xrange(totalNodes):
+            node=getBlock(buffer(sf,nodePointer,nodeSize),i)
+            rt=recordTypes[node.NodeDescriptor.kind+1]
+            nn='{0}_{1}'.format(i,rt)
+            if KeyExistence[nn]==1:
+                tf=tableFields[nn]
+                rl=node[1]
+                rol=node[-1]
+                for k in range(rl):
+                    outputRecord(form,table[nn],tf,[bOff.offset+rol[k]],rl[k],1):
+            elif KeyExistence[nn]==0:
+                record=node[1]
+                tf=tableFields[rt]
+                outputRecord(form,table[nn],tf,[bOff.offset],record,0):
+            nodePointer+=nodeSize
+        finishFileCSV(table,i)
+    finishSQL()
+
+def volumeInfo(path,vh):
+
+    if vh!=0:
+        f = open("{0}/VolumeInfo.txt".format(path),'w')
+        for i in vh._asdict():
+            f.write('{0} : {1}\n'.format(i,vh.__getattribute__(i)))
+    
+        f.close()
