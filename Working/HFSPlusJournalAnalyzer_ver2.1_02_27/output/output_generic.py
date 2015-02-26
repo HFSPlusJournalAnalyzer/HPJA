@@ -25,18 +25,16 @@ def genFields(prefix,seen,*standard):
     return fields
 
 
-def getFieldsNValues(prefix,data,fields):
+def getFieldsNValues(data,prefix):
     fieldsNValues=[]
     for i,j in data._asdict().iteritems():
         i=prefix+i
-        if i in fields:
+        try:
+            j._asdict()
+            fieldsNValues+=getFieldsNValues(j,i+'/')
+
+        except AttributeError:
             fieldsNValues.append((i,j))
-        else:
-            try:
-                j._asdict()
-                fieldsNValues+=getFieldsNValues(i+'/',j,fields)
-            except AttributeError:
-                pass
 
     return fieldsNValues
 
@@ -44,7 +42,7 @@ def getFieldsNValues(prefix,data,fields):
 def getRow1(data,fields):
 
     row=OrderedDict([(i,'') for i in fields])
-    for i,j in getFieldsNValues('',data,fields):
+    for i,j in getFieldsNValues(data,''):
         row[i]=j
         
     return row.values()
@@ -53,14 +51,14 @@ def getRow2(data,fields):
 
     row=OrderedDict([(i,'') for i in fields])
 
-    for i,j in getFieldsNValues('',data.record,fields):
+    for i,j in getFieldsNValues(data.record,''):
         row[i]=j
 
     if 'recordType' in fields and row['recordType']<5:
 
         if row['recordType']==3 or row['recordType']==4:
 
-            for i,j in getFieldsNValues('',data.record,fields):
+            for i,j in getFieldsNValues(data.key,''):
 
                 if i!='nodeName/nameLen' and i!='nodeName/nodeUnicode':
 
@@ -72,7 +70,7 @@ def getRow2(data,fields):
         row['fullPath']=getFullPath(row['CNID'])
 
     if 'recordType' not in fields or (row['recordType']!=3 and row['recordType']!=4):
-        for i,j in getFieldsNValues('',data.record,fields):
+        for i,j in getFieldsNValues(data.key,''):
             row[i]=j
         
     return row.values()
@@ -130,7 +128,8 @@ def outputRecord(form,table,fields,prefix,record,keyed):
                 row[i]=row[i].replace("'","''").replace('&','&&')
             elif type(row[i])==tuple or type(row[i])==list:
                 row[i]="'{0}'".format(str(row[i]).replace("'","''").replace('&','&&'))
-        cur.execute('insert into {0} values {1}'.format(table[sql],tuple(row)).replace("u'","'").replace('u"','"').replace("\\'\\'","''"))
+        print row
+        cur.execute('insert into {0} values {1}'.format(table[sql],tuple(row)).replace("u'","'").replace('u"','"').replace('\\',''))
 
 
 fileTypes=['Catalog','Extents','Attributes']
@@ -252,16 +251,12 @@ def outputParsedJournal(form,path,jParseList,bOffList):
 
 def outputCoreFields(form,path,jParseList,bOffList):
 
-    global con,cur
-
     tf=['offset', 'keyLength', 'parentID', 'nodeName/nodeUnicode', 'recordType', 'CNID', 'createDate', 'contentModDate', 'attributesDate', 'accessDate', 'permissions/ownerID', 'permissions/groupID', 'dataFork', 'resourceFork', 'valence', 'fullPath']
 
     table=[None,None,None]
     
     if form&1:
         table[1]=open('{0}/Journal/Summary_Catalog_Leaf.csv'.format(path),'w')
-        for i in tf:
-            table[1].write(i+',')
 
     if form&2:
         con=sqlite3.connect('{0}/Journal/Journal.db'.format(path))
@@ -269,6 +264,7 @@ def outputCoreFields(form,path,jParseList,bOffList):
         cur=con.cursor()
         cur.execute('CREATE TABLE Summary_Catalog_Leaf {0}'.format(tuple(tf)))
         table[2]='Summary_Catalog_Leaf'
+
 
     for i in range(1,len(jParseList)):
 

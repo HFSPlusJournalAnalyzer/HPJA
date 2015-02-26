@@ -1,2 +1,0 @@
-offset,treeDepth,rootNode,leafRecords,firstLeafNode,lastLeafNode,nodeSize,maxKeyLength,totalNodes,freeNodes,reserved1,clumpSize,btreeType,keyCompareType,attributes,
-827392,4,22947,634857,28682,3201,8192,266,98304,28617,0,268435456,0,0,6,
