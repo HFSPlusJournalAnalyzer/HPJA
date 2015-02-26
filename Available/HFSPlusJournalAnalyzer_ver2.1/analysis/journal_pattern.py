@@ -7,6 +7,7 @@ Created on 2015. 2. 16.
 from analysis.journal_track import *
 from analysis.hfs_parse import *
 from collections import namedtuple
+from analysis.file_analysis import *
 
 class CatalObjPatVec(namedtuple("CatalObjPatVec", ['Insert', 'Remove'])):
     def __str__(self):
@@ -42,20 +43,24 @@ class CatalFoldPatVec(namedtuple("CatalFoldPatVec", ['modDate', 'Access', 'valen
 CatalThreadPatVec = namedtuple("CatalThreadPatVec", ['parentID'])
 
 class CatalPattern:
-    def __init__(self, patName, type, patTime, data, recName):
-        self.patName, self.type = patName, type
+    def __init__(self, patName, typ, patTime, data, recName, parID):
+        self.patName, self.type = patName, typ
         self.patTime = patTime
         self.data, self.recName = data, recName
+        self.parID = parID
     
     def __eq__(self, other):
         return (self.patName == other.patName) and (self.type == other.type)
     
     def __repr__(self):
-        return "[%s] %s / %s / %s\n" %(self.patName, self.type, self.recName, getHFSTime(self.patTime))
+        return "[%s] %s / %s / %s / parID: %d\n" %(self.patName, self.type, self.recName, getHFSTime(self.patTime), self.parID)
 
     def __str__(self):
-        return "[%s] %s / %s / %s\n" %(self.patName, self.type, self.recName.encode('utf8'), getHFSTime(self.patTime))
-        
+        return "[%s] %s / %s / %s / parID: %d\n" %(self.patName, self.type, self.recName.encode('utf8'), getHFSTime(self.patTime), self.parID)
+    
+    def str_csv(self):
+        return ",%d,%s,%s,%s,%s,%s\n" %(self.parID, self.patName, self.type, self.recName.encode('utf8'), getHFSTime(self.patTime), getFullPath(self.parID))
+    
     def hasPattern(self, dataChange):
         return self == CatalRecPattern(dataChange)
 
@@ -71,18 +76,24 @@ def CatalRecPattern(CataldataChange):
         rType = CataldataChange.absData['type']
         if rType == "thread":
             rTime = 0
+            parID = CataldataChange.absData['parID']
             nodeName = CataldataChange.object.record.nodeName.nodeUnicode
         else:
             rTime = [0, CataldataChange.object.record.createDate][chType == 'Insert']
+            parID = CataldataChange.absData['thID']
             nodeName = CataldataChange.object.key.nodeName.nodeUnicode
         
-        return CatalPattern(Pvec, rType, rTime, CataldataChange.object, nodeName)
-    type = CataldataChange.nData['type']
+        return CatalPattern(Pvec, rType, rTime, CataldataChange.object, nodeName, parID)
+    typ = CataldataChange.nData['type']
     vecSetDict = {'file': setFileVec, 'folder': setFoldVec, 'thread': setThreadVec}
     vecDict = {'file':CatalFilePatVec, 'folder': CatalFoldPatVec, 'thread': CatalThreadPatVec}
-    vec, rTime = vecSetDict[type](CataldataChange, [])
-    Pvec = vecDict[type](*vec)
-    return CatalPattern(Pvec, type, rTime, CataldataChange, CataldataChange.nData['nodeName'])
+    vec, rTime = vecSetDict[typ](CataldataChange, [])
+    Pvec = vecDict[typ](*vec)
+    try:
+        parID = CataldataChange.nData['parID']
+    except(KeyError):
+        parID = CataldataChange.nData['thID'] 
+    return CatalPattern(Pvec, typ, rTime, CataldataChange, CataldataChange.nData['nodeName'], parID)
 
 def setFileVec(CataldataChange, initvec):
     if initvec == []:
@@ -123,11 +134,11 @@ def setFoldVec(CataldataChange, initvec):
         
     if CataldataChange.__class__ == renewalChangeInfo:
         if CataldataChange.__name__ in ['contentModDate', 'attributeModDate']:
-            initvec[0] = 1            
+            initvec[0] = 1
+            time = CataldataChange.after
         if CataldataChange.__name__ == 'accessDate':
             initvec[1] = 1
-        
-        time = CataldataChange.after
+            time = CataldataChange.after
         
         return (initvec, time)
     
@@ -200,15 +211,15 @@ def threadHandle(cPatSet, thStream):
             if done == 2:
                 bef_log.remove(i)
                 aft_log.remove(j)
-                aft_log.append(CatalPattern("Update", i.type, j.data.record.createDate, [i,j,th], j.recName))
+                aft_log.append(CatalPattern("Update", i.type, j.data.record.createDate, [i,j,th], j.recName, j.parID))
                 continue
             
             th_id = th.data.nData['thID']
             cDict = cPatDict[th_id]
             for i in cDict:
-                if i.recName == th.recName and i.patName.__class__ != CatalObjPatVec and i.patName.patCheck('parentID'):
+                if (i.recName == th.recName) and (i.patName.__class__ != CatalObjPatVec) and (i.patName.patCheck('parentID')):
                     cDict.remove(i)
-                    cDict.append(CatalPattern("Move", i.type, 0, [i,th], i.recName))
+                    cDict.append(CatalPattern("Move", i.type, 0, [i,th], i.recName, i.parID))
                     break        
                     
     
@@ -228,7 +239,7 @@ def Create(cPatSet):
             if (fPart != None) and (tPart != None):
                 v.remove(fPart)
                 v.remove(tPart)
-                v.append(CatalPattern("Create", fPart.type, fPart.data.record.createDate, [fPart, tPart], fPart.recName))
+                v.append(CatalPattern("Create", fPart.type, fPart.data.record.createDate, [fPart, tPart], fPart.recName, fPart.parID))
     
     return cPatSet
 
@@ -246,7 +257,7 @@ def Delete(cPatSet):
             if (fPart != None) and (tPart != None):
                 v.remove(fPart)
                 v.remove(tPart)
-                v.append(CatalPattern("Delete", fPart.type, fPart.data.record.createDate, [fPart, tPart], fPart.recName))
+                v.append(CatalPattern("Delete", fPart.type, fPart.data.record.createDate, [fPart, tPart], fPart.recName, fPart.parID))
 
     return cPatSet
 
@@ -325,15 +336,29 @@ def catalogGrouping(refineCatalog):
         result.append(IDdict)
     return result
 
-def printCatalPatSet(cPatSet, fd):
-    count = 1
-    for i in cPatSet:
-        fd.write("trans_%d=================================\n" %count)
-        for cNum, chList in i.iteritems():
-            fd.write("@CNID_%s\n" %cNum)
-            for k in chList:
-                fd.write(" "+str(k))
-        count += 1
+def printCatalPatSet(cPatSet, outputPath):
+    
+    with open(outputPath, 'w') as fd:
+        count = 1
+        for i in cPatSet:
+            fd.write("trans_%d=================================\n" %count)
+            for cNum, chList in i.iteritems():
+                fd.write("@CNID_%s\n" %cNum)
+                for k in chList:
+                    fd.write(" "+str(k))
+            count += 1
+            
+            
+def csvOutCatalPatSet(cPatSet, outputPath):
+    with open(outputPath, 'w') as fd:
+        count = 1
+        fd.write("#trans,ID,parID,action,type,name,time,location\n")
+        
+        for i in cPatSet:
+            for cNum, chList in i.iteritems():
+                for k in chList:
+                    fd.write("%d,"%count + str(cNum) + k.str_csv())
+            count += 1
         
         
 def Pattern_useMe(journalTrack, outputPath):
@@ -349,24 +374,20 @@ def Pattern_useMe(journalTrack, outputPath):
     
     basePatSet = cleanPatSet(basePatSet)
     
-    fd = open(outputPath, 'w')
-    printCatalPatSet(basePatSet, fd)
-    fd.close()
+    csvOutCatalPatSet(basePatSet, outputPath)
 
 def printCatalRefined(journalTrack, outputPath):
     refined = refineTrack(journalTrack)
-    fd = open(outputPath, 'w')
-    journalTrackPrint(refined, fd)
-    fd.close()
+    journalTrackPrint(refined, outputPath)
 
 def main():
-    f = open(r"C:\Users\user\Desktop\vic", 'rb')
+    f = open(r"C:\Users\user\Desktop\Journal_2", 'rb')
     s = f.read()
     jPList, pInfo = journalParser(s)[:2]
     jT = journalTrack(jPList, pInfo)
     
     printCatalRefined(jT, r"C:\TEMP\Journal_vic1.txt")
-    Pattern_useMe(jT, r"C:\TEMP\Journal_vic2.txt")
+    Pattern_useMe(jT, r"C:\TEMP\Journal_vic2.csv")
     
 if __name__ == '__main__':
     main()
