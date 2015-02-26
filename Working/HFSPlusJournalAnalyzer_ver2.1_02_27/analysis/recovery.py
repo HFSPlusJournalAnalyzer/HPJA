@@ -2,12 +2,13 @@ from lib.etc_util import DiskDump
 
 def recovery(disk,path,target,jParseList,vh):
     d=target.find(',')
-    CNID=int(target[1:d])
-    nodeName=target[d+1:-1]
+    nodeName=target[0:d]
+    CNID=int(target[d+1:])
+    print nodeName,CNID
     for i in range(len(jParseList)-1,0,-1):
 
         blocks=jParseList[i][2]
-        for j in range(len(blocks)-1,-1,0):
+        for j in range(len(blocks)-1,-1,-1):
             
             try:
 
@@ -15,12 +16,15 @@ def recovery(disk,path,target,jParseList,vh):
 
                 if 'Catalog'==records[0].getType():
 
-                    for k in xrange(len(records)):
+                    for k in records:
 
-                        if records.key.nodeName.nodeUnicode==unicode(nodeName) and records.record.CNID==CNID:
+                        #print k
 
+                        if k.key.nodeName.nodeUnicode==unicode(nodeName) and k.record.CNID==CNID:
+
+                            print 1
                             dataFork=[]
-                            extents=records.record.dataFork.extents
+                            extents=k.record.dataFork.extents
                             for l in extents._asdict().itervalues():
                                 dataFork.append(DiskDump(disk,'',vh.blockSize,l.startBlock,l.blockCount))
                             dataFork=''.join(dataFork)
@@ -29,7 +33,7 @@ def recovery(disk,path,target,jParseList,vh):
                             f.close()
 
                             resourceFork=[]
-                            extents=records.record.resourceFork.extents
+                            extents=k.record.resourceFork.extents
                             for l in extents._asdict().itervalues():
                                 resourceFork.append(DiskDump(disk,'{0}/{1}'.format(path,nodeName),vh.blockSize,l.startBlock,l.blockCount))
                             resourceFork=''.join(resourceFork)

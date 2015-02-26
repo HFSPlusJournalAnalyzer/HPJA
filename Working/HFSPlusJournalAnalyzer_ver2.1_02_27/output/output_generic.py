@@ -106,7 +106,7 @@ def outputRecord(form,table,fields,prefix,record,keyed):
             row[i]=j
         for i in range(len(row)):
             if type(row[i])==str or type(row[i])==unicode:
-                row[i]=row[i].replace('"','"""')
+                row[i]=row[i].replace('"','"""').replace('\r','')
             elif type(row[i])==tuple or type(row[i])==list:
                 row[i]='"{0}"'.format(str(row[i]).replace('"','"""'))
             else:
@@ -301,7 +301,6 @@ def outputParsedspecialFile(form,path,specialFile):
         for i,j in table2.iteritems():
             table[i][2]=j
 
-    table={}
     for i in fileTypes:
         sf=specialFile[i]
         if sf==0:

@@ -51,7 +51,6 @@ def main(option):
     jParseList, pInfo, bOffList = journalParser(journal)
 
     if catalogFile!=0:
-        pass
         makefstruct(catalogFile)
 
     path='result{0}'.format(option['id'])
@@ -91,7 +90,7 @@ def main(option):
     if 'r' in option:
         if 'i' in option:
             print 'Recover the file...'
-            recovery(option['l'],path,option['r'],jParseList,vh)
+            recovery(option['i'],path,option['r'],jParseList,vh)
         else:
             print 'Not able to recover the file. Please input a disk image.'
 
