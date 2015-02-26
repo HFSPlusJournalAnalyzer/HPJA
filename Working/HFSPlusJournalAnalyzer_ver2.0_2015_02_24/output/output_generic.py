@@ -252,20 +252,20 @@ def outputCoreFields(form,path,jParseList,bOffList):
 
     tf=['offset', 'keyLength', 'parentID', 'nodeName/nodeUnicode', 'recordType', 'CNID', 'createDate', 'contentModDate', 'attributesDate', 'accessDate', 'permissions/ownerID', 'permissions/groupID', 'dataFork', 'resourceFork', 'valence', 'fullPath']
 
-    table=[None,None]
+    table=[None,None,None]
     
     if form&1:
-        table1=initJournalCSV(path+'/Journal')
-        for i,j in table1.iteritems():
-            table[i][1]=j
+        table[1]=open('{0}/Journal/Summary_Catalog_Leaf.csv'.format(path),'w')
 
     if form&2:
-        table2=initSQL(path+'/Journal/CoreJournal.db')
-        for i,j in table2.iteritems():
-            table[i][2]=j
+        con=sqlite3.connect('{0}/Journal/Journal.db'.format(path))
+        con.isolation_level=None
+        cur=con.cursor()
+        cur.execute('CREATE TABLE Summary_Catalog_Leaf {0}'.format(tuple(tf)))
+        table[2]='Summary_Catalog_Leaf'
 
 
-    for i in range(1,len(jParseList)):    
+    for i in range(1,len(jParseList)):
 
         blocks=jParseList[i][2]
         bOffs=bOffList[1].contain[i-1].contain[2]
@@ -274,22 +274,14 @@ def outputCoreFields(form,path,jParseList,bOffList):
 
             block=blocks[j]
             bOff=bOffs.contain[j]
-            bn=bOff.name
-            tf=tableFields[bn]
-            if KeyExistence[bn]==1:
+            if bOff.name=='Catalog_Leaf':
                 rl=block[1]
                 rol=block[-1]
                 for k in range(len(rl)):
-                    outputRecord(form,table[bn],tf,[bOff.offset+rol[k]],rl[k],1)
-
-            elif KeyExistence[bn]==0:
-                record=block
-                if bn!='VolumeHeader':
-                    record=block[1]
-                outputRecord(form,table[bn],tf,[bOff.offset],record,0)
+                    outputRecord(form,table,tf,[bOff.offset+rol[k]],rl[k],1)
 
     if form&1:
-        finishJournalCSV(table)
+        table[1].close()
     if form&2:
         finishSQL()
 
