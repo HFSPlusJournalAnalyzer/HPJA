@@ -83,24 +83,15 @@ es=300*'\x00'
 tableFields={}
 tableFields['Catalog_Leaf']=prefixes+genFields('',set(),getCatalogKey(es),getCatalogFile(es),getCatalogFolder(es),getCatalogThread(es))
 tableFields['Catalog_Leaf'].append('fullPath')
-
 ed=getExtentDescriptor(es)
 tableFields['Extents_Leaf']=prefixes+genFields('',set(),getExtentsKey(es),ExtentsDataRec(ed,ed,ed,ed,ed,ed,ed,ed))
-
 tableFields['Attributes_Leaf']=prefixes+genFields('',set(),getAttributesKey(es),getAttributesForkData(es),getAttributesExtents(es),getAttributesData(es))
-
 tableFields['Catalog_Index']=prefixes+genFields('',set(),getCatalogKey(es),BTPointer(0))
-
 tableFields['Extents_Index']=prefixes+genFields('',set(),getExtentsKey(es),BTPointer(0))
-
 tableFields['Attributes_Index']=prefixes+genFields('',set(),getAttributesKey(es),BTPointer(0))
-
 tableFields['Catalog_Header']=prefixes+genFields('',set(),getBTHeaderRec(es))
-
 tableFields['Extents_Header']=prefixes+genFields('',set(),getBTHeaderRec(es))
-
 tableFields['Attributes_Header']=prefixes+genFields('',set(),getBTHeaderRec(es))
-
 tableFields['VolumeHeader']=prefixes+genFields('',set(),getVolumeHeader(2*es))
 
 
@@ -137,7 +128,7 @@ def outputRecord(form,table,fields,prefix,record,keyed):
                 row[i]=row[i].replace("'","''").replace('&','&&')
             elif type(row[i])==tuple or type(row[i])==list:
                 row[i]="'{0}'".format(str(row[i]).replace("'","''").replace('&','&&'))
-        cur.execute('insert into {0} values {1}'.format(table[sql],tuple(row)).replace("u'","'").replace('u"','"').replace('\\',''))
+        cur.execute('insert into {0} values {1}'.format(table[sql],tuple(row)).replace("u'","'").replace('u"','"').replace('\\',':'))
 
 
 fileTypes=['Catalog','Extents','Attributes']
@@ -218,6 +209,7 @@ def outputParsedJournal(form,path,jParseList,bOffList):
 
     table={i:[None,None,None] for i in KeyExistence.keys()}
     if form&1:
+        table={'path':open('{0}/VolumeHeader.csv'.format(path),'w')}
         table1=initJournalCSV(path+'/Journal')
         for i,j in table1.iteritems():
             table[i][1]=j
@@ -237,9 +229,8 @@ def outputParsedJournal(form,path,jParseList,bOffList):
             block=blocks[j]
             bOff=bOffs.contain[j]
             bn=bOff.name
-            print bn
+            tf=tableFields[bn]
             if KeyExistence[bn]==1:
-                tf=tableFields[bn]
                 rl=block[1]
                 rol=block[-1]
                 for k in range(len(rl)):
@@ -247,7 +238,52 @@ def outputParsedJournal(form,path,jParseList,bOffList):
 
             elif KeyExistence[bn]==0:
                 record=block
-                tf=tableFields[bn]
+                if bn!='VolumeHeader':
+                    record=block[1]
+                outputRecord(form,table[bn],tf,[bOff.offset],record,0)
+
+    if form&1:
+        finishJournalCSV(table)
+    if form&2:
+        finishSQL()
+
+
+def outputCoreFields(form,path,jParseList,bOffList):
+
+    tf=['offset', 'keyLength', 'parentID', 'nodeName/nodeUnicode', 'recordType', 'CNID', 'createDate', 'contentModDate', 'attributesDate', 'accessDate', 'permissions/ownerID', 'permissions/groupID', 'dataFork', 'resourceFork', 'valence', 'fullPath']
+
+    table=[None,None]
+    
+    if form&1:
+        table1=initJournalCSV(path+'/Journal')
+        for i,j in table1.iteritems():
+            table[i][1]=j
+
+    if form&2:
+        table2=initSQL(path+'/Journal/CoreJournal.db')
+        for i,j in table2.iteritems():
+            table[i][2]=j
+
+
+    for i in range(1,len(jParseList)):    
+
+        blocks=jParseList[i][2]
+        bOffs=bOffList[1].contain[i-1].contain[2]
+
+        for j in range(len(blocks)):
+
+            block=blocks[j]
+            bOff=bOffs.contain[j]
+            bn=bOff.name
+            tf=tableFields[bn]
+            if KeyExistence[bn]==1:
+                rl=block[1]
+                rol=block[-1]
+                for k in range(len(rl)):
+                    outputRecord(form,table[bn],tf,[bOff.offset+rol[k]],rl[k],1)
+
+            elif KeyExistence[bn]==0:
+                record=block
                 if bn!='VolumeHeader':
                     record=block[1]
                 outputRecord(form,table[bn],tf,[bOff.offset],record,0)
@@ -260,24 +296,28 @@ def outputParsedJournal(form,path,jParseList,bOffList):
 
 def outputParsedspecialFile(form,path,specialFile):
 
+    table={i:[None,None,None] for i in KeyExistence.keys()}
+    if form&1:
+        table1=initJournalCSV(path)
+        for i,j in table1.iteritems():
+            table[i][1]=j
     if form&2:
-        initSQL(path+'specialFile.db')
+        table2=initSQL(path+'/fileSystem.db')
+        for i,j in table2.iteritems():
+            table[i][2]=j
 
-    print specialFile
     table={}
     for i in fileTypes:
         sf=specialFile[i]
         if sf==0:
             break
-        if form&1:
-            table.update(initFileCSV(path,i))
         nodeSize,temp1,totalNodes=unpack_from('>HHL',sf,32)
         nodePointer=0
         for j in xrange(totalNodes):
             node=getBlock(buffer(sf,nodePointer,nodeSize),i)
             nn='{0}_{1}'.format(i,recordTypes[node.NodeDescriptor.kind+1])
+            tf=tableFields[nn]
             if KeyExistence[nn]==1:
-                tf=tableFields[nn]
                 rl=node[1]
                 rol=node[-1]
                 for k in range(len(rl)):

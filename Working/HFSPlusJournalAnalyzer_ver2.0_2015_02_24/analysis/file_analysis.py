@@ -14,6 +14,8 @@ import csv
 from recovery import *
 
 fstruct={}
+appeared={}
+
 
 def makefstruct(catalogFile):
     
@@ -30,16 +32,21 @@ def makefstruct(catalogFile):
 
 def getFullPath(CNID):
 
-    fullPath=[]
-    i=CNID
-    while i!=1:
-        if i not in fstruct.keys():
-            fullPath=['unknown']
-            break
-        fullPath.insert(0,u'{0}/'.format(fstruct[i][0]))
-        i=fstruct[i][1]
-    fullPath=u''.join(fullPath)
-    return fullPath
+    try:
+        return appeared['CNID']
+    except KeyError:
+        fullPath=[]
+        i=CNID
+        while i!=1:
+            try:
+                fullPath.insert(0,u'/{0}'.format(fstruct[i][0]))
+                i=fstruct[i][1]
+            except KeyError:
+                fullPath=['unknown']
+                break
+        fullPath=u''.join(fullPath)
+        appeared['CNID']=fullPath
+        return fullPath
 
 
 
