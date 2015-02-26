@@ -51,7 +51,8 @@ def main(option):
     jParseList, pInfo, bOffList = journalParser(journal)
 
     if catalogFile!=0:
-        makefstruct(catalogFile)
+        pass
+        #makefstruct(catalogFile)
 
     path='result{0}'.format(option['id'])
     DirectoryCleaning(path)
@@ -71,6 +72,7 @@ def main(option):
             volumeInfo(path,vh)
             outputParsedspecialFile(form,path,{'Extents':extentsFile,'Catalog':catalogFile,'Attributes':attributesFile})
         outputParsedJournal(form,path,jParseList,bOffList)
+        outputCoreFields(form,path,jParseList,bOffList)
 
     jT = journalTrack(jParseList, pInfo)
 

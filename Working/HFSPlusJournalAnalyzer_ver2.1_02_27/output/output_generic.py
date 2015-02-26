@@ -123,12 +123,13 @@ def outputRecord(form,table,fields,prefix,record,keyed):
             row[i]=j
         for i in range(len(row)):
             if type(row[i])==Binary:
-                row[i]=str(row[i])
+                row[i]=str(row[i]).replace("'","''").replace('&','&&')
             if type(row[i])==str or type(row[i])==unicode:
                 row[i]=row[i].replace("'","''").replace('&','&&')
             elif type(row[i])==tuple or type(row[i])==list:
                 row[i]="'{0}'".format(str(row[i]).replace("'","''").replace('&','&&'))
-        cur.execute('insert into {0} values {1}'.format(table[sql],tuple(row)).replace("u'","'").replace('u"','"').replace('\\',':'))
+        print row
+        cur.execute('insert into {0} values {1}'.format(table[sql],tuple(row)).replace("u'","'").replace('u"','"').replace('\\',''))
 
 
 fileTypes=['Catalog','Extents','Attributes']
@@ -209,7 +210,6 @@ def outputParsedJournal(form,path,jParseList,bOffList):
 
     table={i:[None,None,None] for i in KeyExistence.keys()}
     if form&1:
-        table={'path':open('{0}/VolumeHeader.csv'.format(path),'w')}
         table1=initJournalCSV(path+'/Journal')
         for i,j in table1.iteritems():
             table[i][1]=j
@@ -229,14 +229,15 @@ def outputParsedJournal(form,path,jParseList,bOffList):
             block=blocks[j]
             bOff=bOffs.contain[j]
             bn=bOff.name
-            tf=tableFields[bn]
             if KeyExistence[bn]==1:
+                tf=tableFields[bn]
                 rl=block[1]
                 rol=block[-1]
                 for k in range(len(rl)):
                     outputRecord(form,table[bn],tf,[bOff.offset+rol[k]],rl[k],1)
 
             elif KeyExistence[bn]==0:
+                tf=tableFields[bn]
                 record=block
                 if bn!='VolumeHeader':
                     record=block[1]
@@ -308,14 +309,15 @@ def outputParsedspecialFile(form,path,specialFile):
         for j in xrange(totalNodes):
             node=getBlock(buffer(sf,nodePointer,nodeSize),i)
             nn='{0}_{1}'.format(i,recordTypes[node.NodeDescriptor.kind+1])
-            tf=tableFields[nn]
             if KeyExistence[nn]==1:
+                tf=tableFields[nn]
                 rl=node[1]
                 rol=node[-1]
                 for k in range(len(rl)):
                     outputRecord(form,table[nn],tf,[nodePointer+rol[k]],rl[k],1)
             elif KeyExistence[nn]==0:
                 record=node[1]
+                tf=tableFields[nn]
                 outputRecord(form,table[nn],tf,[nodePointer],record,0)
             nodePointer+=nodeSize
         finishFileCSV(table,i)
