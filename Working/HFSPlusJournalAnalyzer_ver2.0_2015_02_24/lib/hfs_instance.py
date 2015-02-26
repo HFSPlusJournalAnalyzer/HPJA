@@ -25,7 +25,7 @@ class Binary:
             return str(self.data)
         
     def __repr__(self):
-        return self.tobytes()
+        return self.tobytes().encode("utf8")
 
     def __str__(self):
         return self.tobytes()
