@@ -77,7 +77,7 @@ def getRow2(data,fields):
 
 getRow=[getRow1,getRow2]
 
-prefixes=['journalOffset']
+prefixes=['offset']
 
 es=300*'\x00'
 tableFields={}

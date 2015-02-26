@@ -147,6 +147,7 @@ def block_check(b_info, data, pInfo):
     attList = list(data._fields)
     if attList.count('recOffList')==1:
         attList.pop()
+    
     curCh = []
     chHead = dataChangeHead(b_info.bnum, curSType, curCh)
     for att in attList:
