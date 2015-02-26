@@ -128,8 +128,7 @@ def outputRecord(form,table,fields,prefix,record,keyed):
                 row[i]=row[i].replace("'","''").replace('&','&&')
             elif type(row[i])==tuple or type(row[i])==list:
                 row[i]="'{0}'".format(str(row[i]).replace("'","''").replace('&','&&'))
-        print row
-        cur.execute('insert into {0} values {1}'.format(table[sql],tuple(row)).replace("u'","'").replace('u"','"').replace('\\',''))
+        cur.execute('insert into {0} values {1}'.format(table[sql],tuple(row)).replace("u'","'").replace('u"','"').replace("\\'\\'","''"))
 
 
 fileTypes=['Catalog','Extents','Attributes']
@@ -195,6 +194,8 @@ def finishJournalCSV(table):
 
 def finishSQL():
 
+    global cur,con
+
     cur.close()
     con.close()
 
@@ -248,7 +249,7 @@ def outputParsedJournal(form,path,jParseList,bOffList):
     if form&2:
         finishSQL()
 
-
+'''
 def outputCoreFields(form,path,jParseList,bOffList):
 
     tf=['offset', 'keyLength', 'parentID', 'nodeName/nodeUnicode', 'recordType', 'CNID', 'createDate', 'contentModDate', 'attributesDate', 'accessDate', 'permissions/ownerID', 'permissions/groupID', 'dataFork', 'resourceFork', 'valence', 'fullPath']
@@ -285,6 +286,7 @@ def outputCoreFields(form,path,jParseList,bOffList):
         table[1].close()
     if form&2:
         finishSQL()
+'''
 
 
 def outputParsedspecialFile(form,path,specialFile):
